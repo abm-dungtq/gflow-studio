@@ -574,6 +574,20 @@ def _bad_param(title: str, detail: str) -> dict[str, Any]:
     }
 
 
+def confine_to_output_dir(value: str, *, root: Path | None = None) -> Path:
+    """Resolve a caller-supplied path and require it to stay inside the output directory.
+
+    MCP callers may be driven by untrusted content, so ``output`` / ``out_dir`` must not be
+    able to write outside ``settings.output_dir``. Relative values are taken relative to it.
+    Raises ``ValueError`` for escapes (``..``, absolute paths elsewhere, symlinks out).
+    """
+    base = (root if root is not None else get_settings().output_dir).resolve()
+    candidate = (base / Path(value)).resolve()  # absolute `value` replaces base; checked below
+    if candidate != base and not candidate.is_relative_to(base):
+        raise ValueError(f"path {value!r} is outside the configured output directory")
+    return candidate
+
+
 def _resolve_ref_local_path(
     data_repo: DataRepository,
     profile: str,
@@ -1004,7 +1018,10 @@ async def gflow_generate_image(
     if project_name is not None:
         payload["project_name"] = project_name
     if output is not None:
-        payload["output_file"] = output
+        try:
+            payload["output_file"] = str(confine_to_output_dir(output))
+        except ValueError as exc:
+            return _bad_param("Invalid output path", str(exc))
     # Omitted rather than written empty when unused: `codec.build_image_request`
     # already reads both keys, so an empty list is a real (and wrong) instruction.
     if reference_entities:
@@ -1085,7 +1102,10 @@ def _build_video_payload(
     if project_name is not None:
         payload["project_name"] = project_name
     if output is not None:
-        payload["output_file"] = output
+        try:
+            payload["output_file"] = str(confine_to_output_dir(output))
+        except ValueError as exc:
+            return _bad_param("Invalid output path", str(exc))
     # Omitted rather than written empty when unused: `codec.build_video_request`
     # already reads both keys, so an empty list is a real (and wrong) instruction.
     if reference_entities:
@@ -1635,10 +1655,14 @@ async def gflow_download_media(
         ``project_id`` and ``profile``.
     """
     log.info("mcp.tool.download_media", media_id=media_id, profile=profile)
+    try:
+        safe_out_dir = confine_to_output_dir(out_dir) if out_dir else None
+    except ValueError as exc:
+        return _bad_param("Invalid out_dir", str(exc))
     result = await download_media(
         media_id=media_id,
         profile=profile,
-        out_dir=Path(out_dir) if out_dir else None,
+        out_dir=safe_out_dir,
     )
     return {
         "status": "ok",
@@ -1801,7 +1825,10 @@ async def _run_upscale_tool(
 
     settings = get_settings()
     profile_dir = settings.profile_subdir(profile)
-    output_root = Path(out_dir) if out_dir is not None else settings.output_dir
+    try:
+        output_root = confine_to_output_dir(out_dir) if out_dir is not None else settings.output_dir
+    except ValueError as exc:
+        return _bad_param("Invalid out_dir", str(exc))
     from datetime import date
 
     out_path = (

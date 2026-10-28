@@ -4,6 +4,32 @@
 
 ## Current release
 
+**v0.91.0 — alpha.** MCP background generations now run, read back the way the Tasks
+extension says, an agent-only credit confirmation is read before it is approved, and on
+flow.google.com a reference-to-video takes a character and a lost video submit reply no
+longer loses the clip.
+
+**For agents.** `wait=false` on the MCP generation tools runs the job in the background of
+the server that accepted it; before, it saved the job and nothing ever ran it (#1097).
+`tasks/get` and `tasks/cancel` now follow SEP-2663, the extension the server declares:
+`tasks/get` carries the finished tool result, a failed generation reads `completed` with
+`result.isError`, `tasks/cancel` stops the job and answers with an empty acknowledgement, and
+`tasks/result` is gone (#1102).
+
+**Credit safety.** On an account Flow serves the agent-only composer, gflow reads how many
+generations a credit confirmation names and rejects one that quotes more than requested, so
+an agent cannot bill more than was asked for under a single approval (#988).
+
+**On flow.google.com.** Local-file `video r2v` attaches a named character with
+`--reference-entity` + `--reference-entity-name`, from the CLI and `gflow_generate_video`
+alike (#723). When Chrome loses the body of a video submit reply on an r2v or i2v run from
+local files, gflow follows the clip carrying the files it uploaded to completion instead of
+failing a billed generation; t2v and character-only r2v still end in exit 9 (#1112).
+
+Full ledger: [LIVE_VERIFICATION_v0.91.0](LIVE_VERIFICATION_v0.91.0.md).
+
+<details><summary>v0.90.0 — batch resume, a reference uploaded once</summary>
+
 **v0.90.0 — alpha.** A batch run can be resumed, a reference file is uploaded once per
 project, and five failures now say what actually went wrong.
 
@@ -20,12 +46,12 @@ exit 6 (#941). A credit shortfall is recognised in every UI language (#745), and
 `movie.toml` entity character with costume `variants` is refused when the manifest is
 read (#724).
 
-**For agents.** The MCP generation tools describe `wait` where agents read it (#481). On
-`develop` (unreleased), `wait=false` runs the job in the background of the server and
-`tasks/get` returns its result (#1097, #1102). Selector drift on flow.google.com is watched again by
-the canary (#1083).
+**For agents.** The MCP generation tools describe `wait` where agents read it (#481).
+Selector drift on flow.google.com is watched again by the canary (#1083).
 
 Full ledger: [LIVE_VERIFICATION_v0.90.0](LIVE_VERIFICATION_v0.90.0.md).
+
+</details>
 
 <details><summary>v0.89.1 — lost image replies recovered, upscale after generating</summary>
 
@@ -656,6 +682,7 @@ migrated accounts (#795), and the agent-only composer driver (#799, #824 open).
 
 | Milestone | Status |
 |---|---|
+| MCP `wait=false` runs (#1097); `tasks/get` and `tasks/cancel` follow SEP-2663 (#1102); agent-only credit confirmation read before approval (#988); r2v with a character on flow.google.com (#723); a lost video submit reply followed to its clip (#1112) | ✅ done (v0.91.0) |
 | `gflow run --resume` (#934); a local `--ref` uploaded once per project (#772); unwritable output, corrupt cookie store and signed-URL errors classified (#1091, #796, #941) | ✅ done (v0.90.0) |
 | Lost image replies recovered from the grid, upscale after generating, hidden picker refused (#1075, #1067, #788) | ✅ done (v0.89.1) |
 | Default project, Flow model names, clearer exit-11 causes, refuse-before-billing and diagnostics privacy (#1039, #1038, #883, #974, #984, #1008, #890) | ✅ done (v0.89.0) |

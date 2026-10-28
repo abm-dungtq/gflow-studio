@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.91.0] — 2026-10-28
+
 ### Fixed
 
 - **A video whose submit reply Chrome lost now finishes with its clip on flow.google.com**
@@ -27,7 +29,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   2026-09-07; on 2026-10-26 an entity-bound r2v run completed end to end through the stock
   observer. An entity id without a name now exits 36 with that reason instead of failing
   later on a chip-count mismatch. Text-to-video with a character stays refused (exit 36,
-  [#716](https://github.com/ffroliva/gflow-cli/issues/716)).
+  [#716](https://github.com/ffroliva/gflow-cli/issues/716)); image-to-video with a character is refused the same way.
+
 - **MCP `wait=false` generations now run**
   ([#1097](https://github.com/ffroliva/gflow-cli/issues/1097)). Before, `gflow_generate_image`
   and `gflow_generate_video` with `wait=false` saved the job and returned a `task_id`, but no
@@ -52,6 +55,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `failed`, because SEP-2663 keeps `failed` for protocol errors: **check `isError`**.
   `tasks/cancel` answers with an empty acknowledgement instead of a task; read the outcome
   from `tasks/get`. There is no `tasks/result`; the server answers it `-32601`.
+
+- **Dependencies:** `pydantic-settings` 2.16.0 → 2.16.1, `platformdirs` 4.13.3 → 4.13.5,
+  `fastapi` 0.143.2 → 0.161.1, and the dev tool `ruff` 0.17.1 → 0.17.2
+  ([#1104](https://github.com/ffroliva/gflow-cli/pull/1104)).
 
 ### Security
 
@@ -6726,7 +6733,8 @@ shell-script template that branches on these codes.
 
 First skeleton. Not functional end-to-end yet.
 
-[Unreleased]: https://github.com/ffroliva/gflow-cli/compare/v0.90.0...HEAD
+[Unreleased]: https://github.com/ffroliva/gflow-cli/compare/v0.91.0...HEAD
+[0.91.0]: https://github.com/ffroliva/gflow-cli/compare/v0.90.0...v0.91.0
 [0.90.0]: https://github.com/ffroliva/gflow-cli/compare/v0.89.1...v0.90.0
 [0.89.1]: https://github.com/ffroliva/gflow-cli/compare/v0.89.0...v0.89.1
 [0.89.0]: https://github.com/ffroliva/gflow-cli/compare/v0.88.0...v0.89.0

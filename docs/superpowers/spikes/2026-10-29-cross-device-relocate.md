@@ -17,14 +17,14 @@ happens when an MCP `output` names a directory?
   `--tmpfs /mnt/a`, the target on the container's overlay root (`/work/out`). The script
   checks `st_dev` and prints `distinct: true`.
 - **Windows 11, two volumes**: the source under the repo on `C:`, the target in a scratch
-  folder on `Y:`, a mapped network share (SMB). `distinct: true`. The folder was deleted after
+  folder on a second volume, a mapped network share (SMB). `distinct: true`. The folder was deleted after
   the run. (A first run on `C:` alone measured only the overwrite and directory arms.)
 
 Readings were written in the script's docstring before the run.
 
 ## What was observed
 
-| Arm | What ran | Linux (tmpfs → disk) | Windows (`C:` → SMB `Y:`) |
+| Arm | What ran | Linux (tmpfs → disk) | Windows (`C:` → SMB share) |
 |---|---|---|---|
 | A control | `Path.replace`, the pre-fix line | `OSError` errno **18** (EXDEV) | `OSError` errno **18** |
 | B CLI | `_relocate_video_output` | bytes landed, source removed | bytes landed, source removed |

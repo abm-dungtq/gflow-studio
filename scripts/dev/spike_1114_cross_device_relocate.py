@@ -23,7 +23,7 @@ Linux, two mounts (the reporter's shape):
       "cp -r /src /work && pip install -q /work && \
        python /work/scripts/dev/spike_1114_cross_device_relocate.py --a /mnt/a --b /work/out"
 Windows, two volumes (any mapped drive, e.g. an SMB share; delete the folder after):
-    uv run python scripts/dev/spike_1114_cross_device_relocate.py --a tmp/a --b Y:/gflow-spike-1114
+    uv run python scripts/dev/spike_1114_cross_device_relocate.py --a tmp/a --b D:/gflow-spike-1114
 """
 
 from __future__ import annotations

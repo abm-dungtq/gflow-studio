@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+from collections.abc import Iterator
 from pathlib import Path
 from unittest.mock import AsyncMock
 
 import pytest
 
 from gflow_cli.api.image_upscale import TargetResolution
+from gflow_cli.config import reset_settings
 from gflow_cli.mcp.tools import gflow_upscale_image
 
 _VALID_MEDIA_ID = "3a56bb5e-92a2-44f4-9992-3c6a9bf0cd14"
@@ -17,6 +19,15 @@ _VALID_PROJECT_ID = "ffb768fb-cf2d-48b7-a135-92978667c37d"
 @pytest.fixture(autouse=True)
 def _mock_profile(monkeypatch) -> None:
     monkeypatch.setattr("gflow_cli.mcp.tools._resolve_and_validate_profile", lambda p: "default")
+
+
+@pytest.fixture(autouse=True)
+def _output_dir_is_tmp_path(tmp_path: Path, monkeypatch) -> Iterator[None]:
+    # out_dir must sit inside the configured output dir (GHSA-hqfj-4jww-76f2).
+    monkeypatch.setenv("GFLOW_CLI_OUTPUT_DIR", str(tmp_path))
+    reset_settings()
+    yield
+    reset_settings()
 
 
 @pytest.mark.asyncio

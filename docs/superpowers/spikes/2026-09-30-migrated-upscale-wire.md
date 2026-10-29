@@ -1,6 +1,6 @@
 # Migrated host image and video upscale wire protocol: `SPrCad`, `p0UkFb`, `jwpduf`
 
-**Date:** 2026-09-30 · **Issue:** Refs [#914](https://github.com/ffroliva/gflow-cli/issues/914) · **Cost:** $0 for image (no credits spent); video export tested on existing clip.
+**Date:** 2026-09-30 · **Issue:** Refs #914 · **Cost:** $0 for image (no credits spent); video export tested on existing clip.
 **Host:** `flow.google.com` (AiSandboxAngularFrontend) · **Profile:** a contributor's Google AI Pro account (name redacted).
 
 ## Question

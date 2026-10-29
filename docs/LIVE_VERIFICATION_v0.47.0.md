@@ -2,8 +2,8 @@
 
 **Date:** 2026-08-01
 **Features under test:**
-1. MCP SDK 2.0.0 migration & dual-era protocol support ([#407](https://github.com/ffroliva/gflow-cli/pull/407))
-2. Entity provenance recording on generation operations ([#402](https://github.com/ffroliva/gflow-cli/issues/402), PR [#408](https://github.com/ffroliva/gflow-cli/pull/408))
+1. MCP SDK 2.0.0 migration & dual-era protocol support (#407)
+2. Entity provenance recording on generation operations (#402, PR #408)
 3. Dependency drift CI gate (`resolve-drift`)
 
 **Verifier:** repo owner's Windows 11 workstation, profiles `ffroliva` and `pr389fresh2`

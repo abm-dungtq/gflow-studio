@@ -75,7 +75,7 @@ UI (the #174 A/B variant where staged entities are dropped from the submit). The
 A/B has **rolled back off both available accounts**: the variant re-probe on
 2026-06-12 15:48 (UTC+1) via `scripts/dev/spike_issue174_library_ui_recon.py`
 returned `variant=dialog` on **denon82** (15 ms) and **promo-denon82** (8 ms) —
-evidence posted on [#174](https://github.com/ffroliva/gflow-cli/issues/174).
+evidence posted on #174.
 With no affected account, the backstop cannot fire live without a real wire
 regression to provoke it.
 

@@ -23,7 +23,7 @@ Don't wait for the next "real" code release to refresh PyPI — by then the misl
 **Image / media assets:** PyPI does not resolve relative image paths in README — `![alt](docs/assets/foo.gif)` renders as a broken image. Use absolute `raw.githubusercontent.com` URLs targeting `main`:
 
 ```markdown
-![alt text](https://raw.githubusercontent.com/ffroliva/gflow-cli/main/docs/assets/foo.gif)
+![alt text](https://raw.githubusercontent.com/abm-dungtq/gflow-studio/main/docs/assets/foo.gif)
 ```
 
 The images will 404 on the PR preview (assets aren't on `main` yet) but render correctly once the release reaches `main`. Note this in the PR body so reviewers don't flag the temporary 404 as a bug.

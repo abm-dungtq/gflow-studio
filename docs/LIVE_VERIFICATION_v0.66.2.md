@@ -158,7 +158,7 @@ retracted here rather than shipped.
 Everything above was measured on maintainer accounts that had flapped back to the old host. The
 migrated path was verified by [@maipmacrothorax-75](https://github.com/maipmacrothorax-75) on a
 permanently-migrated account — branch installed from git, reverted afterwards, zero credits,
-posted to [#639](https://github.com/ffroliva/gflow-cli/issues/639).
+posted to #639.
 
 | | v0.66.1 | branch, before the `mode_control` guard | v0.66.2 |
 |---|---|---|---|

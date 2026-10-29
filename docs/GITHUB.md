@@ -240,7 +240,7 @@ live:
 | `dangerous-triggers` | `external-pr-triage.yml` | `pull_request_target` is required to label a fork's PR. The trigger is only unsafe when the workflow checks out or executes the untrusted head; this one never does — no `actions/checkout` at all, PR fields read from `context.payload`, scoped permissions. Suppressed inline with that rationale. |
 | `superfluous-actions` (informational) | `release.yml` | zizmor suggests replacing `softprops/action-gh-release` with `gh release`. Rewriting the release publisher is not a hardening change; declined rather than risked. Informational findings do not gate (`--min-severity low`). |
 
-### 3. Changelog guard — declined (2026-08-22, [#565](https://github.com/ffroliva/gflow-cli/issues/565))
+### 3. Changelog guard — declined (2026-08-22, #565)
 
 A [changelog-guard workflow](https://github.com/mvanhorn/last30days-skill/blob/main/.github/workflows/changelog-guard.yml)
 was evaluated for adoption and **declined**. Its central rule — *non-release PRs

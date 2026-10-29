@@ -66,5 +66,3 @@ committed; only the catalog row and structlog evidence were recorded.
   rows grow without an automatic cap and points to #345 for bounded retention.
   Council reports at `tmp/council/0{1,2,3}-*.md` (local-only).
 
-[#341]: https://github.com/ffroliva/gflow-cli/issues/341
-[#315]: https://github.com/ffroliva/gflow-cli/issues/315

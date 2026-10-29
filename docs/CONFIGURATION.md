@@ -66,7 +66,7 @@ A profile maps to a directory `$GFLOW_CLI_HOME/profile_<name>/`. Profiles are is
 ### `GFLOW_CLI_PROJECT`
 
 **What:** Default Flow project id for generation runs that name no project
-([#1039](https://github.com/ffroliva/gflow-cli/issues/1039)).
+(#1039).
 **Values:** a Flow project id (1-128 letters, digits or hyphens); anything else fails at startup (exit 11).
 **Default:** unset, so every generation run without `--project` creates a new project.
 **CLI override:** `--project <id>`, or `--project-name <title>` for a new project.
@@ -288,7 +288,7 @@ GFLOW_CLI_AUTH_LOGIN_TIMEOUT=120 gflow auth login   # abort after 2 minutes
 to see progress events (engine, cookies, locale, page setup), for example on a long-running
 `gflow mcp run` / `gflow serve`.
 **CLI override:** `-v` / `--verbose` flag flips to `DEBUG`.
-Until the #1041 fix this setting was ignored and every command logged at `INFO` ([#1041](https://github.com/ffroliva/gflow-cli/issues/1041)).
+Until the #1041 fix this setting was ignored and every command logged at `INFO` (#1041).
 
 ### `GFLOW_CLI_LOG_FORMAT`
 
@@ -442,7 +442,7 @@ Measurement script: `scripts/dev/spike_offscreen_window.py`.
 
 **What:** A proxy for every browser gflow launches: generation (CLI and MCP),
 `gflow auth login`, `auth renew` and the session check behind `auth status`
-([#1036](https://github.com/ffroliva/gflow-cli/issues/1036)).
+(#1036).
 **Values:** `http://host:port` | `https://host:port` | `socks5://host:port`; the port is
 required, and credentials (`user:pass@`) are refused, see below
 **Default:** unset. The browser then connects as it always has: on Windows that means
@@ -493,21 +493,21 @@ per-command `--proxy` flags (the setting covers one-off runs:
 
 ### `GFLOW_CLI_UI_MODE`
 
-**What:** Which Flow UI arm to use for generation. Flow serves a **classic** composer (hard crop/aspect controls) or an **agentic** chat cohort, server-assigned and flapping per page load ([#299](https://github.com/ffroliva/gflow-cli/issues/299)).
+**What:** Which Flow UI arm to use for generation. Flow serves a **classic** composer (hard crop/aspect controls) or an **agentic** chat cohort, server-assigned and flapping per page load (#299).
 **Values:**
-- `auto` (default) — no arm was asked for, so gflow **requires `classic`** ([#595](https://github.com/ffroliva/gflow-cli/issues/595)): classic is the arm that can satisfy a generation request, and it is recovered first, so this only aborts when the arm is genuinely pinned. Before v0.62.0 `auto` bound whatever rendered, which put an account in Flow's agentic cohort on a driver that cannot produce an image — failing mid-run as `image_mode_tab` selector drift or a `WireFormatError` about video bytes. Agentic is still reachable, but only by name (`--ui-mode agentic`) or by need (`-i`).
+- `auto` (default) — no arm was asked for, so gflow **requires `classic`** (#595): classic is the arm that can satisfy a generation request, and it is recovered first, so this only aborts when the arm is genuinely pinned. Before v0.62.0 `auto` bound whatever rendered, which put an account in Flow's agentic cohort on a driver that cannot produce an image — failing mid-run as `image_mode_tab` selector drift or a `WireFormatError` about video bytes. Agentic is still reachable, but only by name (`--ui-mode agentic`) or by need (`-i`).
 - `classic` — require the classic composer (hard aspect controls). gflow switches to it, re-probes to verify, and if the arm is still agentic **aborts before submitting** with `UiModeUnavailableError` (**exit 28**) — no credits spent.
 - `agentic` — require the agentic chat surface (needed for `-i` agent instructions). gflow switches to it, verifies, and aborts (exit 28) if it can't be reached.
 **Default:** `auto`
 **How it works:** before each generation, gflow determines the required arm, clicks the classic↔agentic toggle as a **prerequisite**, **verifies** with a DOM re-probe, then binds — or fails fast. The required arm is also **inferred**: `-i` instructions are agentic-only, so they force `agentic` automatically (and `--ui-mode classic` + `-i` is a hard conflict, not a silent drop).
 **Why `classic`:** the agentic cohort treats aspect ratio as a soft prompt hint (portrait 9:16 can come back landscape). `classic` enforces it or fails fast instead of silently degrading.
 **Retry note:** the cohort flaps per load, so an exit-28 abort is **retryable** — a re-run often lands the wanted arm. A server experiment can pin the arm, in which case it's unreachable from the client (the abort still saves the credits).
-**Video commands:** `gflow video t2v`/`i2v` joined the policy in [#299](https://github.com/ffroliva/gflow-cli/issues/299) PR-A. The video pipeline only has a classic driver, so `auto` ≡ `classic` there: both verify the classic editor pre-submit and abort with exit 28 if it is unreachable. An env-sourced `agentic` **degrades to classic with a logged warning** (so a value set for image workflows can't hard-fail your video runs); only an explicit agentic *request* errors — the `--ui-mode agentic` flag immediately at the CLI edge (exit 2), or the MCP `ui_mode="agentic"` param with a 400 envelope — because no agentic video driver exists yet. `video r2v` and `video chain` have no flag and follow the env-only path. This policy is the labs and classic-migrated one: an account whose `flow.google.com` project is served an **agent-only** composer ([#799](https://github.com/ffroliva/gflow-cli/issues/799)) is routed to its driver before it, so supported `image t2i` / `video t2v` requests run there whatever this is set to.
+**Video commands:** `gflow video t2v`/`i2v` joined the policy in #299 PR-A. The video pipeline only has a classic driver, so `auto` ≡ `classic` there: both verify the classic editor pre-submit and abort with exit 28 if it is unreachable. An env-sourced `agentic` **degrades to classic with a logged warning** (so a value set for image workflows can't hard-fail your video runs); only an explicit agentic *request* errors — the `--ui-mode agentic` flag immediately at the CLI edge (exit 2), or the MCP `ui_mode="agentic"` param with a 400 envelope — because no agentic video driver exists yet. `video r2v` and `video chain` have no flag and follow the env-only path. This policy is the labs and classic-migrated one: an account whose `flow.google.com` project is served an **agent-only** composer (#799) is routed to its driver before it, so supported `image t2i` / `video t2v` requests run there whatever this is set to.
 **Supersedes:** `GFLOW_CLI_PREFER_CLASSIC` and `GFLOW_CLI_FORCE_AGENT_UI` (below).
 
 ### `GFLOW_CLI_FLOW_HOST`
 
-**What:** Which Flow frontend gflow drives. Google has moved Flow from `labs.google/fx/tools/flow` onto `flow.google.com` ([#639](https://github.com/ffroliva/gflow-cli/issues/639)) — measured 2026-09-14, the old labs URL answers **HTTP 308 Permanent Redirect** on every account we tested. The two are the same product (the new frontend's own root element is `aisandbox-root`) on different widget toolkits and different wire protocols, so each has its own driver. Which host you are served does **not** tell you which capabilities work — see [the survey](../docs/superpowers/spikes/2026-09-14-two-domain-protocol-survey.md).
+**What:** Which Flow frontend gflow drives. Google has moved Flow from `labs.google/fx/tools/flow` onto `flow.google.com` (#639) — measured 2026-09-14, the old labs URL answers **HTTP 308 Permanent Redirect** on every account we tested. The two are the same product (the new frontend's own root element is `aisandbox-root`) on different widget toolkits and different wire protocols, so each has its own driver. Which host you are served does **not** tell you which capabilities work — see [the survey](../docs/superpowers/spikes/2026-09-14-two-domain-protocol-survey.md).
 **Values:**
 - `auto` (default) — **`flow.google.com` is the default host for every video request it can serve today** (`video t2v`, local-file `video i2v` and `video r2v`; with no `--project` and no `GFLOW_CLI_PROJECT`, one is created first, #864). Image requests use the migrated composer for `image t2i` and local-file `image i2i` where `flow.google.com` is what Flow serves, and stay on labs where labs is. A request the new host cannot serve keeps the labs driver where labs is what Flow serves; where flow.google.com is, there is no labs fallback and unsupported forms exit 36/11 before submit.
 - `flow.google.com` — force the migrated composer for everything, including what it cannot serve yet (those requests then exit 36/11 instead of falling back).
@@ -517,10 +517,10 @@ per-command `--proxy` flags (the setting covers one-off runs:
 
 ### `GFLOW_CLI_AGENT_CONFIRM`
 
-**What:** On an account Flow serves the agent-only composer ([#799](https://github.com/ffroliva/gflow-cli/issues/799)), Agent settings carries a **Confirm before generating** choice. This sets it before a run.
+**What:** On an account Flow serves the agent-only composer (#799), Agent settings carries a **Confirm before generating** choice. This sets it before a run.
 **Values:**
 - `account` (default) — leave the account's setting as it is. If Flow asks for confirmation, gflow handles it as under `always`.
-- `always` — set **Always**. Before approving, gflow reads the count the confirmation names: one confirmation can cover several generations, so one that quotes more than requested is **rejected** (nothing approved, exit 25), and a video confirmation whose count cannot be read is not approved either (exit 25; it stays open in Flow for you to reject) ([#988](https://github.com/ffroliva/gflow-cli/issues/988)). A **second** confirmation in the same run is never approved. Anything the agent makes beyond the request without asking is still caught only after the fact (more clips pending, or more images, than requested).
+- `always` — set **Always**. Before approving, gflow reads the count the confirmation names: one confirmation can cover several generations, so one that quotes more than requested is **rejected** (nothing approved, exit 25), and a video confirmation whose count cannot be read is not approved either (exit 25; it stays open in Flow for you to reject) (#988). A **second** confirmation in the same run is never approved. Anything the agent makes beyond the request without asking is still caught only after the fact (more clips pending, or more images, than requested).
 - `never` — set **Never**. No approval step; a result count that differs from the request is detected only after the credits are spent.
 **Default:** `account`
 **Persistence:** unlike model / aspect / count (applied per run and restored afterwards), this value is saved to the Flow account and **not** restored — it is your standing choice, and it also applies when you use Flow in the browser.

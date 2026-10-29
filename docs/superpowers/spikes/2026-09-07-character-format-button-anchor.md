@@ -1,6 +1,6 @@
 # The character-editor Format button never left — its carrier changed
 
-**Date:** 2026-09-07 · **Issue:** [#727](https://github.com/ffroliva/gflow-cli/issues/727)
+**Date:** 2026-09-07 · **Issue:** #727
 · **Account:** `denon82` (migrated `flow.google.com`, funded, idle machine) ·
 **Cost:** `$0` — navigation, one free tRPC `flow.createEntity`, DOM reads and typing.
 Nothing submitted, nothing generated, no credit and no image quota spent.

@@ -1,7 +1,7 @@
 # PR-triage autopilot — design
 
 > Status: **approved design** (2026-07-04). Next step: `writing-plans` → implementation plan.
-> Scope: an hourly hermes-ops autopilot that autonomously runs `/gflow:pr-council-review` against every open PR from a non-owner, non-bot, non-draft author on `ffroliva/gflow-cli`, and auto-posts the council's report as a PR comment. Sibling of the existing `dependabot-autopilot`; specializes the shared skeleton in hermes-ops' `autopilot-core-design.md`. Issue-triage (the third planned specialization) is explicitly **out of scope** here — captured as backlog (see "Out of scope").
+> Scope: an hourly hermes-ops autopilot that autonomously runs `/gflow:pr-council-review` against every open PR from a non-owner, non-bot, non-draft author on `abm-dungtq/gflow-studio`, and auto-posts the council's report as a PR comment. Sibling of the existing `dependabot-autopilot`; specializes the shared skeleton in hermes-ops' `autopilot-core-design.md`. Issue-triage (the third planned specialization) is explicitly **out of scope** here — captured as backlog (see "Out of scope").
 
 ## Problem
 
@@ -223,7 +223,7 @@ Quick research against GitHub Copilot code review, CodeRabbit, Qodo PR-Agent (op
 
 ## Provenance
 
-Designed 2026-07-04, in the same session that manually reviewed PR #237 (`ffroliva/gflow-cli`) and discovered the dependabot-autopilot's daily 06:00 UTC cadence had simply not yet ticked past that PR's creation time — not a bug, but the gap that motivated this design. Specializes hermes-ops' `autopilot-core-design.md` (draft, branch `feat/autopilot-core-spec`) as a fourth autopilot alongside dependabot/issue/release, and is the first specialization requiring a real Claude-Code harness rather than hermes' own freellmapi-routed agent.
+Designed 2026-07-04, in the same session that manually reviewed PR #237 (`abm-dungtq/gflow-studio`) and discovered the dependabot-autopilot's daily 06:00 UTC cadence had simply not yet ticked past that PR's creation time — not a bug, but the gap that motivated this design. Specializes hermes-ops' `autopilot-core-design.md` (draft, branch `feat/autopilot-core-spec`) as a fourth autopilot alongside dependabot/issue/release, and is the first specialization requiring a real Claude-Code harness rather than hermes' own freellmapi-routed agent.
 
 **Revised same day** after three independent fresh-agent adversarial reviews (security / operations / completeness lenses) against the first draft (published as PR #238). All three converged independently on the same core gap — unbounded retry on a permanently-failing PR, an uncapped-cost DoS vector — which is now the `fail_count`/`FAILED_PERMANENT` mechanism. Also added from that round: the concurrency lock, ledger-atomicity note, fresh-per-review container decision (vs. persistent), the credential/privilege boundary separating the container from the posting token (dedicated bot account, never the operator's broad-scope personal token), hardening Stage 1 to the same tool-scope/sandbox restrictions as the council rather than treating it as an implicitly-trusted cheap step, a per-PR Stage-1 volume cap independent of the full-council daily cap, and the report-content ("confused deputy") constraint. Nothing the reviews raised was dismissed without a corresponding spec change or an explicit "already adequately handled" call-out.
 

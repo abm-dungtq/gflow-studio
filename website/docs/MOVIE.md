@@ -227,7 +227,7 @@ Images drive it since #979: the option whose `.asset-title` equals the name exac
 selected, and the chip's kind is verified before submit. The migrated **video** path still
 exits 36 on `--reference-entity` / `@Name`, so `movie run` cannot produce an
 entity-consistent scene there. Tracked in
-[#723](https://github.com/ffroliva/gflow-cli/issues/723) with the working gesture recorded.
+#723 with the working gesture recorded.
 
 ### A costume change is a new character, not a variant
 
@@ -258,7 +258,7 @@ body_prompt = "a heavy oiled coat, hood down"
 ```
 
 Scenes then name the costume state, and continuity is a lookup rather than a hope
-([#724](https://github.com/ffroliva/gflow-cli/issues/724)).
+(#724).
 
 **The full identity resolution ladder** — entity, then the entity's own plate, then a plate cut
 from a take, then prose canon, with the rule that descending a rung is recorded next to the

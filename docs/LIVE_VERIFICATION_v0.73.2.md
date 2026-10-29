@@ -43,7 +43,7 @@ The bundle it produced, verbatim from the assertion:
  "viewport": {"width": 1280, "height": 720}}
 ```
 
-That is field-for-field the signature [#792](https://github.com/ffroliva/gflow-cli/issues/792)
+That is field-for-field the signature #792
 reported from a different account, on a different OS, on a different command. The bug
 reproduces.
 

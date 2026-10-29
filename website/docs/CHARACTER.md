@@ -1,6 +1,6 @@
 # Characters — feature spec & system design
 
-> **Status:** SHIPPED (live-verified 2026-06-02) · **Issue:** [#145](https://github.com/ffroliva/gflow-cli/issues/145) · **Branch:** `feature/character-creation`
+> **Status:** SHIPPED (live-verified 2026-06-02) · **Issue:** #145 · **Branch:** `feature/character-creation`
 > **Living document.** Evolve this as the feature and Flow's API evolve. Raw capture provenance lives in
 > [`CHARACTER_RECON.md`](CHARACTER_RECON.md); the cross-feature decision lens is
 > [the REST-path capability matrix](#capability--cost).
@@ -9,7 +9,7 @@
 > see [Design decisions](#11-design-decisions-post-predict)).
 
 > **Shipped scope:** `gflow character create` + `list` + `show` + `voices` + `rm`. Name-based reuse via
-> `@Name` prompt mentions is **shipped** (v0.40.0, [#344](https://github.com/ffroliva/gflow-cli/issues/344))
+> `@Name` prompt mentions is **shipped** (v0.40.0, #344)
 > for both `image` and `video` paths — see [REFERENCE_STRATEGIES](REFERENCE_STRATEGIES.md). An explicit
 > `--character <id>` **flag** on `gflow video` (a separate, repeatable-ref delivery mechanism) remains
 > **not yet implemented** — see [Backlog](#14-backlog--not-yet-implemented).

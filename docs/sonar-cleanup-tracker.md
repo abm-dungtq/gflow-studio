@@ -37,7 +37,7 @@
 ## Issue inventory (60)
 
 See `git show` of the first commit, or SonarCloud:
-https://sonarcloud.io/project/issues?id=ffroliva_gflow-cli&types=CODE_SMELL
+https://sonarcloud.io/project/issues?id=abm-dungtq_gflow-studio&types=CODE_SMELL
 
 | File | Line | Rule | Severity |
 |------|------|------|----------|

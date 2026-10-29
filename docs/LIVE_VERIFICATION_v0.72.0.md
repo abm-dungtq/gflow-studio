@@ -176,14 +176,14 @@ What this does establish:
 
 What it does **not** establish, and must not be read as: that the upload path is healthy,
 or that the consent dialog is involved. Note this is a *consented* account with an upload
-that produced no `maseQ` — adjacent to [#719](https://github.com/ffroliva/gflow-cli/issues/719)
+that produced no `maseQ` — adjacent to #719
 shape B (on a consented account ~1 upload in 4 sends `maseQ` and receives no reply), but not
 the same signature, since here no `maseQ` left the page at all. **No incident bundle was
 written** (exit 27 is not in the capture triggers), so there is no DOM dump naming the
 dialog.
 
 **To settle it** a run must capture what actually opened — a DOM/role dump at the moment
-the guard fires. That is a spike, not a release step: filed as [#770](https://github.com/ffroliva/gflow-cli/issues/770), which also proposes adding `MediaUploadRejectedError` to the incident-capture triggers so the next occurrence diagnoses itself, and tracking per-account upload consent in the data layer so this guard can stop guessing.
+the guard fires. That is a spike, not a release step: filed as #770, which also proposes adding `MediaUploadRejectedError` to the incident-capture triggers so the next occurrence diagnoses itself, and tracking per-account upload consent in the data layer so this guard can stop guessing.
 
 ### The `--browser internal` flags and the migrated refusals
 

@@ -6,7 +6,7 @@
 
 ## Why
 
-[#792](https://github.com/ffroliva/gflow-cli/issues/792) reports that i2v dispatch fails
+#792 reports that i2v dispatch fails
 with `UiSelectorDriftError` on the migrated host, and the reporter root-caused it: Flow's
 Frames picker **no longer closes when an asset is clicked** — it waits for its own "Add to
 prompt" confirm. gflow waits `FRAME_COMMIT_HIDDEN_S` for an auto-close that never comes and

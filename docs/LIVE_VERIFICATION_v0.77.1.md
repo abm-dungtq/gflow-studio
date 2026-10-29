@@ -85,7 +85,7 @@ but per AGENTS.md § The second law, the twin was **run**, not inferred.
 
 **Provenance:** reported from outside by a user on a clean Windows 11 install with the root
 cause already localized. Their diagnosis was correct in every particular; see
-[#846](https://github.com/ffroliva/gflow-cli/issues/846).
+#846.
 
 ---
 
@@ -111,7 +111,7 @@ around — it is the interaction itself. Per AGENTS.md § The Iron Law this is a
 exception **because it is named**, not because it was inconvenient.
 
 It is not unverified work, though: the arm-by-arm live verification was done before merge and
-is recorded on [PR #851](https://github.com/ffroliva/gflow-cli/pull/851), which cites `4
+is recorded on PR #851, which cites `4
 passed` on the live zero-credit `e2e_auth` suite against a real profile. This release re-ran
 that same suite on the release head and got the same result.
 
@@ -217,7 +217,7 @@ this release. They are tracked with the profile-state issues already open.
 - Impeccable Routine: hygiene, doc links, website-docs PII, website-docs mirror, council
   memory, `ruff check`, `ruff format --check`, `pyright src` (0 errors) — all green.
 - Offline suite: **4477 passed, 24 skipped**.
-- PR [#857](https://github.com/ffroliva/gflow-cli/pull/857): 16/16 CI checks green, including
+- PR #857: 16/16 CI checks green, including
   SonarCloud and the `Dependency resolution drift (no lockfile)` job that installs from the
   declared ranges rather than the lockfile — the job that would have caught #846 had colorama
   ever been declared wrongly.

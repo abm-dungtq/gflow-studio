@@ -52,6 +52,5 @@ Exercised against live Flow on `develop@a0c7a3f` (post-merge of #357):
 ## Post-tag evidence
 
 - Tag: `v0.41.0`, signed (SSH), pushed to origin.
-- Release PR: [#358](https://github.com/ffroliva/gflow-cli/pull/358).
+- Release PR: #358.
 
-[#357]: https://github.com/ffroliva/gflow-cli/pull/357

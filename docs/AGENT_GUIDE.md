@@ -85,7 +85,7 @@ doc changes. Everything else: assess before you build.
 | Conventional branch prefix | `check_repo_hygiene.py::_check_branch_name` | **advisory** (warns; never blocks — platforms create `claude/*` / `dependabot/*` branches, and it no-ops in CI's detached-HEAD checkout) |
 | predict / council on material paths | `governance-advisory.yml` + `check_materiality.py` | **advisory** (recommendation in the job summary) |
 | Traceability (plan reference + tests) | `check_materiality.py` | **advisory** (report-only) |
-| Gutted docs + references to deleted paths | `governance-advisory.yml` + `check_deletions.py` | **advisory** (`::warning::` + job summary; [#713](https://github.com/ffroliva/gflow-cli/issues/713)) |
+| Gutted docs + references to deleted paths | `governance-advisory.yml` + `check_deletions.py` | **advisory** (`::warning::` + job summary; #713) |
 
 ### Materiality coverage (path → recommended gate)
 

@@ -92,7 +92,5 @@ supersedes it.
 - Release workflow: [run 29686563296](https://github.com/abm-dungtq/gflow-studio/actions/runs/29686563296) — `build-and-publish` completed in 41s (Build → Publish to PyPI → Create GitHub Release, all green).
 - GitHub Release: published (not draft, not prerelease), 2026-07-19T12:13:23Z.
 - PyPI: publish step succeeded as part of the above run.
-- Release PR: [#350](https://github.com/ffroliva/gflow-cli/pull/350) merged into `main` via `--merge` (11/11 checks green, incl. SonarCloud); `main` back-merged into `develop` clean, no conflicts.
+- Release PR: #350 merged into `main` via `--merge` (11/11 checks green, incl. SonarCloud); `main` back-merged into `develop` clean, no conflicts.
 
-[#344]: https://github.com/ffroliva/gflow-cli/issues/344
-[#174]: https://github.com/ffroliva/gflow-cli/issues/174

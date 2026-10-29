@@ -1,6 +1,6 @@
 # `networkidle` on Flow's bootstrap costs ~3× — it does not hang, and it must stay
 
-**Date:** 2026-09-16 · **Issue:** [#836](https://github.com/ffroliva/gflow-cli/issues/836)
+**Date:** 2026-09-16 · **Issue:** #836
 · **Probe:** `scripts/dev/spike_networkidle_bootstrap_cost.py` · **Cost:** $0 (navigation only)
 · **Profile:** `denon82` (served `flow.google.com`)
 

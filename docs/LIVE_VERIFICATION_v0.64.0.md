@@ -1,6 +1,6 @@
 # Live verification — v0.64.0
 
-> Evidence for [#626](https://github.com/ffroliva/gflow-cli/issues/626): lifting the
+> Evidence for #626: lifting the
 > `omni-flash` i2v END-frame guard. The paid surface under test is
 > `gflow video i2v START PROMPT --model omni-flash --end-frame END`, which was rejected
 > pre-submit with exit 17 before this release.
@@ -77,7 +77,7 @@ A single retry failed earlier still, at `project.create` with HTTP 401, before a
 no second credit was spent. `gflow auth status` verified the Flow session as valid
 immediately before and after both attempts.
 
-**This is [#561](https://github.com/ffroliva/gflow-cli/issues/561)**, a pre-existing defect
+**This is #561**, a pre-existing defect
 (browser-context 401 while the on-disk Flow session is valid), not a regression from this
 change. Verification was stopped rather than spending further credits chasing an environmental
 fault.

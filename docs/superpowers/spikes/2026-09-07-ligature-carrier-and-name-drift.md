@@ -1,6 +1,6 @@
 # The carrier is one character. The ligature NAME is the other half nobody counted
 
-**Date:** 2026-09-07 · **Issue:** [#730](https://github.com/ffroliva/gflow-cli/issues/730) ·
+**Date:** 2026-09-07 · **Issue:** #730 ·
 **Account:** `denon82` (migrated `flow.google.com`) · **Cost:** `$0` — navigation, one free
 `createEntity` (deleted again), DOM reads. Nothing submitted, no credit, no image quota.
 

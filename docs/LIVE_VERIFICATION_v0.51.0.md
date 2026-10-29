@@ -70,7 +70,7 @@ A/B-proven **pre-existing and unrelated to the playwright raise**: identical
 failure on 1.59.0 (24.33s) and 1.61.0 (28.16s). The guard is behaving correctly
 — it refuses rather than silently accepting Flow's default (#288) — but the
 selector needs re-deriving. Tracked as
-[#451](https://github.com/ffroliva/gflow-cli/issues/451). This is why the i2v
+#451. This is why the i2v
 proof above was driven via the CLI without `--duration`.
 
 ## Layer 5 — User-confirmable artifacts

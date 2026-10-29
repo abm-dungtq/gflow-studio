@@ -128,7 +128,7 @@ no-free-text retention guard); bundle-on-disk not observed this cycle.
 ## 2. `origin`/`referer` on the labs tRPC lane (#578)
 
 Verified **and its premise falsified** — see the PR and
-[the falsification memory](https://github.com/ffroliva/gflow-cli/pull/578).
+the falsification memory.
 
 `scripts/dev/spike_trpc_origin_referer_401.py`, interleaved A/B against live
 `project.createProject`:

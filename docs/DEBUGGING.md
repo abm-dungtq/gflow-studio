@@ -38,7 +38,7 @@ log events (`structlog` JSON lines):
 
 If `prompt_submitted` is followed by NO `batch_response_seen` log within the
 timeout, the network request didn't fire (or didn't return as a Playwright
-`response` event). Most common cause (resolved by [PR #40](https://github.com/ffroliva/gflow-cli/pull/40)
+`response` event). Most common cause (resolved by PR #40
 on 2026-05-23): the editor was in Video mode and Flow fired `generateVideo`
 instead — the listener filter (`batchGenerateImages` URL) never matched.
 Confirm by checking for `ui_automation.image_mode_entered` in the log; if it
@@ -118,7 +118,7 @@ Captured: `FlowAppError` (31), `FlowAgentUiError` (25),
 `UiSelectorDriftError` (23), `FlowAccountChooserError` (38),
 `TransportTimeoutError` (9), `BrowserSessionClosedError` (15),
 `WireFormatError` (7), `WafRejectionError` (10), `NetworkError` (6),
-`MediaUploadRejectedError` (27, [#770](https://github.com/ffroliva/gflow-cli/issues/770)),
+`MediaUploadRejectedError` (27, #770),
 unexpected exceptions while a page is alive, and `ProfileLockedError` (11)
 as a **metadata-only** bundle (no Chrome is launched; the local human output
 also shows the recorded lock owner's PID/start-time evidence — advisory
@@ -135,7 +135,7 @@ DOM dump of Flow's unavailable screen tells nobody anything. If Flow ever rename
 reverts to `UiSelectorDriftError` (23), which *is* captured — so the evidence path for
 the case where we need evidence is already open. **That `AuthExpiredError` exclusion
 now covers one more path than it used to:** since
-[#756](https://github.com/ffroliva/gflow-cli/issues/756), landing on one of Flow's
+#756, landing on one of Flow's
 OAuth/sign-in routes raises `AuthExpiredError` where it previously raised
 `UiSelectorDriftError`, which *is* captured. The change is deliberate — the remediation
 is `gflow auth login` either way, and a bundle there would put a DOM dump and a
@@ -316,7 +316,7 @@ Bash users on Git Bash / WSL inherit a UTF-8 locale and don't need this.
 > behind it.
 
 Flow's WAF reacts to **cumulative submission cadence**, not individual
-requests. Field data (issue [#241](https://github.com/ffroliva/gflow-cli/issues/241),
+requests. Field data (issue #241,
 2026-07-05, real account):
 
 - 3-prompt multi-prompt runs spread 30–60 min apart all passed.

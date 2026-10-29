@@ -11,9 +11,9 @@
 
 This live verification run exercises recent core infrastructure, transport, and batch improvements against a live Google Flow session in visible headed Chrome mode:
 
-1. **Language-Agnostic Overlay Dismissal ([#403](https://github.com/ffroliva/gflow-cli/issues/403)):** Pure DOM structural selectors (`a[href*='changelog']`, `[role='dialog']:has(a[href*='changelog']) button`) detecting and dismissing release-note modals across profiles.
-2. **Driver Interaction Delay Jittering ([#315](https://github.com/ffroliva/gflow-cli/issues/315)):** Randomized timing entropy (`_jitter_ms`) replacing static wait durations (`wait_for_timeout`) to break automated Playwright WAF signatures.
-3. **Intra-Batch Reference Staging ([#317](https://github.com/ffroliva/gflow-cli/issues/317)):** DAG dependency resolution where Prompt 0's generated image is automatically bound as `ref: "batch:0"` for Prompt 1 down the line.
+1. **Language-Agnostic Overlay Dismissal (#403):** Pure DOM structural selectors (`a[href*='changelog']`, `[role='dialog']:has(a[href*='changelog']) button`) detecting and dismissing release-note modals across profiles.
+2. **Driver Interaction Delay Jittering (#315):** Randomized timing entropy (`_jitter_ms`) replacing static wait durations (`wait_for_timeout`) to break automated Playwright WAF signatures.
+3. **Intra-Batch Reference Staging (#317):** DAG dependency resolution where Prompt 0's generated image is automatically bound as `ref: "batch:0"` for Prompt 1 down the line.
 
 ---
 

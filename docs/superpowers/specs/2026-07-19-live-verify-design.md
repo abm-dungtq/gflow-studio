@@ -220,4 +220,3 @@ principle applied to itself.
 - A further, broader council audit beyond this one — this spec's own council pass already covers
   HLD/LLD/evidence-drift for the skill set as it stands after this ships.
 
-[#174]: https://github.com/ffroliva/gflow-cli/issues/174

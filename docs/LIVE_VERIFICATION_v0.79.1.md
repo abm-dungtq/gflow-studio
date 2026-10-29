@@ -2,7 +2,7 @@
 
 > Evidence for the user-facing changes in this release, run against real Flow.
 > v0.79.1 is a fix-only release: its single user-facing change is the signed-media
-> download path ([#895](https://github.com/ffroliva/gflow-cli/issues/895)). The other
+> download path (#895). The other
 > entries are test-only or error-text changes that carry their own e2e coverage.
 
 ## Environment
@@ -10,7 +10,7 @@
 | | |
 |---|---|
 | Release branch | `chore/release-v0.79.1` (cut from `develop@142c4d95`) |
-| PR merged | [#899](https://github.com/ffroliva/gflow-cli/pull/899) — all 16 checks green incl. SonarCloud |
+| PR merged | #899 — all 16 checks green incl. SonarCloud |
 | Profile | `ffroliva` (real-browser Chrome strategy) |
 | Host Flow served | `flow.google.com` (migrated) |
 | Date | 2026-09-22 |
@@ -64,7 +64,7 @@ nor `Signature=`.
 
 **Why not verified live:** reaching S1 requires a **billed** Veo generation, and
 `gflow credits user` returns HTTP 401 on this account — the documented
-[#795](https://github.com/ffroliva/gflow-cli/issues/795) condition where `aisandbox-pa`
+#795 condition where `aisandbox-pa`
 read endpoints do not answer for a `flow.google.com`-served account. **The balance is
 unreadable, so no generation was spent without the account owner's go-ahead.** That is a
 named external blocker, not an omission.

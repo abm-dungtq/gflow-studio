@@ -106,7 +106,7 @@ control … 0 option groups"); fixed in the same change and pinned by
 - Release workflow run [33955032750](https://github.com/abm-dungtq/gflow-studio/actions/runs/33955032750) — `completed / success`.
 - GitHub Release: <https://github.com/abm-dungtq/gflow-studio/releases/tag/v0.67.0> (published 2026-09-05T08:22:07Z, 5 assets, not a prerelease).
 - PyPI: `pip index versions gflow-cli` → `gflow-cli (0.67.0)`.
-- Release PR: [#667](https://github.com/ffroliva/gflow-cli/pull/667) `chore/release-v0.67.0 → main`, merged with a merge commit, then back-merged into `develop`.
+- Release PR: #667 `chore/release-v0.67.0 → main`, merged with a merge commit, then back-merged into `develop`.
 
 ## NOT verified (recorded, not omitted)
 

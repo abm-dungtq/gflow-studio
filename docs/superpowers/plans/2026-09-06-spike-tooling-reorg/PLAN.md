@@ -13,7 +13,7 @@ Node/`agent-browser`/PowerShell harness is deleted as each Python twin lands.
 
 `spike` because it is already the word everywhere a human looks: `/gflow:spike`,
 `skills/spike/SKILL.md`, 48 `scripts/dev/spike_*.py`, `docs/superpowers/spikes/`. Named `spike/`,
-not `_spike/` — [#707](https://github.com/ffroliva/gflow-cli/issues/707) builds a user-facing
+not `_spike/` — #707 builds a user-facing
 path on this code, so it is not private.
 
 **Predict verdict:** pending — dev tooling, not a transport/auth/selector/schema change, so the
@@ -236,7 +236,7 @@ src/gflow_cli/diagnostics.py      NOT TOUCHED — recorded because an earlier dr
 
 ## Explicitly out of scope
 
-- **Any user-facing command** — [#707](https://github.com/ffroliva/gflow-cli/issues/707), which
+- **Any user-facing command** — #707, which
   gets `/gflow:predict` first. This plan ships no user-facing surface, which is why it needs no
   MCP mirror task.
 - **`python -m gflow_cli.spike` as a probe CLI** — a reviewer ranked this second and it is

@@ -6,9 +6,9 @@ description: "SonarCloud \"new_bugs>0 but issues API shows 0\" = forgot &pullReq
 When SonarCloud reports `new_bugs > 0` (failing `new_reliability_rating`) but the issues API "returns 0 bugs", the API call was almost certainly **not scoped to the PR**. New-code issues live on the pull-request branch, not `main`.
 
 Scope every issues/measures/qualitygate call with `&pullRequest=<N>`:
-- `api/issues/search?componentKeys=ffroliva_gflow-cli&pullRequest=204&types=BUG`
+- `api/issues/search?componentKeys=abm-dungtq_gflow-studio&pullRequest=204&types=BUG`
 - `api/measures/component?...&pullRequest=204&metricKeys=new_bugs,new_reliability_rating`
-- `api/qualitygates/project_status?projectKey=ffroliva_gflow-cli&pullRequest=204` → shows exactly which condition fails.
+- `api/qualitygates/project_status?projectKey=abm-dungtq_gflow-studio&pullRequest=204` → shows exactly which condition fails.
 
 These are real trackable findings, NOT phantom data-flow sensor results. Auth: `curl -u "$SONAR_TOKEN:"` (token in `.env.local`). Rule desc: `api/rules/show?key=python:S7497&organization=ffroliva-github`.
 

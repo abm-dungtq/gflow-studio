@@ -5,7 +5,7 @@
 - **Arms:** `denon82` (redirects) vs `ci-probe` (opens) — an **A/B**, not an inspection
 - **Cost:** $0 — navigations and response *metadata* only. No bodies, no headers, no generation.
 - **Raw:** `scripts/dev/_spike_out/spike_about_redirect_cause_20260911_{154808,192135}.json` (gitignored)
-- **Refs:** [#756](https://github.com/ffroliva/gflow-cli/issues/756)
+- **Refs:** #756
 
 ## Why it was askable at all
 

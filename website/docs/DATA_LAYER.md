@@ -60,7 +60,7 @@ refusing to report a text-only generation as an entity-referenced success) stays
 distinguishable from a run that never requested an entity. Before v0.47.0 the
 entity keys were absent on every generation operation, so character provenance
 could not be reconstructed for those runs — the gap is forward-only, not
-backfillable (issue [#402](https://github.com/ffroliva/gflow-cli/issues/402)).
+backfillable (issue #402).
 
 Unlike `assets.metadata_json`, this column is **not** passed through
 `redact_metadata`. Entity ids and names are Flow-side handles the user picked
@@ -224,7 +224,7 @@ async worker (which mirrors its `generation_queue.error_json` failure into
   pruning. Use `gflow data errors prune --older-than <age>` for explicit
   retention and `gflow data errors export` to archive history first (see
   [`data errors`](#gflow-data-errors--bounded-retention--export-345) below,
-  [#345](https://github.com/ffroliva/gflow-cli/issues/345)). Note `gflow data
+  #345). Note `gflow data
   prune` is unrelated: it targets stale `local_files`, not failure history.
 
 ---
@@ -345,7 +345,7 @@ as a single row with a `COPIES` count and the path of the latest copy.
 reports the clip done, then `MEDIA_GENERATION_STATUS_SUCCESSFUL` — including when only
 the download failed (#896). Images are recorded `ready`.
 
-TTY stdout → Rich table; pipe or `--json` → JSONL. Default sort: newest first. Exit code 16 on data-store errors (same `DataStoreError` family as `gflow data media`). A **missing or freshly-created** DB is NOT a data-store error — `data list` auto-creates the schema via `DataStore.open()` and returns exit 0 with an empty result (see [#88](https://github.com/ffroliva/gflow-cli/issues/88)).
+TTY stdout → Rich table; pipe or `--json` → JSONL. Default sort: newest first. Exit code 16 on data-store errors (same `DataStoreError` family as `gflow data media`). A **missing or freshly-created** DB is NOT a data-store error — `data list` auto-creates the schema via `DataStore.open()` and returns exit 0 with an empty result (see #88).
 
 > **`data list profiles` vs `gflow auth list`:** `data list profiles` shows profiles that have **recorded generations** in the catalog; `gflow auth list` shows profiles that have ever **logged in** via `gflow auth login`. A profile that logged in but never generated anything will appear in `auth list` but not in `data list profiles`.
 
@@ -405,7 +405,7 @@ reliability analysis — pruning is irreversible.
 gflow data media MEDIA_ID [--profile NAME]
 ```
 
-Without `--profile`, the lookup spans **every profile** in the catalog (matching the cross-profile default of `gflow data list`). Pass `--profile NAME` to scope to a specific profile in the rare case where the same Flow `media_id` exists under multiple profiles — `data media` refuses to guess and prints the candidate profiles annotated with their `kind` (`image` / `video`) so you can disambiguate. See [#87](https://github.com/ffroliva/gflow-cli/issues/87).
+Without `--profile`, the lookup spans **every profile** in the catalog (matching the cross-profile default of `gflow data list`). Pass `--profile NAME` to scope to a specific profile in the rare case where the same Flow `media_id` exists under multiple profiles — `data media` refuses to guess and prints the candidate profiles annotated with their `kind` (`image` / `video`) so you can disambiguate. See #87.
 
 Returns a Rich-formatted table:
 

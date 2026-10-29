@@ -32,7 +32,7 @@ When a tag matching `v*.*.*` is pushed, GitHub Actions:
 
 Worth knowing before anyone "tidies" it into an event trigger. It used to hang off
 `on: release: published`, and it **never fired once**, on any release, with nothing going
-red ([#841](https://github.com/ffroliva/gflow-cli/issues/841)): GitHub starts no workflow
+red (#841): GitHub starts no workflow
 runs from events created with the default `GITHUB_TOKEN`, which is what creates the Release
 in step 4.
 

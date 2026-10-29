@@ -2,8 +2,8 @@
 
 > ## ✅ STATUS: PR-A **and** PR-B both SHIPPED in **v0.57.0** (2026-08-14)
 >
-> - **PR-A** — [#525](https://github.com/ffroliva/gflow-cli/pull/525), squash-merged as `1dacd9b`.
-> - **PR-B** — [#527](https://github.com/ffroliva/gflow-cli/pull/527), squash-merged as `606dd7b`:
+> - **PR-A** — #525, squash-merged as `1dacd9b`.
+> - **PR-B** — #527, squash-merged as `606dd7b`:
 >   `mode_control.ensure_agent_mode` (real-click-first + `aria-pressed` verify, 15 s bounded
 >   reload, unknown editor variants no-op); `_force_agent_mode` **deleted**.
 >

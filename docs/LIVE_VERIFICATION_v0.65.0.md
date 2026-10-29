@@ -63,10 +63,10 @@ Recorded here rather than silently omitted, per step 4b.
 ## Residual limitations
 
 - **Direct-wire routes bypass the guard structurally**
-  ([#619](https://github.com/ffroliva/gflow-cli/issues/619)) — `APIRequestContext` is not
+  (#619) — `APIRequestContext` is not
   routable at any level. Harmless today; now also in [KNOWN_ISSUES](../KNOWN_ISSUES.md).
 - **The guard was live-verified on the image path.** The video call site shares the same
   context manager and matcher (covered offline against the real URL), but was not
   exercised live.
 - **One account, one UI cohort, one locale** (`denon82`, classic, `hl=en`). Flow's UI has
-  an A/B history ([#174](https://github.com/ffroliva/gflow-cli/issues/174)).
+  an A/B history (#174).

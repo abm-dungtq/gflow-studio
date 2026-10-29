@@ -11,7 +11,7 @@
 
 | | |
 |---|---|
-| Branch | `feature/agentic-ui-driver` → `develop` (PR [#189](https://github.com/ffroliva/gflow-cli/pull/189)) |
+| Branch | `feature/agentic-ui-driver` → `develop` (PR #189) |
 | Version | `0.19.0` working tree (pre-v0.20.0 bump) |
 | Profile | `denon82` (real-browser Chrome) |
 | Profile dir | `C:\Users\ffrol\AppData\Local\ffroliva\gflow-cli\profile_denon82` |

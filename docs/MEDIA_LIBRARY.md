@@ -2,8 +2,8 @@
 
 > How Flow stores, names, lists, and surfaces project media — and every pitfall
 > gflow-cli has hit driving it. All claims here are reverse-engineered from
-> live recon (2026-08-15/16, evidence in [#529](https://github.com/ffroliva/gflow-cli/issues/529)
-> / [#543](https://github.com/ffroliva/gflow-cli/issues/543) and the
+> live recon (2026-08-15/16, evidence in #529
+> / #543 and the
 > [#529 picker spike](superpowers/spikes/2026-08-15-picker-tile-alt-text.md));
 > Google documents none of it publicly and may change any of it without notice.
 
@@ -19,7 +19,7 @@ facts below. Read this before touching any picker, listing, or reference code.
 
 Each Flow **project** owns a media library. There is no global cross-project
 library: an asset generated in project A is not reachable from project B's
-picker ([#287](https://github.com/ffroliva/gflow-cli/issues/287), confirmed
+picker (#287, confirmed
 live). The library holds, per the `flow.projectInitialData` payload
 (`projectContents`):
 
@@ -28,7 +28,7 @@ live). The library holds, per the `flow.projectInitialData` payload
 | `media[]` | Every project asset. Kind is the discriminating sub-key: `image` (with `generatedImage` **or** `userUploadedImage`) or `video` (`generatedVideo` + `operation`). Observed split on a 267-asset project: 241 images / 26 videos. |
 | `workflows[]` | One per generation batch/upload. `metadata.displayName` (the caption), `metadata.primaryMediaId` (→ the media UUID), `batchId`, create/update times. |
 | `externalReferenceMedia[]` | Flow's **preset voices** ("Vozes" tab): 30 star-named entries (`achernar` … `zubenelgenubi`), `audio.generatedAudio` with `isPresetAudioSample: true` and a gstatic sample URL. These are platform presets, not user assets. |
-| `agentInfo` | `agentToggleState` (the [#299](https://github.com/ffroliva/gflow-cli/issues/299) classic/agentic arm) + default generation settings. |
+| `agentInfo` | `agentToggleState` (the #299 classic/agentic arm) + default generation settings. |
 
 **Characters** (`gflow character`, "Personagens") are project-scoped entities
 managed through their own routes — they are referenced *by* media generation
@@ -56,7 +56,7 @@ else is display sugar. Rules, each live-verified:
 4. **Captions are computed asynchronously.** A fresh generation's response may
    not carry `displayName` yet; the recorder then (correctly) stores no name.
    (Backfill shipped as `gflow data sync --names`,
-   [#543](https://github.com/ffroliva/gflow-cli/issues/543).)
+   #543.)
 5. **Names are mutable**: users can rename assets via the Flow Agent (per
    [Google's own docs](https://support.google.com/flow/answer/16935308)) —
    so a cached name can go stale.
@@ -88,7 +88,7 @@ Freshness is layered, cheapest-first:
    listing fetch, sync) writes it to the catalog immediately, with
    provenance. A gflow-initiated rename (if ever built) must update the
    catalog in the same operation, never as a follow-up.
-2. **Refresh-on-miss** ([#546](https://github.com/ffroliva/gflow-cli/issues/546),
+2. **Refresh-on-miss** (#546,
    shipped) — on a picker miss, one `projectInitialData` GET (~0.5 s)
    resolves the *current* name by UUID, the search retries once (exactly
    once — never a loop), and the fresh name is written back with
@@ -98,9 +98,9 @@ Freshness is layered, cheapest-first:
    UUID refs and i2v frame refs; a resolver failure is swallowed with a
    warning and the pre-#546 fallback chain proceeds unchanged.
 3. **Bulk reconciliation** — `gflow data sync --names`
-   ([#543](https://github.com/ffroliva/gflow-cli/issues/543), shipped) for
+   (#543, shipped) for
    cold catalogs and ghost detection; `gflow doctor`
-   ([#542](https://github.com/ffroliva/gflow-cli/issues/542), shipped)
+   (#542, shipped)
    reports the gap. Neither is load-bearing for a working generation once
    layers 1–2 exist.
 
@@ -110,7 +110,7 @@ Freshness is layered, cheapest-first:
 `https://labs.google/fx/api/trpc/flow.projectInitialData?input={"json":{"projectId":"<id>","toolName":"PINHOLE"}}`):
 
 - Fires on **plain project load**, regardless of UI cohort — including the
-  [#174](https://github.com/ffroliva/gflow-cli/issues/174) full-page-library
+  #174 full-page-library
   shape and the agentic arm, because no UI interaction is involved.
 - **Complete, not paginated** at the scales observed: a 267-media project
   returned every asset in one 650 KB payload with zero pagination markers.
@@ -119,7 +119,7 @@ Freshness is layered, cheapest-first:
 - **Directly callable** on an authenticated browser context (cookies only, no
   navigation, no rendering): measured 458–610 ms per project. This is the
   cheap path for any bulk read of a project's media
-  ([#543](https://github.com/ffroliva/gflow-cli/issues/543)).
+  (#543).
 - The `media[]` item shape **differs from `batchGenerateImages`** (notably no
   `fifeUrl`), so `GeneratedImage.from_response_dict` does not parse it — use
   the `workflows[].metadata.primaryMediaId → displayName` join instead.
@@ -132,7 +132,7 @@ surfaces that support character entities (the tab set varies by mode), and a
 **Recentes** project dropdown. Facts that shape all automation:
 
 1. **The picker has its own active project** (the Recentes dropdown), which is
-   *not* the editor's project ([#287](https://github.com/ffroliva/gflow-cli/issues/287)):
+   *not* the editor's project (#287):
    `--project` navigates the editor only. gflow aligns the picker before every
    lookup (`_sync_picker_project`).
 2. **The grid is virtualized.** On a 267-asset project the scroller spans the
@@ -142,7 +142,7 @@ surfaces that support character entities (the tab set varies by mode), and a
    enumerate the library, and scroll-and-scan loops are both slow and
    WAF-noisy — this is why the #287-era scroll tiers were removed in v0.58.0.
 3. **Search indexes the caption, not the prompt** — searching prompt text
-   never matches ([#493 recon](https://github.com/ffroliva/gflow-cli/issues/493),
+   never matches (#493 recon,
    `ReferenceNotFoundError`).
 4. **The picker dialog exposes no accessible tree** (`aria_snapshot` returns a
    bare `dialog`): ARIA role+name matching cannot find tiles. Match tiles by
@@ -180,9 +180,9 @@ surfaces that support character entities (the tab set varies by mode), and a
   `catalog UUID → display name → picker search → exact-UUID tile → attach`,
   falling back to a verified local upload, else a typed error. See
   [REFERENCE_STRATEGIES.md](REFERENCE_STRATEGIES.md).
-- **Shipped**: `gflow doctor` ([#542](https://github.com/ffroliva/gflow-cli/issues/542))
+- **Shipped**: `gflow doctor` (#542)
   reports nameless/ghost rows; `gflow data sync --names`
-  ([#543](https://github.com/ffroliva/gflow-cli/issues/543)) reconciles the
+  (#543) reconciles the
   catalog from the listing endpoint; refresh-on-miss
-  ([#546](https://github.com/ffroliva/gflow-cli/issues/546)) heals a stale
+  (#546) heals a stale
   name mid-generation.

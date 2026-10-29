@@ -73,7 +73,7 @@ generic "file a bug".
 
 **Steps:**
 - [x] Add `remediation_hint` naming the new-library-UI A/B and linking
-      https://github.com/ffroliva/gflow-cli/issues/174 to both entity-attach raise sites
+      #174 to both entity-attach raise sites
       (`ENTITY_ATTACH_DRIFT_HINT` constant in `ui_automation_video.py`, imported image-side)
 - [x] Add `discovery={"entity_attach_context": "video" | "image"}` to the raises (telemetry)
 - [x] `KNOWN_ISSUES.md` § Open entry with the variant probe: "does Add Media open a

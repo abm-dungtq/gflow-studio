@@ -160,8 +160,8 @@ artefact was 0.74.0, which predates it — a named external blocker with a defin
 **The blocker is gone.** Read back from the published 0.75.0 description:
 
 ```
-published README:  <!-- mcp-name: io.github.ffroliva/gflow-cli -->
-server.json name:  io.github.ffroliva/gflow-cli          MATCH: True
+published README:  <!-- mcp-name: io.github.abm-dungtq/gflow-studio -->
+server.json name:  io.github.abm-dungtq/gflow-studio          MATCH: True
 ```
 
 What remains is not a blocker on this release but a tooling step: `mcp-publisher` is not installed

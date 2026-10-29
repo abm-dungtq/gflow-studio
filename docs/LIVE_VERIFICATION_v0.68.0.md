@@ -3,7 +3,7 @@
 **Feature:** `gflow update` — self-update through the installer that put gflow-cli here
 (`src/gflow_cli/update_check.py::run_update`, `src/gflow_cli/cli_update.py`) — and the #479
 once-a-day notice rendered as a stderr banner (`src/gflow_cli/cli.py::_print_update_notice`).
-PR [#668](https://github.com/ffroliva/gflow-cli/pull/668). The implementation plan and
+PR #668. The implementation plan and
 scenario table were folded into project memory at release time
 (`docs/superpowers/memory/windows-running-launcher-blocks-uv-upgrade.md`), per the doc-review
 skill; this file keeps the measurements.

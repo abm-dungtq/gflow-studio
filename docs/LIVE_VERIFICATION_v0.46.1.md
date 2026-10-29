@@ -1,7 +1,7 @@
 # Live Verification — v0.46.1
 
 **Date:** 2026-07-31
-**Feature under test:** classic count-setter survives Flow's `1x`→`x1` label rename ([#404](https://github.com/ffroliva/gflow-cli/issues/404), PR [#405](https://github.com/ffroliva/gflow-cli/pull/405))
+**Feature under test:** classic count-setter survives Flow's `1x`→`x1` label rename (#404, PR #405)
 **Verifier:** repo owner's Windows 11 workstation, profile `ffroliva` — the exact environment of the original incident bundles (`20260729T151458Z-f9c00656…`, `20260729T151827Z-4f4a6093…`)
 **Credit cost:** zero — image generation costs no Flow credits; the DOM recon was navigation-only.
 

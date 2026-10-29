@@ -1,7 +1,7 @@
 # Live Verification — v0.66.0 (issue #639, Flow's `flow.google.com` migration)
 
 **Date:** 2026-09-03 · **Account:** ffroliva@gmail.com · **Platform:** Windows 11, Chrome strategy (system Chrome)
-**Branch:** `bugfix/639-flow-google-com-migration` · **PR:** [#640](https://github.com/ffroliva/gflow-cli/pull/640)
+**Branch:** `bugfix/639-flow-google-com-migration` · **PR:** #640
 **Credits spent:** **0** — one Imagen image (images are credit-free; only Veo video spends) plus one read-only DOM probe.
 
 ## What had to be proven
@@ -86,7 +86,7 @@ With all three fix sites neutered, **exactly 9 tests fail** — one per claimed 
 ## Known limitation hit during verification, and how it was routed around
 
 A first `t2i` attempt died at **exit 3 / HTTP 401 on `project.createProject`** — open issue
-[#561](https://github.com/ffroliva/gflow-cli/issues/561), *not* this change: unmodified `develop`
+#561, *not* this change: unmodified `develop`
 was A/B'd and failed **identically** (same exit, same route). Passing an existing `--project` skips
 project creation and routes past it. `gflow project list` succeeded throughout, confirming the
 session itself was valid — the #561 signature exactly.

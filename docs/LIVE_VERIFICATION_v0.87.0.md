@@ -51,12 +51,12 @@ Runs on the release tree (`ffroliva`, `GFLOW_CLI_E2E_PROJECT` set for the projec
   `Network.getResponseBody`, the #1009/#1014 class). It failed on the MCP arm in the first
   pass, and on the CLI arm in the second, where the MCP arm passed. `migrated_upscale.py` is
   unchanged since v0.86.0, so this is not a regression; filed as
-  [#1027](https://github.com/ffroliva/gflow-cli/issues/1027). The first pass's filtered log
+  #1027. The first pass's filtered log
   does not name its other failures; every test in that batch passed when re-run.
 
 ## Verified after the tag, by the #1023 reporter
 
-- **Interactive `auth login` and Linux** (2026-10-22, [comment](https://github.com/ffroliva/gflow-cli/issues/1023#issuecomment-6341075836),
+- **Interactive `auth login` and Linux** (2026-10-22, comment,
   branch at `031c33a5`, Linux, real Chrome 155): `auth status` on a Google-only profile reported
   "Signed in to Google, but not to the Flow app" instead of the 410 error; an interactive
   `gflow auth login --browser chrome` completed with "Flow session verified", exit 0, and

@@ -251,7 +251,7 @@ See [CONFIGURATION.md](CONFIGURATION.md) for the full precedence chain.
 
 The Creative Director patterns — the five-component formula, the banned-keyword policy, and the
 domain-vocabulary libraries — are adapted from the **banana-claude** evaluation
-(PR [#202](https://github.com/ffroliva/gflow-cli/pull/202)) of Google's published Gemini
+(PR #202) of Google's published Gemini
 prompt-engineering guidance.
 
 ---

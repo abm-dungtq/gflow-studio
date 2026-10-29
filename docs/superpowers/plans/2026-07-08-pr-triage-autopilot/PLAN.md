@@ -3,7 +3,7 @@
 > **For agentic workers:** Run `/gflow:status --feature pr-triage-autopilot` to find the next
 > unchecked task. Implement one task at a time. Run `/gflow:check` before every commit.
 
-**Goal:** Implement an hourly `hermes-ops` autopilot that autonomously runs `/gflow:pr-council-review` against eligible external PRs on `ffroliva/gflow-cli` using a sandboxed Docker container, auto-posts reviews, and alerts via Telegram.
+**Goal:** Implement an hourly `hermes-ops` autopilot that autonomously runs `/gflow:pr-council-review` against eligible external PRs on `abm-dungtq/gflow-studio` using a sandboxed Docker container, auto-posts reviews, and alerts via Telegram.
 
 **Architecture:** 
 - `scripts/autopilot/pr_triage_gate.py` (Stage 0): Deterministic pre-filter verifying author, draft status, diff sizes, and scanning for obvious prompt injections.

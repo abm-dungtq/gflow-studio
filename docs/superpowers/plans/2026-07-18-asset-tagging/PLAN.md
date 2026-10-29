@@ -1,6 +1,6 @@
 # Asset Tagging (`@` Mentions) Implementation Plan
 
-> **✅ SHIPPED — v0.40.0 ([#344](https://github.com/ffroliva/gflow-cli/issues/344)).**
+> **✅ SHIPPED — v0.40.0 (#344).**
 > This plan is **complete and archived for historical reference**. The `@Name` mention feature
 > (image `t2i`/`i2i` character + media mentions; video `t2v`/`i2v`/`r2v` character mentions) is live
 > and documented in [CHARACTER.md](../../../CHARACTER.md), [REFERENCE_STRATEGIES.md](../../../REFERENCE_STRATEGIES.md),

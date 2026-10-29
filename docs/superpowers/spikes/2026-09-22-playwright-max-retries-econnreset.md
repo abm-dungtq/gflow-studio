@@ -1,6 +1,6 @@
 # Playwright `APIRequestContext.get(max_retries=…)` vs ECONNRESET — measured
 
-**Date:** 2026-09-22 · **Issue:** [#895](https://github.com/ffroliva/gflow-cli/issues/895)
+**Date:** 2026-09-22 · **Issue:** #895
 **Script:** [`scripts/dev/spike_playwright_max_retries.py`](../../../scripts/dev/spike_playwright_max_retries.py)
 **Raw result:** `scripts/dev/_spike_out/e4_playwright_max_retries.json` (gitignored)
 **Cost:** $0 — localhost only. No Flow account, no browser, no credits.

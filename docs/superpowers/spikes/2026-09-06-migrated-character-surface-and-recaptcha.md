@@ -62,7 +62,7 @@ not an observed failure. Measured on the same page pool:
 
 **The origin can mint; the pooled page is simply on the wrong route.** The mint runs on
 the bootstrap page, which after the handoff is the root grid. This is the mechanism
-behind [#692](https://github.com/ffroliva/gflow-cli/issues/692) — the reporter's bundle
+behind #692 — the reporter's bundle
 showed `route: "/"`, and `diagnostics.py` maps *both* hosts to
 `host_category: flow_app`, so the route is the only tell.
 

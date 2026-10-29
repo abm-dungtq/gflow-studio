@@ -76,8 +76,8 @@ create without the fix, **2 → 2** with it.
 **NOT verified:** the labs.google path for any of the seven anchors changed.
 **Blocker:** every account available on this machine has been migrated by Google, so no
 labs.google Flow session exists to drive; the labs branches are covered by unit tests only.
-Tracked on [#639](https://github.com/ffroliva/gflow-cli/issues/639) alongside the rest of the
-two-frontend matrix. Named as a blocker, not claimed. ([#703](https://github.com/ffroliva/gflow-cli/pull/703))
+Tracked on #639 alongside the rest of the
+two-frontend matrix. Named as a blocker, not claimed. (#703)
 
 ## The assembled artefact
 
@@ -134,7 +134,7 @@ same face and the same paper texture — not a generic figure.
   **Blocker:** all four exit 36 on the migrated host, and no unmoved account exists here —
   every profile on this machine has been moved, so the labs path cannot be driven at all.
   `gflow image t2i` was re-measured for this release and still exits 36
-  ([#639](https://github.com/ffroliva/gflow-cli/issues/639) tracks the migrated-frontend
+  (#639 tracks the migrated-frontend
   feature matrix). The reason is now known and recorded: the migrated project composer has
   no image-generation mode — its add menu is a media library (Scenes / Images / Videos /
   Upload media) — so this is a porting gap, not a regression.

@@ -5,9 +5,9 @@ description: "SonarCloud PR quality gate fails on new_security_hotspots_reviewed
 
 A green test/pyright run can still leave the PR's GitHub merge state `UNSTABLE` because the **SonarCloud quality gate** is a separate check. The condition that most often blocks a feature PR is **`new_security_hotspots_reviewed` (needs 100%)** — a single unreviewed hotspot fails the gate even when coverage/duplication/ratings all pass.
 
-**Diagnose** (token = `SONAR_TOKEN` in `.env.local`; project key `ffroliva_gflow-cli`; curl is blocked by the context-mode hook → use `ctx_execute` javascript `fetch` with `Authorization: Basic base64(token+":")`):
-- `GET /api/qualitygates/project_status?projectKey=ffroliva_gflow-cli&pullRequest=<N>` → lists each condition + which is ERROR.
-- `GET /api/hotspots/search?projectKey=ffroliva_gflow-cli&pullRequest=<N>&status=TO_REVIEW` → the offending hotspot key + file:line.
+**Diagnose** (token = `SONAR_TOKEN` in `.env.local`; project key `abm-dungtq_gflow-studio`; curl is blocked by the context-mode hook → use `ctx_execute` javascript `fetch` with `Authorization: Basic base64(token+":")`):
+- `GET /api/qualitygates/project_status?projectKey=abm-dungtq_gflow-studio&pullRequest=<N>` → lists each condition + which is ERROR.
+- `GET /api/hotspots/search?projectKey=abm-dungtq_gflow-studio&pullRequest=<N>&status=TO_REVIEW` → the offending hotspot key + file:line.
 
 **Resolve a verified false positive:** `POST /api/hotspots/change_status` with `hotspot=<key>&status=REVIEWED&resolution=SAFE&comment=<justification>` (HTTP 204 = success). Re-poll project_status → should be OK.
 

@@ -10,7 +10,7 @@
 
 ## The question
 
-[#780](https://github.com/ffroliva/gflow-cli/issues/780) opens with a claim, and PR #781
+#780 opens with a claim, and PR #781
 builds three gates on it:
 
 > Google's glue cookie banner (`glue-cookie-notification-bar`) sits fixed at the viewport
@@ -175,7 +175,7 @@ The dismissal earns its place and should land. The gates built *around* it are a
 question: the hit-test gate refuses on a covered submit, which is the state measured here,
 but PR #781 also reports the covering element's raw `id` and `className` into a
 user-facing error, which is the data
-[#776's](https://github.com/ffroliva/gflow-cli/issues/776) closed allowlist exists to keep
+#776's closed allowlist exists to keep
 out of one.
 
 ## Related

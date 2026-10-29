@@ -108,7 +108,7 @@ is structural, so no locale can hide it.)
 > **This result turned a `predict` GO into a STOP.** The proposal it was gating was
 > "port #593's overlay guard to the migrated driver". Four of five personas returned
 > GO/CAUTION on the mechanics; the Devil's Advocate returned **STOP on the premise**,
-> having found [#752](https://github.com/ffroliva/gflow-cli/issues/752) finding #7 —
+> having found #752 finding #7 —
 > which predicted #776's symptom at #776's function before it was filed, and whose cause
 > (a mid-run agent-mode flip) touches neither `body{pointer-events}` nor the hit test. A
 > guard built on the overlay would have reported the wrong cause with confidence. The

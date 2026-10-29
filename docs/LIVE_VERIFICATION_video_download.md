@@ -14,7 +14,7 @@
 | | |
 |---|---|
 | Branch | `feature/video-download-cli` |
-| PR | [#36](https://github.com/ffroliva/gflow-cli/pull/36) |
+| PR | #36 |
 | Local version | `0.6.0a6` (post-v0.7.0; pre-next-bump) |
 | Profile | `ffroliva` (real-browser Chrome strategy — required per project memory `real-browser-auth-mandatory.md`) |
 | Profile dir | `C:\Users\ffrol\AppData\Local\ffroliva\gflow-cli\profile_ffroliva` |

@@ -1,7 +1,7 @@
 # Live Verification — v0.46.0
 
 **Date:** 2026-07-28
-**Feature under test:** provider-agnostic prompt-tools transport ([#387](https://github.com/ffroliva/gflow-cli/issues/387), PR [#400](https://github.com/ffroliva/gflow-cli/pull/400))
+**Feature under test:** provider-agnostic prompt-tools transport (#387, PR #400)
 **Verifier:** repo owner, local Windows 11 workstation
 **Credit cost:** zero — the prompt tools call an LLM endpoint, never Flow's generation API.
 

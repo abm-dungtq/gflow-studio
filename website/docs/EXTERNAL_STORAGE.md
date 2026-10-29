@@ -50,7 +50,7 @@ With a cloud storage URI, `gflow video -o/--output`, `gflow video chain`,
 `output` cannot work on either host: each needs the clip as a local file, and the
 clip is a bucket object. gflow refuses that combination before submitting, with exit 11
 (an MCP configuration error), so nothing is billed
-([#1008](https://github.com/ffroliva/gflow-cli/issues/1008)). Leave the storage URI unset
+(#1008). Leave the storage URI unset
 for those runs, or drop the option and fetch the clip from the bucket.
 
 `<ext>` is corrected from the actual bytes before upload. For example, if Flow

@@ -211,5 +211,5 @@ fix it on its own; that was tried and the failures were identical.
 | Windows profile mounted into Linux | ❌ **not run** — expected to fail on DPAPI cookie decryption, which would be a portability limit, not anti-automation |
 
 If you run the sign-in arm, please report what happened on
-[#822](https://github.com/ffroliva/gflow-cli/issues/822) either way. A failure is as useful as a
+#822 either way. A failure is as useful as a
 success, provided it names what it observed.

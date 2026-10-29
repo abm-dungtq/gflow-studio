@@ -106,7 +106,7 @@ video `@Name` exits 29 because the character catalog cannot be read on that host
   carries media at one slot and characters at another. It must hold exactly the
   requested local references plus the committed character: one missing or one extra
   aborts the submit before Flow generates anything.
-- **An earlier image of the same project rides in place too ([#995](https://github.com/ffroliva/gflow-cli/issues/995)).**
+- **An earlier image of the same project rides in place too (#995).**
   `--ref <uuid>` (and an MCP image task's `refs`) is referenced through the same picker
   path as `batch:N`, with no upload, when the local catalog records that image in the
   `--project` being generated in and kept its Flow caption (the default

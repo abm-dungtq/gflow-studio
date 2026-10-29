@@ -5,7 +5,7 @@
 - **Profile / project:** `denon82` · `4ccb3222-…` — **the account's own project**
 - **Cost:** $0 — five navigations, no generation
 - **Raw:** `scripts/dev/_spike_out/about_redirect_stability_20260911_141153.json` (gitignored)
-- **Refs:** [#756](https://github.com/ffroliva/gflow-cli/issues/756)
+- **Refs:** #756
 
 ## The question the previous run left open
 

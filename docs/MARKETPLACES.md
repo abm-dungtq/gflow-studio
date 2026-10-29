@@ -4,10 +4,8 @@ Every place you can install or find gflow-cli, and **what each one actually give
 channels differ more than they look: some hand you the whole CLI, some only the MCP server, and
 one of them hands you a container that starts but cannot generate anything.
 
-> **This page answers "what do I get?".** For whether a listing has been submitted, who is
-> reviewing it, and what is blocked, see [DISTRIBUTION.md](DISTRIBUTION.md) — the maintainer's
-> operational ledger. Keeping those two questions in separate files is deliberate: status rots
-> weekly, what a channel delivers does not.
+> **This page answers "what do I get?".** It lists what each channel delivers, not whether a
+> listing has been submitted.
 
 ## The short version
 
@@ -125,7 +123,6 @@ Worth stating plainly, because each of these is a reasonable thing to expect and
   artifact, not a product.
 - **A Docker MCP Catalog entry, an Anthropic connector, or a ChatGPT app.** All three need
   something we cannot supply: shareable test credentials, an endpoint we own, or both.
-  [DISTRIBUTION.md](DISTRIBUTION.md) records the specific reason per channel.
 
 ## Verifying a channel is really us
 

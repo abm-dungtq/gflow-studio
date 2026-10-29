@@ -5,7 +5,7 @@
 - **Profile:** `denon82`, the account that reproduced `/about` on `gflow project create` on 2026-09-20 (#888)
 - **Cost:** $0. Each run makes three navigations and one click, and the script creates and submits nothing. A separate `gflow project create` confirmation at the end created one empty project.
 - **Raw:** `scripts/dev/_spike_out/about_cta_recovery_20260923_{123025,144105,144516}.json` plus screenshots. The file names use local time (UTC+1). The files are gitignored.
-- **Refs:** [#881](https://github.com/ffroliva/gflow-cli/pull/881), [#888](https://github.com/ffroliva/gflow-cli/issues/888), [#756](https://github.com/ffroliva/gflow-cli/issues/756), [#902](https://github.com/ffroliva/gflow-cli/issues/902)
+- **Refs:** #881, #888, #756, #902
 
 ## The question
 

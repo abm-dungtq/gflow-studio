@@ -8,10 +8,10 @@ generations; images are daily-capped, not billed — see
 
 `_intercept_reference_entities` strips character entities the caller did not ask
 for, so a "poisoned" entity left in the Flow composer cannot smuggle itself into
-an unrelated generation. [#615](https://github.com/ffroliva/gflow-cli/issues/615)
+an unrelated generation. #615
 reported that it had never run.
 
-[PR #618](https://github.com/ffroliva/gflow-cli/pull/618) fixes two causes: the
+PR #618 fixes two causes: the
 route glob could not match the real namespaced endpoint, and registration moved
 from `page.route` to `page.context.route`. It was held unmerged on one question
 no offline test can answer:
@@ -24,7 +24,7 @@ no offline test can answer:
 
 The guard used to log **only** when it stripped something. "Never ran" and "ran,
 nothing to strip" were byte-identical silence, so no run could distinguish them.
-[PR #637](https://github.com/ffroliva/gflow-cli/pull/637) adds
+PR #637 adds
 `ui_automation.batch_request_intercepted`, emitted on every intercepted request
 from a `finally` — every exit, including the parse-error branch. **Absence of that
 event is now evidence**, which is what made this an experiment rather than an
@@ -80,7 +80,7 @@ Note the **video** guard was equally dead. #615 names only the image endpoint;
 
 - **Only the browser-driven path is covered.** Direct-wire routes issued through
   Playwright's `APIRequestContext` are not routable at all and bypass the guard
-  structurally — [#619](https://github.com/ffroliva/gflow-cli/issues/619). Harmless
+  structurally — #619. Harmless
   today (no direct-wire route sends `referenceEntities`) but it is fail-open by
   construction, and any claim that "the guard protects generations" carries that
   footnote.
@@ -88,5 +88,5 @@ Note the **video** guard was equally dead. #615 names only the image endpoint;
   (`ui_automation_video.py`) shares the same context manager and the same matcher,
   which the offline check covers, but it was not exercised live here.
 - **One account, one cohort, one locale** (`denon82`, classic UI, `hl=en`). Flow's
-  UI has an A/B history ([#174](https://github.com/ffroliva/gflow-cli/issues/174));
+  UI has an A/B history (#174);
   a different cohort could delegate differently.

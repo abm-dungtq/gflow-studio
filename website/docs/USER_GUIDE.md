@@ -424,7 +424,7 @@ Your Google plan includes a finite Veo credit allowance — the video journeys s
 
 Check the current Veo video-credit balance for the selected profile. gflow opens flow.google.com
 in the profile's browser and reads the balance the app itself loads, the number in Flow's
-account menu ([#795](https://github.com/ffroliva/gflow-cli/issues/795)). Nothing is clicked and
+account menu (#795). Nothing is clicked and
 nothing is spent:
 
 ```bash

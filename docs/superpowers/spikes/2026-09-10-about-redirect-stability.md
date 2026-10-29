@@ -3,7 +3,7 @@
 **Date:** 2026-09-10 · **Profile:** `ci-probe` · **Cost:** $0 (no generation)
 **Script:** [`scripts/dev/spike_about_redirect_stability.py`](../../../scripts/dev/spike_about_redirect_stability.py)
 **Raw:** `scripts/dev/_spike_out/about_redirect_stability_20260910_102147.json` (gitignored)
-**Refs:** [#756](https://github.com/ffroliva/gflow-cli/issues/756)
+**Refs:** #756
 
 ## Why it was asked
 

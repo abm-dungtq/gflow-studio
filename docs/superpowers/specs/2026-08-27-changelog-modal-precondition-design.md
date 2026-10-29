@@ -1,7 +1,7 @@
 # Changelog announcement modal — precondition design brief (#593)
 
 > **Status:** council input, pre-implementation. No code written yet.
-> **Date:** 2026-08-27 · **Issue:** [#593](https://github.com/ffroliva/gflow-cli/issues/593)
+> **Date:** 2026-08-27 · **Issue:** #593
 > **Evidence:** live one-shot capture on `ffroliva`, 2026-08-27 21:16 BST.
 
 This brief exists to be reviewed, not merged. It states what was **measured**, the

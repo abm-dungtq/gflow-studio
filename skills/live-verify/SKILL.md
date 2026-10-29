@@ -15,7 +15,7 @@ description: >
 gflow-cli reverse-engineers a blackbox: Google Flow. Offline checks (`ruff`, `pyright`,
 unit/BDD tests) verify gflow-cli's own code does what it's supposed to; they cannot verify
 Flow still behaves the way it was captured, because Flow is external and changes without
-notice (see [#174](https://github.com/ffroliva/gflow-cli/issues/174)). This gate enforces two
+notice (see #174). This gate enforces two
 things, both evidence-based (no claim without a fresh verification artifact — see the
 `superpowers:verification-before-completion` skill):
 

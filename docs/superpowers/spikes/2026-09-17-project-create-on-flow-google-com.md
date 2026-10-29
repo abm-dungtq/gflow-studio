@@ -5,7 +5,7 @@
 profile was held by another browser, and the lease was respected)
 **Cost:** $0 — two empty projects created on `ci-probe`, no generation
 **Harness:** `scripts/dev/spike_create_project_401.py`, `scripts/dev/spike_migrated_create_project.py`
-**Issues:** [#864](https://github.com/ffroliva/gflow-cli/issues/864) (bundle) · #561 · #863 · #639
+**Issues:** #864 (bundle) · #561 · #863 · #639
 
 ## Why this spike exists
 

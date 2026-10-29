@@ -1,14 +1,14 @@
 # The Format button was fixed, and `--format-prompt` still did nothing
 
-> **RESOLVED in the same PR ([#729](https://github.com/ffroliva/gflow-cli/pull/729)).** This
+> **RESOLVED in the same PR (#729).** This
 > records the measurement that found the second fault, not a standing limitation.
 > `format_character_prompt` now polls the composer until the text actually changes, and the
 > live e2e passes (`1 passed in 406.20s`, `denon82`, 2026-09-07) asserting the **observed
 > rewrite** rather than the click. Kept because the measurement is what makes the fix
 > defensible, and because the failure class it names outlived it.
 
-**Date:** 2026-09-07 · **Follows:** [#727](https://github.com/ffroliva/gflow-cli/issues/727),
-[#729](https://github.com/ffroliva/gflow-cli/pull/729) ·
+**Date:** 2026-09-07 · **Follows:** #727,
+#729 ·
 **Account:** `denon82` (migrated `flow.google.com`) · **Cost:** `$0` — never submits, no
 image, no video, no credit.
 

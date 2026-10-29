@@ -1,7 +1,7 @@
 # Live Verification — v0.20.1
 
 Feature under test:
-- **Aspect ratio overrides in Agentic & Classic cohorts** ([#193](https://github.com/ffroliva/gflow-cli/issues/193)).
+- **Aspect ratio overrides in Agentic & Classic cohorts** (#193).
 - **`GFLOW_CLI_PREFER_CLASSIC`** config option (`prefer_classic` setting).
 
 ## Live Verification Status

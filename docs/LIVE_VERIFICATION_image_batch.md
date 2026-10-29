@@ -188,7 +188,7 @@ _(filled in commit #5b's amend OR a follow-up edit — the e2e re-run under the 
 ## Post-refactor live verification — Phase 7 (PARTIAL PASS, 2026-05-22)
 
 **Status:** PARTIAL — race-condition fix verified; count-tab selector
-verification blocked by [Issue #24](https://github.com/ffroliva/gflow-cli/issues/24)
+verification blocked by Issue #24
 (locale-agnostic selectors).
 
 ### What was verified ✅
@@ -213,7 +213,7 @@ verification blocked by [Issue #24](https://github.com/ffroliva/gflow-cli/issues
   via the user's Flow gallery and via the `image_batch.submission_attempt`
   structlog events sharing one `project_id` per batch.
 
-### What's blocked by [#24](https://github.com/ffroliva/gflow-cli/issues/24) ⏸️
+### What's blocked by #24 ⏸️
 
 - **Count selector read-back fails on non-English locales.** The user's
   browser runs Flow in Portuguese (`labs.google/fx/pt/tools/flow`). Count
@@ -250,7 +250,7 @@ The v3-3 stay-mounted refactor lands the **core bug fix** for the
 `--same-project=1` no-op: all prompts of a batch now actually share one
 Flow project, the editor page stays mounted, and per-prompt responses are
 captured correctly with race-immune detach semantics. The remaining
-gap is a pre-existing locale-portability issue ([#24](https://github.com/ffroliva/gflow-cli/issues/24))
+gap is a pre-existing locale-portability issue (#24)
 that was previously unobserved because earlier verification ran on
 English-locale profiles. The branch is ready for review; a Phase 7b
 follow-up will close the loop once #24 lands.

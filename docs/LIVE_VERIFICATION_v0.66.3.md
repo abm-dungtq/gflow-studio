@@ -5,7 +5,7 @@
 
 ## What had to be proven
 
-One fix ([#651](https://github.com/ffroliva/gflow-cli/issues/651)): the account locale must come
+One fix (#651): the account locale must come
 from `<html lang>` **after** Flow's app has set it, not from the `en` shell it serves first.
 
 ## Layer 1 — the defect, measured (this is what chose the design)
@@ -69,7 +69,7 @@ repeat it one version later.
 - `1663 passed / 3 skipped` across `tests/api`, `tests/features`, `tests/mcp`, `tests/worker`.
 - `ruff check` / `ruff format --check` clean on `src tests`; `pyright src` at the `develop`
   baseline; repo hygiene, doc links, website-docs PII and the `website/docs` mirror all green.
-- CI on [#652](https://github.com/ffroliva/gflow-cli/pull/652): **15/15**, including the
+- CI on #652: **15/15**, including the
   SonarCloud quality gate.
 
 ## Layer 5 — MCP

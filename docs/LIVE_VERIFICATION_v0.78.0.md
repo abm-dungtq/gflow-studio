@@ -9,8 +9,8 @@ release is exercised against the real thing, or its blocker is named. Nothing is
 "unverified" that could have been verified — see AGENTS.md § The Iron Law.
 
 Profiles: `ci-probe` (served `flow.google.com`, app mounts, labs session token present) and
-`ffroliva` (aspect enumeration). Issue: [#864](https://github.com/ffroliva/gflow-cli/issues/864),
-closing [#561](https://github.com/ffroliva/gflow-cli/issues/561).
+`ffroliva` (aspect enumeration). Issue: #864,
+closing #561.
 
 ---
 
@@ -112,7 +112,7 @@ surface. Named here rather than left blank.
 
 ## 8. `video i2v --initial-frame <local file>` on the migrated host — VERIFIED
 
-The defect this release fixes ([#860](https://github.com/ffroliva/gflow-cli/issues/860))
+The defect this release fixes (#860)
 made every i2v run on a `flow.google.com` account exit 32 *before* submit: the Frames
 picker renders a `mat-icon` ligature next to the file name, a locator reads both nodes as
 one string, and the anchored match could never hold. Verified by running the real command
@@ -135,7 +135,7 @@ picker lists no asset named 's1-cbbc098b.jpg'"* while its own diagnostic lists
 
 ## 9. Flow's promo modal — NOT OBSERVED this cycle, stated rather than implied
 
-[#859](https://github.com/ffroliva/gflow-cli/issues/859) moves the dismissal ahead of the
+#859 moves the dismissal ahead of the
 first click. The dismissal code path ran on **every** run in section 8, but **no promo
 modal appeared on any of them**, so no dismissal was observed and nothing here proves the
 ordering fix. The modal is served on a freshly loaded editor at Flow's discretion; it
@@ -149,7 +149,7 @@ than folded into section 8's green, which is what the ledger is for.
 
 ## 10. `gflow docs` — VERIFIED offline, which is the whole contract
 
-[#861](https://github.com/ffroliva/gflow-cli/issues/861) is a read-only, no-network,
+#861 is a read-only, no-network,
 no-account command, so "live" here means *from the built artefact, with no checkout*.
 
 | Layer | Evidence |
@@ -166,12 +166,12 @@ no-account command, so "live" here means *from the built artefact, with no check
 - **An account served `labs.google`.** **Blocker: no account.** All four profiles here are
   served flow.google.com (`labs.google/fx/tools/flow` answers HTTP 308 on every one), so no
   profile exists that could exercise the labs arm. It is unchanged and keeps its own error
-  path. Anyone holding such an account can settle it — see [#639](https://github.com/ffroliva/gflow-cli/issues/639).
+  path. Anyone holding such an account can settle it — see #639.
 - **An `/about`-served account (`denon82`).** **Blocker: the account has no Flow access** —
-  its app never mounts, which is [#756](https://github.com/ffroliva/gflow-cli/issues/756), not
+  its app never mounts, which is #756, not
   something this release can drive. Project creation there is expected to fail with the
   existing landing diagnosis.
 - **A non-`en` locale.** **Blocker: no account** in a non-`en` locale is available here. The
   anchors are structural by construction (custom element + `mat-icon` ligature, no display
   text), which is what the locale-invariance rule in AGENTS.md requires; tracked with the rest
-  of the migrated-host matrix in [#639](https://github.com/ffroliva/gflow-cli/issues/639).
+  of the migrated-host matrix in #639.

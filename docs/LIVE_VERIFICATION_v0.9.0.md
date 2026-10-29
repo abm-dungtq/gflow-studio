@@ -68,7 +68,7 @@
 
 - `test_data_list_db_missing_exits_16` — invokes CLI against a non-existent DB path; `_safe_db()` context manager catches the `sqlite3.OperationalError` and re-raises as `DataStoreError`; the CLI's `@_guard` decorator maps it to `click.exceptions.Exit(16)`.
 
-> **Note (post-v0.9.0, unreleased):** [#88](https://github.com/ffroliva/gflow-cli/issues/88) inverted this contract on `develop` — `_safe_db()` now routes through `DataStore.open()`, which auto-creates the file and applies migrations. A missing-DB `gflow data list` returns exit **0** with an empty table (the test was renamed to `test_data_list_db_missing_exits_0_with_empty_rows`). The exit-16 path still triggers for actual `DataStoreError` / `DataMigrationError` failures (permission denied, corrupt schema, write-side recorder errors).
+> **Note (post-v0.9.0, unreleased):** #88 inverted this contract on `develop` — `_safe_db()` now routes through `DataStore.open()`, which auto-creates the file and applies migrations. A missing-DB `gflow data list` returns exit **0** with an empty table (the test was renamed to `test_data_list_db_missing_exits_0_with_empty_rows`). The exit-16 path still triggers for actual `DataStoreError` / `DataMigrationError` failures (permission denied, corrupt schema, write-side recorder errors).
 
 ## Surface 6 — Paid surfaces (image / video) — carry-forward verification
 

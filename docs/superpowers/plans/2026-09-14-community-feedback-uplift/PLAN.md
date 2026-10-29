@@ -206,7 +206,7 @@ Outline — detailed tasks after `/gflow:scenario`:
       with `exc_type` (class name only); the failure that matters already raises.
 - [ ] `docs/USAGE.md`: a first-run path for `video chain`, `scene`, `movie`.
 - [ ] Present `gflow data` as the generation ledger (operations and `unit_cost` are already recorded).
-- [ ] Say `ffroliva/gflow-cli` where the bare name is ambiguous (README, catalogs, posts).
+- [ ] Say `abm-dungtq/gflow-studio` where the bare name is ambiguous (README, catalogs, posts).
 
 ## WS3 — Opt-in sticky defaults
 
@@ -338,7 +338,7 @@ server), then TDD. The catalog is docs, but every listing must be verified live,
       `.claude-plugin/marketplace.json` and `.codex-plugin/plugin.json` are checked against it by
       `scripts/ci/check_repo_hygiene.py` (which already enforces version lockstep), so a release bump
       cannot leave a manifest behind.
-- [ ] **Live install check** in a clean Claude Code config: `/plugin marketplace add ffroliva/gflow-cli`
+- [ ] **Live install check** in a clean Claude Code config: `/plugin marketplace add abm-dungtq/gflow-studio`
       → `/plugin install gflow@gflow-cli` → skill listed → MCP server listed. Evidence in the PR.
 - [ ] **Keep existing channels in sync:** `.codex-plugin/plugin.json` (Codex) and `server.json` /
       MCP registry metadata if present; one version source.

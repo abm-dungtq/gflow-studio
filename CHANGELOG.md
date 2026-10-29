@@ -112,7 +112,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **A video whose submit reply Chrome lost now finishes with its clip on flow.google.com**
-  ([#1112](https://github.com/ffroliva/gflow-cli/issues/1112)). About 1 in 7 r2v submits
+  (#1112). About 1 in 7 r2v submits
   lost the reply body while Flow made and billed the clip, and gflow ended with exit 9. A
   run that uploaded a file (`--ref`, `--initial-frame`, `--end-frame`) now picks its clip
   out of Flow's status replies by that upload's id, or out of the project listing in a
@@ -120,7 +120,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   r2v runs upload nothing unique, so they still exit 9 (`retryable: false`).
 
 - **Reference-to-video with a character now runs on flow.google.com**
-  ([#723](https://github.com/ffroliva/gflow-cli/issues/723)). Local-file `video r2v` with
+  (#723). Local-file `video r2v` with
   `--reference-entity` paired with `--reference-entity-name` is served on the migrated host:
   the character is attached through the composer's `@` picker, its chip is verified before
   the billed click, and the submit body must carry its entity id beside every uploaded
@@ -129,10 +129,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   2026-09-07; on 2026-10-26 an entity-bound r2v run completed end to end through the stock
   observer. An entity id without a name now exits 36 with that reason instead of failing
   later on a chip-count mismatch. Text-to-video with a character stays refused (exit 36,
-  [#716](https://github.com/ffroliva/gflow-cli/issues/716)); image-to-video with a character is refused the same way.
+  #716); image-to-video with a character is refused the same way.
 
 - **MCP `wait=false` generations now run**
-  ([#1097](https://github.com/ffroliva/gflow-cli/issues/1097)). Before, `gflow_generate_image`
+  (#1097). Before, `gflow_generate_image`
   and `gflow_generate_video` with `wait=false` saved the job and returned a `task_id`, but no
   gflow command ever ran it: `tasks/get` said `working` forever. The job now runs in the
   background of the server that accepted it, one job at a time per profile within that
@@ -148,7 +148,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **MCP `tasks/get` and `tasks/cancel` now speak SEP-2663**, the Tasks extension the server
-  declares ([#1102](https://github.com/ffroliva/gflow-cli/issues/1102)). They used the shapes
+  declares (#1102). They used the shapes
   of the older 2025-11-25 tasks spec. `tasks/get` now sends `ttlMs` (null: rows do not
   expire) instead of `ttl: 3600`, and carries the finished tool result in a `result` field. A
   generation that failed now reads `completed` with `result.isError: true` instead of
@@ -158,12 +158,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Dependencies:** `pydantic-settings` 2.16.0 → 2.16.1, `platformdirs` 4.13.3 → 4.13.5,
   `fastapi` 0.143.2 → 0.161.1, and the dev tool `ruff` 0.17.1 → 0.17.2
-  ([#1104](https://github.com/ffroliva/gflow-cli/pull/1104)).
+  (#1104).
 
 ### Security
 
 - **The agent-only composer reads a credit confirmation before approving it**
-  ([#988](https://github.com/ffroliva/gflow-cli/issues/988)). On an account Flow serves the
+  (#988). On an account Flow serves the
   agent-only composer, one confirmation can bill several generations, and gflow used to
   approve the first one without reading it, so an agent that queued too much was caught only
   after the credits were spent. gflow now reads the numbers in the confirmation's title and
@@ -178,7 +178,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **`gflow run --resume` picks up where a run stopped**
-  ([#934](https://github.com/ffroliva/gflow-cli/issues/934)). With the same config,
+  (#934). With the same config,
   project and output folder, a row whose images are already on disk and recorded in the
   local catalog as that project's is shown as `RESUMED` and not generated again, and a
   `batch:N` child references it in place. Before, a re-run regenerated every row, parents
@@ -188,7 +188,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **`image i2i --ref <file>` no longer uploads the same file again on every run**
-  ([#772](https://github.com/ffroliva/gflow-cli/issues/772)). On flow.google.com, a loop
+  (#772). On flow.google.com, a loop
   over prompts with one `--ref` file left one copy of that image in the project's library
   per run. The first upload is now recorded in the local catalog, and a later run in the
   same project with the same file (same path, same bytes) mentions that image in place.
@@ -197,7 +197,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   project still goes through the editor's own filename dedup (#314).
 
 - **A corrupt cookie store is no longer reported as a network problem**
-  ([#796](https://github.com/ffroliva/gflow-cli/issues/796)). When a profile's Chrome
+  (#796). When a profile's Chrome
   cookie database could not be read as a database, `gflow auth status` said "check
   network connectivity". It now names the cookie store and says to close any Chrome
   window using the profile and run `gflow auth login` again. The MCP `gflow_auth_status`
@@ -213,7 +213,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [MCP](docs/MCP.md) (#481).
 
 - **`movie run` refuses costume `variants` on an entity character**
-  ([#724](https://github.com/ffroliva/gflow-cli/issues/724)). A variant appends a text
+  (#724). A variant appends a text
   delta to the prompt, but an `identity = "entity"` character's body reference already
   fixes one outfit, so the two contradicted each other inside one generation with no
   telling which would win. Such a manifest used to run; it is now a configuration error
@@ -222,23 +222,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `identity = "text"` characters are unchanged.
 
 - **An output folder gflow cannot write is exit 11, not "Unexpected error"**
-  ([#1091](https://github.com/ffroliva/gflow-cli/issues/1091)). After a successful
+  (#1091). After a successful
   generation, a failed local write (for example `--out` pointing at a protected folder)
   kept the media id (#1035) but then ended in the catch-all, with exit 1 and a "file a
   bug" message. It now ends as a configuration error (exit 11) that says the asset is
   still in the Flow project. This covers image downloads, upscale and extend exports and
   scene output, on both the CLI and MCP; a generated video clip keeps its exit 6
-  ([#1003](https://github.com/ffroliva/gflow-cli/issues/1003)).
+  (#1003).
 
 - **A credit shortfall on flow.google.com is recognised in every UI language, and only
-  when Flow shows it** ([#745](https://github.com/ffroliva/gflow-cli/issues/745)). The
+  when Flow shows it** (#745). The
   warning anchor had an English `aria-label` half, which Flow translates; it is now the
   warning button's class alone (the measured element carries both). And the check now
   requires the warning to be visible, so a hidden one Flow keeps mounted cannot turn a
   real selector drift into "top up your credits" (exit 37).
 
 - **Selector drift is watched again, on flow.google.com**
-  ([#1083](https://github.com/ffroliva/gflow-cli/issues/1083)). The nightly GitHub
+  (#1083). The nightly GitHub
   `selector-probe` workflow loaded the labs.google editor, which redirects to
   flow.google.com for every account we hold, so it failed as "no recognizable editor" on
   every run from 2026-08-21 and checked nothing. The selector registry gains a
@@ -248,7 +248,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   measured reason (labs.google serves no session token) instead of reading as RED.
 
 - **The flow.google.com reference-to-video chip-count refusal states the numbers it
-  compared** ([#745](https://github.com/ffroliva/gflow-cli/issues/745)). The guard counts
+  compared** (#745). The guard counts
   image references and characters together, but the message printed only the image
   count, so a mismatch caused by a character read as "1 requested but 1 on the prompt".
   It now reads, for example, "1 image reference(s) + 1 character(s) = 2 chip(s) requested
@@ -257,7 +257,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **A signed media URL that answers an HTTP error is a failed download, exit 6, not
-  exit 7** ([#941](https://github.com/ffroliva/gflow-cli/issues/941), part 2). After Flow
+  exit 7** (#941, part 2). After Flow
   reports a clip done, an error status on its download link (an expired link, for example)
   used to raise `WireFormatError` (exit 7) and leave the clip `pending` in the catalog. It
   now raises `MediaDownloadError` (exit 6, `retryable: false`) naming the clip, so the
@@ -269,7 +269,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **An advisory CI check for what a change silently removes**
-  ([#713](https://github.com/ffroliva/gflow-cli/issues/713)). `scripts/ci/check_deletions.py`,
+  (#713). `scripts/ci/check_deletions.py`,
   run by the Governance advisory workflow, warns when a Markdown doc under `docs/` or at the root loses far more lines than
   it gains (more than 50 net and 3x), and lists every tracked file still referencing a path the
   PR deletes (e.g. a Dependabot `directory:` entry). It never fails the build.
@@ -277,40 +277,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **A redirect to flow.google.com/about now names the one measured cause**
-  ([#1080](https://github.com/ffroliva/gflow-cli/pull/1080), superseding [#881](https://github.com/ffroliva/gflow-cli/pull/881); [#902](https://github.com/ffroliva/gflow-cli/issues/902)).
+  (#1080, superseding #881; #902).
   Exit 31 used to say only "open the project in a browser". On the account that
   reproduces it, the cause was Google asking the account to "Confirm it's you" while its
   cookies were healthy; the hint now says to run `gflow auth login`, which waits on that
   check. The exit code and `retryable: false` are unchanged.
 
 - **Upscaling an image right after generating it no longer fails as selector drift**
-  ([#1067](https://github.com/ffroliva/gflow-cli/issues/1067)). Flow lists a just-made
+  (#1067). Flow lists a just-made
   tile on the project grid only after a reload, so the upscale waited 30 s on a page that
   could never show it and ended in exit 23. It now reloads the grid every 10 s within the
   same budget: three grid loads for an image upscale, two for a video upscale (the video
   reload is covered offline; the live run was the image upscale).
 
 - **An image whose reply Chrome loses is still returned** on flow.google.com
-  ([#1075](https://github.com/ffroliva/gflow-cli/issues/1075)). Flow made the image every
+  (#1075). Flow made the image every
   time; only the submit reply's body was unreadable, and the run ended in exit 9. gflow
   now reads the new tile off the project grid and downloads it. When the grid does not
   show exactly the requested number of new images, the run still stops with exit 9, now
   naming the project page to check.
 
 - **A hidden model picker on flow.google.com is refused instead of trusted**
-  ([#788](https://github.com/ffroliva/gflow-cli/issues/788)). When the picker was in the
+  (#788). When the picker was in the
   page but hidden (an agent-mode screen), gflow read its text, took the requested model as
   already selected, and went on to generate with whatever Flow had bound, billing it.
   Image and video runs now stop with exit 23 before submitting, naming the hidden picker.
 
 - **An image Flow refuses on upload is reported as declined, not as a broken reply**
-  ([#755](https://github.com/ffroliva/gflow-cli/issues/755)). When Flow answers an upload
+  (#755). When Flow answers an upload
   with its INVALID_ARGUMENT refusal (measured for a 1x1 PNG), the error now says Flow
   declined the image and suggests a normal-sized one, instead of "answered 200 without a
   media id". The exit code (27) is unchanged.
 
 - **A successful `character create` keeps the character's id and name in the local
-  catalog** ([#737](https://github.com/ffroliva/gflow-cli/issues/737)). The completion
+  catalog** (#737). The completion
   record replaced the whole metadata column, so succeeded rows kept the voice and media
   ids but lost which character they belonged to (0 of 104 rows on one machine). The
   `entity_id` and `name` written when the create started are now carried over.
@@ -319,13 +319,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **MCP `gflow_list_models`** ([#883](https://github.com/ffroliva/gflow-cli/issues/883)).
+- **MCP `gflow_list_models`** (#883).
   MCP clients can now read the model catalog that `gflow models --json` prints (names,
   Flow menu labels, accepted aliases, reference caps, durations, aspects, tiers) instead
   of hard-coding one. It needs no profile or browser and spends nothing.
 
 - **`GFLOW_CLI_PROJECT` sets a default project**
-  ([#1039](https://github.com/ffroliva/gflow-cli/issues/1039), reported by @error-Sench).
+  (#1039, reported by @error-Sench).
   Every generation run without `--project` used to create a new Flow project, so a loop
   of `image t2i` calls left one project per call. Set `GFLOW_CLI_PROJECT=<id>` (in the
   environment or `.env`) and `image t2i`/`i2i`, `video t2v`/`i2v`/`r2v`, `gflow run`
@@ -337,7 +337,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   refused before a browser starts (exit 2), because a project belongs to one account.
 
 - **`gflow models` shows the name Flow's menu uses**
-  ([#1038](https://github.com/ffroliva/gflow-cli/issues/1038), reported by @error-Sench).
+  (#1038, reported by @error-Sench).
   Each image model now has a `label` in the table and in `--json`: Nano Banana 2.1,
   Nano Banana Pro, Nano Banana 2 Lite. `NARWHAL`'s label also names labs' Nano Banana 2,
   and Imagen 4 is marked as no longer in Flow's menu. `--model nano2.1` and `nano-2.1`
@@ -349,18 +349,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **A rejected upload (exit 27) now writes an incident bundle**
-  ([#770](https://github.com/ffroliva/gflow-cli/issues/770)). The error can only say that
+  (#770). The error can only say that
   some dialog opened after the file was chosen; the bundle's screenshot shows which one.
 
 - **An upscale or extend on the same client after a flow.google.com run no
-  longer fails with a reCAPTCHA error** ([#914](https://github.com/ffroliva/gflow-cli/issues/914)).
+  longer fails with a reCAPTCHA error** (#914).
   After an image, video or upload run gflow parks its page on `about:blank`, and the
   next call read that page as the labs host and tried to mint reCAPTCHA there. The
   route now remembers that the page was parked from flow.google.com. This was reachable when one
   `FlowApiClient` was reused in a script; a single CLI run or MCP task was not affected.
 
 - **A failed download of a finished, billed clip is no longer marked `retryable`**
-  ([#941](https://github.com/ffroliva/gflow-cli/issues/941), part 1). `MediaDownloadError`
+  (#941, part 1). `MediaDownloadError`
   inherited `retryable: true` from `NetworkError`. A scheduler that re-runs anything
   retryable would generate, and pay for, the clip a second time. On the generation
   downloads (flow.google.com and labs), the clip writer and the image download (whose
@@ -370,7 +370,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   is unchanged.
 
 - **flow.google.com failure diagnostics no longer leak account identifiers**
-  ([#890](https://github.com/ffroliva/gflow-cli/issues/890)). When the image submit
+  (#890). When the image submit
   button was covered, the drift error named the covering element with its raw `id` and
   class list, which on a signed-in page can hold the account email. It now names only
   the tag and framework class tokens (`div.glue-cookie-notification-bar`), as the click
@@ -379,13 +379,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   review boundary and retention, and the snapshot carried the page title. The incident
   bundle still captures both.
   The same holds on the remaining paths
-  ([#1062](https://github.com/ffroliva/gflow-cli/issues/1062)): the labs count-panel DOM
+  (#1062): the labs count-panel DOM
   dump (page title, element ids, class lists, labels and text) is removed, the debug
   screenshots written next to your output now follow `GFLOW_CLI_INCIDENT_CAPTURE`, and
   agent-mode recovery errors show the page URL without its query.
 
 - **A profile open in your own Chrome window is now exit 11 with a clear message, not
-  an unexpected error** ([#984](https://github.com/ffroliva/gflow-cli/issues/984)). When
+  an unexpected error** (#984). When
   a Chrome you opened yourself holds the profile, Chrome refuses gflow's launch with
   "the profile is already in use by another instance". That text matched none of the
   checks for a stale gflow browser, so `credits user` (and any generation command)
@@ -393,17 +393,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `profile-locked`), telling you to close that window or use another `--profile`.
   `auth login` (both `--browser internal`, which exited 1, and `--browser chrome`,
   which fell back to a second launch and exited 8) and the Playwright cookie read do
-  the same ([#1059](https://github.com/ffroliva/gflow-cli/issues/1059)).
+  the same (#1059).
 
 - **`gflow image batch` reports manifest errors as exit 11, like `gflow run`**
-  ([#935](https://github.com/ffroliva/gflow-cli/issues/935)). The same malformed row
+  (#935). The same malformed row
   exited 11 under `gflow run --config` and 2 under `gflow image batch`. A manifest's
   contents are configuration, so both now exit 11 with a `Manifest error:` line. That
   includes a row `ref`, which `image batch` does not support. Scripts that branched on
   exit 2 for a bad `image batch` manifest need to check 11.
 
 - **Image and video generation into a `--project` id Flow will not open now fails in
-  seconds with exit 11, not as selector drift** ([#974](https://github.com/ffroliva/gflow-cli/issues/974)). Flow
+  seconds with exit 11, not as selector drift** (#974). Flow
   answers such an id with its `flow.google.com/404?reason=project` page; gflow waited
   30 s for the composer and reported exit 23 ("Flow's UI changed"), telling a user with a
   typo the wrong cause. It now recognises that page by its URL and stops with a
@@ -411,18 +411,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   retryable, on the CLI and over MCP (`image t2i`/`i2i`, `video t2v`/`i2v`/`r2v`,
   `gflow run`). `image upscale`, `video upscale` and `video extend` into such a project
   now end with the same exit 11 instead of exit 23 or a transport timeout (exit 9)
-  ([#1053](https://github.com/ffroliva/gflow-cli/issues/1053)). They still wait out
+  (#1053). They still wait out
   their own page budget (about 30 s) first.
 
 - **A downloaded clip's media id is checked before it becomes a filename**
-  ([#1004](https://github.com/ffroliva/gflow-cli/issues/1004)). Hardening: the local
+  (#1004). Hardening: the local
   branch of the shared clip saver, used by the flow.google.com and agent-only video
   downloads, wrote `<media_id>.mp4` without the check the cloud branch applied, and so
   did `gflow data download`'s flow.google.com recovery. An id holding a path separator
   is now refused before anything is written.
 
 - **A cloud storage URI with `video -o`, `video chain`, `movie run --stitch` or MCP
-  `output` is refused before billing** ([#1008](https://github.com/ffroliva/gflow-cli/issues/1008)). With
+  `output` is refused before billing** (#1008). With
   `GFLOW_CLI_STORAGE_URI` set to `s3://` or `gs://`, the clip comes back as a bucket
   object, which `-o/--output` and the MCP video `output` could not move to a local path
   and `video chain` and `movie run --stitch` could not hand to ffmpeg. Each failed with a raw exception after
@@ -430,7 +430,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   configuration error) naming the setting.
 
 - **`video upscale` no longer says "Image upscale unavailable"**
-  ([#966](https://github.com/ffroliva/gflow-cli/issues/966)). Exit 22's title, shared by
+  (#966). Exit 22's title, shared by
   the image and video upscale paths, is now "Upscale unavailable for this account" in the
   CLI message, `--json` and MCP error envelopes. The exit code and `type` are unchanged. A refused
   2K image upscale no longer advises `--scale 2k`.
@@ -440,7 +440,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **`GFLOW_CLI_BROWSER_PROXY` routes the browser through a proxy**
-  ([#1036](https://github.com/ffroliva/gflow-cli/issues/1036), reported by @error-Sench).
+  (#1036, reported by @error-Sench).
   On a network where Google is reachable only through a local proxy (Clash on
   `127.0.0.1:7897`, say), gflow's HTTP calls followed `HTTPS_PROXY` but the browser it
   launches did not, so every page step timed out. The new setting takes
@@ -459,7 +459,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **A project create on a slow link no longer fails while Flow makes the project, and
   never invites the retry that duplicates it**
-  ([#1037](https://github.com/ffroliva/gflow-cli/issues/1037)). On flow.google.com a create
+  (#1037). On flow.google.com a create
   whose reply took over 30 s (measured: 40 s through a slow proxy) ended as exit 9
   `TransportTimeoutError`, flagged retryable, while Flow went on to create the project, so
   a retry made a second one. The create and rename replies now wait up to 120 s. Selector
@@ -471,7 +471,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   is lost is settled by reading the saved title back. Builds on #992's lost-body recovery.
 
 - **Commands no longer print about ten info log lines before their result, and
-  `GFLOW_CLI_LOG_LEVEL` works** ([#1041](https://github.com/ffroliva/gflow-cli/issues/1041)).
+  `GFLOW_CLI_LOG_LEVEL` works** (#1041).
   Every command logged at `INFO` to stderr regardless of `GFLOW_CLI_LOG_LEVEL`, which was
   documented but read by nothing. The default is now `WARNING`, so a command prints its
   result plus warnings and errors. `GFLOW_CLI_LOG_LEVEL=INFO` restores the old output, and
@@ -481,7 +481,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   per-project progress itself unless INFO text logs already narrate it. `--json` stdout is
   unchanged (it was already only the result).
 - **A generated image whose download fails is no longer lost**
-  ([#1035](https://github.com/ffroliva/gflow-cli/issues/1035), reported by @error-Sench).
+  (#1035, reported by @error-Sench).
   Flow generated the image and spent the quota, then a failed local write (for example an
   `--out` directory gflow cannot write to) left only a FAILED row with no project and no
   asset, and the media id went with the traceback. `image t2i`, `image i2i`, `image batch`,
@@ -495,7 +495,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   image is recovered from the Flow project.
 
 - **`gflow auth login --browser internal` no longer waits until its timeout**
-  ([#1026](https://github.com/ffroliva/gflow-cli/issues/1026)). With labs.google's session
+  (#1026). With labs.google's session
   URL answering 410 (#1023), a bundled-Chromium login (`--browser internal`, or
   `--browser auto` on a machine without Chrome) never saw a signed-in session and waited
   until its timeout. It now ends the wait once the flow.google.com session cookies appear,
@@ -506,8 +506,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   reported the session verified). Not measured on macOS, where the saved-cookie read is
   expected to fail; the login then ends with "re-run with `--browser chrome`".
 - **flow.google.com: a write whose reply Chrome lost is read back, not called a failure**
-  ([#1009](https://github.com/ffroliva/gflow-cli/issues/1009), PR
-  [#992](https://github.com/ffroliva/gflow-cli/pull/992) by @L1meSn0w). Chrome sometimes
+  (#1009, PR
+  #992 by @L1meSn0w). Chrome sometimes
   cannot hand over a reply body (`Network.getResponseBody: No data found`, 2 of 45 real
   uploads in our spike) although Flow saved the write. A local upload was reported as a
   rejected file, and a project create or rename as a timeout. gflow now opens the project
@@ -520,14 +520,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **A lost upload reply now exits 7 (`RpcResponseUnavailableError`) instead of 27**
-  ([#1009](https://github.com/ffroliva/gflow-cli/issues/1009)). Exit 27 still means Flow
+  (#1009). Exit 27 still means Flow
   answered and refused the file. Exit 7 here means the outcome is unknown: the upload may
   have saved, so check the project before re-running. Scripts that branch on 27 for a lost
   upload should branch on 7.
 
 ### Removed
 
-- **`GFLOW_CLI_TIMEOUT_SECONDS`** ([#1037](https://github.com/ffroliva/gflow-cli/issues/1037)).
+- **`GFLOW_CLI_TIMEOUT_SECONDS`** (#1037).
   It was documented as a per-request HTTP timeout and elsewhere as a chain link ceiling, but
   nothing read it. An `.env` file or environment that still sets it keeps loading; the
   value is ignored, as it always was.
@@ -542,7 +542,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- **`gflow credits` reads a balance again** ([#795](https://github.com/ffroliva/gflow-cli/issues/795)).
+- **`gflow credits` reads a balance again** (#795).
   Since 2026-10-22 it failed on every account, because its token came from labs.google's session
   URL, which now answers HTTP 410. `credits user`, `credits list` and the MCP tool
   `gflow_get_credits` now open flow.google.com in the profile's browser and read the balance from
@@ -556,7 +556,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the reply differently.
 
 - **A video run into an existing `--project` no longer rewrites that project's title in
-  the local catalog** ([#1022](https://github.com/ffroliva/gflow-cli/issues/1022)).
+  the local catalog** (#1022).
   `video t2v`/`i2v`/`r2v`/`extend` replaced the stored title with their `gflow-cli video`
   placeholder, so `gflow data list projects` showed that for a project titled `my-project`
   in Flow, and every run (images included) overwrote a project's `gflow-cli` source. Only
@@ -565,7 +565,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   recoverable locally: run `gflow project rename <id> <title>` to restore it. Reported, with
   the fix, by @error-Sench.
 - **2K image upscale on flow.google.com no longer fails when Chrome loses Flow's reply**
-  ([#1027](https://github.com/ffroliva/gflow-cli/issues/1027)). `gflow image upscale` and
+  (#1027). `gflow image upscale` and
   the MCP upscale tool failed with `WireFormatError: Failed to parse SPrCad response ...
   No data found for resource with given identifier` although Flow had upscaled the image.
   Chrome dropped DevTools' copy of that reply on 6 of 12 measured upscales. The image is
@@ -588,7 +588,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **flow.google.com: `image i2i --ref <uuid>` references an earlier image of the same
-  project in place** ([#995](https://github.com/ffroliva/gflow-cli/issues/995)). When the
+  project in place** (#995). When the
   local catalog records the image in the `--project` being generated in (and kept its Flow
   caption), the ref is marked `in_project` and goes through the existing #913 picker path:
   no upload, so a t2i → review → i2i pipeline split across invocations no longer needs
@@ -604,7 +604,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   agents (reported only). Dry run unless `--apply`; never touches the main checkout, a dirty
   worktree, an unmerged branch, `develop` or `main`. The release skill's final report runs it.
 
-- **MCP generation results report the catalogued seed** ([#1013](https://github.com/ffroliva/gflow-cli/issues/1013)).
+- **MCP generation results report the catalogued seed** (#1013).
   A completed `gflow_generate_image` / `gflow_generate_video` result now carries `seed`:
   the value catalogued for its `flow_media_id` (`null` when none was recorded) — the MCP
   twin of `gflow image t2i --json`'s `images[].seed`. On the classic image paths that is
@@ -616,7 +616,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - **Breaking for MCP callers: `gflow_generate_image` no longer takes `seed`**
-  ([#1013](https://github.com/ffroliva/gflow-cli/issues/1013)). The image request never
+  (#1013). The image request never
   carried it — Flow picks its own seed — yet the tool advertised it "for reproducibility"
   and echoed it back in `params.seed`, so a caller could not tell it was dropped. The CLI's
   `--seed` went from `image t2i` in v0.8.0 for the same reason. The parameter is gone from
@@ -627,7 +627,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **`gflow auth login --browser chrome` and `auth status` work again now that labs.google's
-  session URL answers HTTP 410 Gone** ([#1023](https://github.com/ffroliva/gflow-cli/issues/1023)).
+  session URL answers HTTP 410 Gone** (#1023).
   Since 2026-10-22 every session check reported "Could not verify the Flow session",
   and a first login rolled back its `chrome` marker. On a 410 gflow now verifies the
   session against Google's account page with the profile's own cookies, the check it
@@ -636,10 +636,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   MCP `gflow_auth_status` use the same check. `gflow credits` still cannot read a balance:
   it needs the labs token that URL no longer issues (#795). A login with bundled Chromium
   (`--browser internal`, or `--browser auto` on a machine without Chrome) still cannot
-  finish and waits until its timeout ([#1026](https://github.com/ffroliva/gflow-cli/issues/1026)):
+  finish and waits until its timeout (#1026):
   use `--browser chrome`.
 - **flow.google.com: a run that fails after the submit click no longer invites a second
-  billed generation** ([#1010](https://github.com/ffroliva/gflow-cli/issues/1010)).
+  billed generation** (#1010).
   When Chrome lost the image submit reply's body, gflow silently submitted the image
   again: one `--count 1` run left two images in the project and reported one. A lost
   video submit reply, or any timeout after the click, was reported as a retryable exit 9
@@ -652,7 +652,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `--model`, so a `--model nano-pro` run that Flow rendered with Nano Banana 2.1 still
   reported `GEM_PIX_2`. Nothing on that composer observes which model rendered, so it is
   now `null`, as on the classic flow.google.com arm since #789. This fixes the attribution
-  half of [#1012](https://github.com/ffroliva/gflow-cli/issues/1012) only: the agent can
+  half of #1012 only: the agent can
   still render a model other than the requested one; that is not proven fixed (no
   agent-only profile to test on). Reported by
   @dev1abz.
@@ -663,12 +663,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and treated any body Chrome had already evicted, usually an unrelated `as29s` poll, as a
   failed export, while the 1080p file was being delivered. An unreadable reply is now
   skipped; a real refusal of the export RPC still fails fast, and an export that never
-  arrives still times out. Fixes [#1014](https://github.com/ffroliva/gflow-cli/issues/1014).
+  arrives still times out. Fixes #1014.
   Diagnosed and measured by @buiminhhieu-svg. Live-verified on flow.google.com: 3 of 3
   exports passed, against 2 of 2 failing on the previous `develop`.
 - On flow.google.com, a configured cloud `GFLOW_CLI_STORAGE_URI` (`s3://`, `gs://`) was
   ignored for generated video: both composer arms wrote the clip to local disk while labs
-  uploaded it. Fixes [#1003](https://github.com/ffroliva/gflow-cli/issues/1003). Both hosts now
+  uploaded it. Fixes #1003. Both hosts now
   store a clip through the transport's one writer, so it lands at
   `videos/<YYYY-MM-DD>/<media_id>.mp4` in the bucket on either host, and the result's
   `local_path` is that cloud URI. The `gflow video` commands and MCP video tasks (through
@@ -695,7 +695,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   fails with exit 32 before anything is submitted, instead of passing silently. Thanks to
   @Ltwoz for the diagnosis and the fix. Their other symptom — the 4th picker not opening at
   all, on macOS — did not reproduce here and is not claimed fixed.
-  ([#997](https://github.com/ffroliva/gflow-cli/issues/997))
+  (#997)
 - The S3 storage container tests and the `docker-compose.yml` local stack now run
   **RustFS 1.0.3** (pinned by tag and digest) instead of MinIO. MinIO removed its community
   images from Docker Hub in Sep 2026, so the old pin no longer pulled and the S3 tests could
@@ -722,9 +722,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   new scene in the project, and the plan shows no price, because flow.google.com does not
   report one before submitting. Thanks to @stgmt, whose wire research in #882 (the
   workflow-id slot, the frame window, the `as29s` record) mapped this surface.
-  ([#639](https://github.com/ffroliva/gflow-cli/issues/639), [#882](https://github.com/ffroliva/gflow-cli/pull/882))
+  (#639, #882)
 - **Text-to-image and text-to-video on Flow's agent-only composer
-  ([#799](https://github.com/ffroliva/gflow-cli/issues/799)).** Accounts `flow.google.com` serves
+  (#799).** Accounts `flow.google.com` serves
   with no classic composer exited 25; `gflow image t2i` and `gflow video t2v` (and their MCP
   twins) now run there. gflow sets aspect, count and model in Agent settings, saves, asks the
   agent in plain language, and restores those defaults afterwards — also when the run fails
@@ -1171,17 +1171,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   The refusal is now recognised **by that message** — never by which host an account is
   served, and never by a route allowlist, so a route we have not observed yet is covered
   the day Flow retires it — and carries a remediation that names the retired route and
-  points at [#639](https://github.com/ffroliva/gflow-cli/issues/639). It deliberately
+  points at #639. It deliberately
   suggests **no** setting: `GFLOW_CLI_FLOW_HOST=flow.google.com` was measured not to help
   (2026-09-20, `character list`), because the read has no migrated arm to route to, and
   naming it would repeat the mistake being fixed. The error class and exit code are
-  unchanged ([#875](https://github.com/ffroliva/gflow-cli/issues/875)).
+  unchanged (#875).
 
 - **`KNOWN_ISSUES.md` no longer claims `gflow character list` works on the migrated host.**
   Measured twice on 2026-09-20 — with and without `GFLOW_CLI_FLOW_HOST=flow.google.com` —
   it exits 7 on the retired labs `projectInitialData` route both times. `list_characters`
   reads that route unconditionally and has no migrated path
-  ([#875](https://github.com/ffroliva/gflow-cli/issues/875)).
+  (#875).
 
 ### Changed
 
@@ -1190,10 +1190,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   SKIP carrying the measurement, because it is a missing precondition rather than a
   product failure — measured 2026-09-20, `gflow project create` succeeded on two profiles
   and failed only on the canary's in the same minute. Seven of the thirteen standing
-  failures in [#559](https://github.com/ffroliva/gflow-cli/issues/559) were this one
+  failures in #559 were this one
   condition, unchanged across three nightly runs, and the noise hid a real finding:
   `test_project_create_e2e.py` shipped in v0.78.0 and had never passed once.
-  Test-only ([#888](https://github.com/ffroliva/gflow-cli/issues/888)).
+  Test-only (#888).
 
   It narrows deliberately. The guard matches a marker **gflow itself** emits from
   `raise_if_known_landing`, never anything Flow says; a tripwire outside `tests/e2e/`
@@ -1206,7 +1206,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **E2E coverage for the retired-route diagnosis** (`tests/e2e/test_retired_labs_route_diagnosis_e2e.py`,
   `e2e_auth`, 0 credits, one read-only GET). The unit tests for
-  [#875](https://github.com/ffroliva/gflow-cli/issues/875) feed the classifier a *captured*
+  #875 feed the classifier a *captured*
   body, so they stay green if Flow changes the wording, un-retires the route or switches to
   401 — while the user-facing diagnosis silently goes wrong again. This one asks Flow. It
   needs no project fixture (the route is retired before any project lookup) and **skips
@@ -1230,7 +1230,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   **Video only**, and it says so: the signed URL comes from the `as29s` record Flow emits
   when a clip's own route loads, which an image's route does not carry. An image media id
   is refused immediately with exit 11 rather than opening a browser
-  ([#877](https://github.com/ffroliva/gflow-cli/issues/877)).
+  (#877).
 
 
 ### Fixed
@@ -1258,8 +1258,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   field a user would check to find out. It is now `null` on that host, and typed
   `str | None`. On `labs.google` it is unchanged: Flow's own value, from Flow's own
   reply.
-  ([#865](https://github.com/ffroliva/gflow-cli/issues/865),
-  [#871](https://github.com/ffroliva/gflow-cli/issues/871))
+  (#865,
+  #871)
 
 - **`gflow data download` refuses an image immediately instead of blaming the project,
   the trash and your prompt (#877).** Recovery is video-only: the signed URL comes from
@@ -1280,7 +1280,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`--aspect 3:4` images now run on `flow.google.com`.** Flow's image settings there
   render a fifth aspect radio (`3:4`) that the 2026-09-08 enumeration did not see, so gflow
   refused it with exit 36. All five image aspects are now driven on both hosts.
-  ([#864](https://github.com/ffroliva/gflow-cli/issues/864))
+  (#864)
 
 - **`gflow docs` — the documentation, reachable from the terminal.** 126 pages in `docs/`
   and nothing in the CLI pointed at any of them, so at the moment of use the knowledge was
@@ -1309,7 +1309,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
   No MCP twin, deliberately (`gflow update` is the precedent); the reasoning is recorded in
   `cli_docs.py` rather than left implicit.
-  ([#861](https://github.com/ffroliva/gflow-cli/issues/861))
+  (#861)
 
 - **`gflow video i2v --end-frame <local file>` now runs on `flow.google.com`.** Start+end
   frame interpolation was the last i2v form the migrated composer refused: it exited 36
@@ -1328,7 +1328,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   on live accounts (the second on 2026-09-17, see
   `docs/superpowers/spikes/2026-09-17-migrated-end-frame-submit-contract.md`). Frames given
   by media UUID or `@Name` are still not ported.
-  ([#639](https://github.com/ffroliva/gflow-cli/issues/639))
+  (#639)
 - Migrated image submits prove the composer before any network observer arms:
   cookie-bar dismissal, blocking-overlay refusal, and submit pointer hit-test,
   each raising typed `UiSelectorDriftError` with bounded redacted diagnostics
@@ -1344,11 +1344,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   asset named `hero-ab12cd34.png`. The anchors could never hold, so every i2v run on this
   cohort ended in exit 32, *"the frame picker lists no asset named …"*, while the picker
   had been listing it the whole time. The match is now containment on the display name,
-  which is run-unique by construction ([#792](https://github.com/ffroliva/gflow-cli/issues/792))
+  which is run-unique by construction (#792)
   and therefore still cannot bind a stale copy of the same file. Covered by a new $0
   route-intercepted e2e (`tests/features/frame_picker_binding.feature`) that renders the
   icon node for real — a mocked picker passes against the bug.
-  ([#860](https://github.com/ffroliva/gflow-cli/issues/860))
+  (#860)
 
 - **Flow's promo modal blocked the first click on a freshly loaded editor.** On
   `flow.google.com` a `role="dialog"` panel over a new editor made `image t2i` fail as
@@ -1365,7 +1365,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   same place the `glue` consent bar is already cleared. It stays best-effort: a modal
   that refuses to go still falls through to the click post-mortem, which names the
   backdrop, rather than becoming a second competing error path.
-  ([#859](https://github.com/ffroliva/gflow-cli/issues/859))
+  (#859)
 
 - **The migrated `--end-frame` lane rejected omni's interpolation key.** The start+end
   submit validator pinned the model key to `veo_3_1_interpolation_lite`, so
@@ -1374,7 +1374,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   key-shape based: a submit whose model key contains `interpolation` or `first_last`
   counts as start+end interpolation for any model, and the submit observer accepts the
   bare `batchexecute` reply (no `rpcids` param) that the interpolation rpc answers on.
-  ([#639](https://github.com/ffroliva/gflow-cli/issues/639))
+  (#639)
 - **Generating without a project works again on accounts Flow serves from
   `flow.google.com`, and it no longer tells you to log in.** Every run without `--project`
   (CLI) or `project` (MCP) starts by creating a project through labs.google's
@@ -1388,15 +1388,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   project now get it created up front, like images, so they route exactly as if you had
   passed `--project`; MCP `gflow_generate_video` also honours `project_name`, which it
   accepted and then ignored. Thanks to @iceblue03 (#863) and @ChandraLiuswanto (#561) for
-  the reports. ([#864](https://github.com/ffroliva/gflow-cli/issues/864),
-  [#561](https://github.com/ffroliva/gflow-cli/issues/561))
+  the reports. (#864,
+  #561)
 - **An MCP server no longer fails a call because another call holds the profile.** Two
   calls on one profile inside one server — a client retry, two agents sharing a server —
   now run one after the other instead of the second failing with `ProfileLockedError`, and
   a profile held by another process (a CLI run) is waited out for up to 180 s. A
   `GFLOW_CLI_LEASE_WAIT_SECONDS` you set yourself, in the environment or a `.env`, still
   wins. The CLI keeps failing fast. Thanks to @iceblue03 (#862).
-  ([#864](https://github.com/ffroliva/gflow-cli/issues/864))
+  (#864)
 - Image requests that the migrated composer serves, with a named project,
   from a pre-navigation page prefer the migrated host on `auto`, so the
   page-owned recaptcha path wins the post-goto handoff race instead of a
@@ -1427,7 +1427,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `tests/test_observability.py` fails if it is dropped again. Reproduced and verified
   on a clean Python 3.13 venv: the same `gflow doctor` invocation that raised
   `SystemError` before now runs to completion, on both the CLI and the MCP stdio
-  server. ([#846](https://github.com/ffroliva/gflow-cli/issues/846))
+  server. (#846)
 - **The address scan in the migrated-host session probe was quadratic.** It reads a
   1.28 MB `myaccount.google.com` response, and `[\w.+-]+@…` retries from every start
   position and rescans its run before failing to find an `@` — so an unbroken run of
@@ -1441,7 +1441,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   RFC 5321 cap — makes the work proportional to the number of `@` in the document. Same
   output for every address shape, including the Workspace and custom domains that #791
   turned on: 40 000 chars now scan in under a millisecond, and 440 000 base64-shaped ones
-  in 0.2 ms. ([#852](https://github.com/ffroliva/gflow-cli/issues/852))
+  in 0.2 ms. (#852)
 - **The sign-in window never closed for an account Google serves from `flow.google.com`.**
   `gflow auth login --browser chrome` watches the `labs.google` session endpoint to know
   when to close Chrome — and for a migrated account labs hands off without ever minting a
@@ -1460,7 +1460,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   timeout no longer discards the profile unread: gflow reads it before failing, reports a
   sign-in the detector missed as the success it is, and otherwise keeps the timeout's own
   wording. A caller with no on-disk oracle to fall back on (`--browser internal`) keeps
-  waiting exactly as before. ([#849](https://github.com/ffroliva/gflow-cli/issues/849))
+  waiting exactly as before. (#849)
 - **`gflow update` could report a version for an install that no longer starts.** A package
   manager replaces files in place, so an interrupted upgrade leaves a venv whose *metadata*
   reads perfectly and whose *imports* are dead. `gflow update` only ever re-read the version,
@@ -1476,7 +1476,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   reinstall as the remediation. The probe is isolated (`-I`) so a `gflow_cli` directory in
   the caller's working directory cannot answer on the venv's behalf, and a probe that could
   not run at all is never reported as breakage.
-  ([#848](https://github.com/ffroliva/gflow-cli/issues/848))
+  (#848)
 
 ## [0.77.0] — 2026-09-16
 
@@ -1507,8 +1507,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   generation to bundled Chromium on a profile created with `--browser chrome`. The rollback is
   gated on `not verified`, so a verification that now succeeds never triggers it. Measured
   before and after on the same profile, same cookies: exit 8 / marker gone -> exit 0 / marker
-  intact. ([#791](https://github.com/ffroliva/gflow-cli/issues/791),
-  [#796](https://github.com/ffroliva/gflow-cli/issues/796))
+  intact. (#791,
+  #796)
 - **Three lists of "the release version sites" disagreed, and one lived inside the gate that
   catches the disagreement.** `check_repo_hygiene.py`'s docstring said three files, its own
   `_check_version_agreement` checked five (six occurrences), and `skills/release/SKILL.md`
@@ -1518,12 +1518,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   discoverability was not. The skill now carries the one canonical table, its staging step
   stages all seven, and `tests/test_release_version_sites.py` **parses** that table rather
   than restating it — a constant would have been the fourth disagreeing copy.
-  ([#839](https://github.com/ffroliva/gflow-cli/issues/839))
+  (#839)
 
 ### Changed
 
 - **`wait_until="networkidle"` on the `ui_automation` bootstrap is documented, not removed.**
-  [#836](https://github.com/ffroliva/gflow-cli/issues/836) proposed dropping it, on the theory
+  #836 proposed dropping it, on the theory
   that a held-open connection made it burn the full 45 s ceiling. Measured on a live profile,
   5 navigations per arm: it fires every time and reached the ceiling **0/5**, so there is no
   hang — but it costs **3422 ms mean against 1022 ms** for the prescribed pattern, with 4x the
@@ -1548,13 +1548,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `mcp-publisher` requires — it reads the `mcp-name:` token from the *published* PyPI README —
   which previously rested on two files agreeing about step order. Registry authentication is
   unchanged: GitHub Actions OIDC, with no token stored for or handed to the registry.
-  ([#841](https://github.com/ffroliva/gflow-cli/issues/841))
+  (#841)
 - **A manual registry dispatch could publish a superseded version, green, with nothing
   noticing.** A dispatch publishes whatever `server.json` says *on the dispatched ref*.
   Dispatching `develop` after the v0.76.0 tag but before the back-merge landed republished
   `0.75.0` to the registry, and the run succeeded. Both triggers now take a required `version`
   input, asserted against every version field in `server.json`, and fail the run on a
-  mismatch instead of publishing. ([#841](https://github.com/ffroliva/gflow-cli/issues/841))
+  mismatch instead of publishing. (#841)
 - **A pre-release would have become the MCP Registry's *active* listing.** `release.yml` fires
   on every `v*.*.*` tag, including `v1.2.3rc1`, and that listing is what PulseMCP and GitHub's
   MCP gallery ingest. While the publish was dead this was latent; repairing it would have
@@ -1562,7 +1562,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   version outright if one reaches it by hand. The prerelease classification has a single
   definition shared by the GitHub Release flag and the registry gate, rather than two copies
   of the same expression that would drift. Found by council review, not in production.
-  ([#841](https://github.com/ffroliva/gflow-cli/issues/841))
+  (#841)
 
 ## [0.76.0] — 2026-09-16
 
@@ -1599,7 +1599,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
   | | exit | class | what the user is told |
   |---|---|---|---|
-  | before | 23 | `UiSelectorDriftError` | *"Google may have updated their frontend … file a bug at github.com/ffroliva/gflow-cli/issues"* — on `https://flow.google.com/unavailable`, after a 30 s wait, **with an incident bundle containing a screenshot of the account's own page** for the user to attach |
+  | before | 23 | `UiSelectorDriftError` | *"Google may have updated their frontend … file a bug at github.com/abm-dungtq/gflow-studio/issues"* — on `https://flow.google.com/unavailable`, after a 30 s wait, **with an incident bundle containing a screenshot of the account's own page** for the user to attach |
   | after | 39 | `FlowAccessUnavailableError` | *"This Google account cannot reach Flow"*, naming the subscription and linking Google's eligibility page |
 
   The guard goes in `raise_if_known_landing()`, already the single chokepoint for "we
@@ -1632,7 +1632,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the DOM, and on the login path Chrome has already closed by the time the verdict runs, so
   there is no page left to ask. Routing those means a browser probe on the auth path — a
   separate change, on a surface `AGENTS.md` gates behind its own spike. (`gflow credits
-  user` exit 3 on that account is [#795](https://github.com/ffroliva/gflow-cli/issues/795),
+  user` exit 3 on that account is #795,
   a different real bug. `gflow project list` returning `{"projects": [], "total": 0}` was
   never wrong — it lists the local SQLite catalog and never contacts Flow.)
 
@@ -1669,7 +1669,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Installable as a Claude Code plugin.** `/plugin marketplace add ffroliva/gflow-cli` then
+- **Installable as a Claude Code plugin.** `/plugin marketplace add abm-dungtq/gflow-studio` then
   `/plugin install gflow@gflow-cli` installs the `gflow-cli` and `video-production` skills and
   registers the MCP server in one step. The plugin ships **disabled**: Claude Code starts a
   plugin's MCP servers automatically on enable with no prompt of its own, and this one drives your
@@ -1771,7 +1771,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   rather than inheriting that class's retryable default. Scripts branching on `23` for
   this failure must add `25`. Nothing else moved: a trigger missing from the DOM is still
   exit 23. See the `### Fixed` entry below for why
-  ([#799](https://github.com/ffroliva/gflow-cli/issues/799)).
+  (#799).
 
 
 ### Fixed
@@ -1915,7 +1915,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   video run on a re-prompted profile failed, before any submit, so nothing was billed.
   The driver now clears the bar before its first click. It **rejects** rather than
   accepts — both remove the bar, and only one answers a consent question on your
-  behalf. Reported by @stgmt in [#780](https://github.com/ffroliva/gflow-cli/issues/780);
+  behalf. Reported by @stgmt in #780;
   measured in [the 2026-09-11 spike](docs/superpowers/spikes/2026-09-11-migrated-cookie-bar-blocks-the-composer.md).
 - **A click post-mortem now names the thing on top, not its inner node.** The occluder
   allowlist matched `cdk|mat|mdc|flow` class prefixes on the element `elementFromPoint`
@@ -1948,17 +1948,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - **A click that never lands now says what was true instead of nothing at all**
-  ([#776](https://github.com/ffroliva/gflow-cli/issues/776)). On `flow.google.com`,
+  (#776). On `flow.google.com`,
   `video r2v` reached `migrated.editor_ready` and died 5.039 s later as a bare
   Playwright `TimeoutError` — exit 1, no locator, no cause, no MP4. By elimination that
   is `migrated_composer.py`'s `trigger.click(timeout=5000)`: the `wait_for(visible)` one
   line above it is guarded and would have raised exit 23, so the control was *visible*
-  and the *click* expired. [#752](https://github.com/ffroliva/gflow-cli/issues/752)
+  and the *click* expired. #752
   finding #7 predicted exactly this, at exactly this function, before #776 was filed —
   its `count()`→visibility half was fixed and the click half was not, leaving a comment
   that describes the failure the next line went on producing.
   - **It reads; it does not diagnose.** Two causes were live and *neither could be
-    measured*: Flow's announcement overlay ([#593](https://github.com/ffroliva/gflow-cli/issues/593),
+    measured*: Flow's announcement overlay (#593,
     measured on labs.google, never on this host) and a mid-run agent-mode flip. A guard
     built on either would answer confidently and be wrong half the time. So on a timeout
     the driver reads Playwright's four actionability conditions back — agent chip,
@@ -1983,7 +1983,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `retryable` is unchanged and **preserved, not measured** — the condition did not
     reproduce, and a flag that moves as a side effect of retyping is a claim nobody made.
 - **A known Flow landing page is no longer reported as selector drift**
-  ([#756](https://github.com/ffroliva/gflow-cli/issues/756), and the 2026-09-10 RED
+  (#756, and the 2026-09-10 RED
   nightly canary). `flow_host_kind()` classifies the *origin*; `/about`,
   `/project/<id>` and `/fx/api/auth/signin?error=Callback` all share one, so when a
   readiness wait timed out it had nothing left to blame but its own anchor — sending
@@ -1998,7 +1998,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     the URL destroyed. Consulted **only inside an already-failed branch** — never ahead of a probe, which would delete the evidence
     that corrects a wrong absence claim, and never as a new bounded wait after `goto`,
     which reads the URL before Flow's client-side redirect lands
-    ([#639](https://github.com/ffroliva/gflow-cli/issues/639)).
+    (#639).
   - `flow.google.com/about` instead of the project → `FlowAppError` (exit 31), naming
     the landing and the project it did not open. It deliberately does **not** say why:
     #756 measured the redirect and not its cause, and `gflow auth status` reports the
@@ -2031,15 +2031,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     other Google sign-in surfaces, URL stripped. The bot-rejection hop
     (`/v3/signin/rejected`) keeps returning `None` — it has its own error.
 - **`gflow auth list` no longer fails on a profile whose `.gflow_account` is damaged**
-  (PR [#764](https://github.com/ffroliva/gflow-cli/pull/764)). The reader decoded as
+  (PR #764). The reader decoded as
   UTF-8 and caught only `OSError`, so a non-UTF-8 or truncated file raised out of
   `list_profiles()` and broke the listing for *every* profile, not just the damaged one.
   The value is also interpolated into a DOM attribute selector, where a stray quote
   produced an untyped failure. Unusable content now reads as "no account recorded",
   which every caller already handles.
 - **Google's post-migration account chooser no longer stalls a run**
-  ([#763](https://github.com/ffroliva/gflow-cli/issues/763), PR
-  [#764](https://github.com/ffroliva/gflow-cli/pull/764) — thanks @stgmt). When Google
+  (#763, PR
+  #764 — thanks @stgmt). When Google
   hands the session to `flow.google.com` and redirects to a chooser, `FlowApiClient`
   now auto-selects the profile's recorded account from `.gflow_account` instead of
   stalling into an opaque `RecaptchaError`/exit 1.
@@ -2054,12 +2054,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `.gflow_account` is treated as untrusted input — this fixes an untyped failure in
     the selector and a crash in `gflow auth list` on a damaged file.
   - Follow-up hardening is tracked in
-    [#773](https://github.com/ffroliva/gflow-cli/issues/773).
+    #773.
 
 ### Added
 - **`gflow auth login --account <email>`** asserts the login authenticated as the
   required account, failing closed on a mismatch rather than leaving a profile signed
-  in as somebody else (PR [#764](https://github.com/ffroliva/gflow-cli/pull/764)).
+  in as somebody else (PR #764).
 - **`FlowAppError.retryable`** — a per-instance override of that class's
   `RETRYABLE_ERRORS` membership. `None` (the default) keeps the class answer, so no
   existing raise changes. Scoped to the one class that needs it: `is_retryable()` reads
@@ -2112,7 +2112,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **`gflow image t2i` and local-file `i2i` now run on migrated `flow.google.com`
-  accounts** ([#639](https://github.com/ffroliva/gflow-cli/issues/639)). The Angular
+  accounts** (#639). The Angular
   composer binds Image mode, Nano Banana 2 / Pro, the four aspect ratios measured on that
   host (16:9, 4:3, 1:1, 9:16) and counts 1–4,
   then observes the page-owned `ogiZ0b` `batchexecute` reply and returns the same
@@ -2123,7 +2123,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   submit rather than silently dropping options.
 
 - **`gflow image batch` is refused on the migrated host instead of failing as selector
-  drift** ([#639](https://github.com/ffroliva/gflow-cli/issues/639)). The batch path
+  drift** (#639). The batch path
   drives labs selectors only; it now raises `FlowHostMigratedError` (exit 36) before any
   submit, rather than running those selectors against `flow.google.com` and reporting
   exit 23 — which told the user to file a frontend-drift bug about a frontend that was
@@ -2144,7 +2144,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **The second image in one session no longer falls back to the labs reCAPTCHA mint**
-  ([#673](https://github.com/ffroliva/gflow-cli/issues/673)). Every migrated image run
+  (#673). Every migrated image run
   parks its page on `about:blank`, which routes as `labs` — so the page-owned-mint
   capability, derived from `page.url`, answered `False` on the next call and sent it
   back to minting on the pooled bootstrap page. The transport now latches the observed
@@ -2183,7 +2183,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 
 - **`httpx2` / `httpcore2` bumped to 2.12.0, clearing five newly published CVEs**
-  ([#766](https://github.com/ffroliva/gflow-cli/pull/766)). `httpcore2` CVE-2026-84381 and
+  (#766). `httpcore2` CVE-2026-84381 and
   `httpx2` CVE-2026-84378 / -84379 / -84380 / -84382, all against 2.9.1; both arrive
   transitively through `mcp`. The advisories were published against an unchanged lockfile —
   `Dependency audit (pip-audit)` went red on `develop` without any dependency change — so
@@ -2228,9 +2228,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   left the page and Flow did not answer in time`. That distinction is load-bearing — the
   second argues for a retry and the first argues against one — and it exposes a **second,
   unfixed** failure on this path, an intermittent no-reply on already-consented accounts
-  (~1 run in 4) that keeps [#719](https://github.com/ffroliva/gflow-cli/issues/719) open and
+  (~1 run in 4) that keeps #719 open and
   now has its own [KNOWN_ISSUES.md](KNOWN_ISSUES.md) entry.
-  ([#719](https://github.com/ffroliva/gflow-cli/issues/719))
+  (#719)
 
 ### Documentation
 
@@ -2252,7 +2252,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [`scripts/dev/spike_migrated_queue_read.py`](scripts/dev/spike_migrated_queue_read.py) reads
   a project's generation queue by listening to the page's own traffic — establishing that the
   listing arrives on **`Zzl0ze`**, not the `jwpduf`/`as29s` progress polls, which is what a
-  future `gflow video status` ([#741](https://github.com/ffroliva/gflow-cli/issues/741)) should
+  future `gflow video status` (#741) should
   read. [`scripts/dev/spike_migrated_upload_wire.py`](scripts/dev/spike_migrated_upload_wire.py)
   drives the real `_upload_via_toolbar` with a listener on every request, which is how the
   consent dialog above was found. Neither is wired into the CLI.
@@ -2274,9 +2274,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [`docs/superpowers/spikes/2026-09-08-migrated-composer-agent-mode-hides-settings.md`](docs/superpowers/spikes/2026-09-08-migrated-composer-agent-mode-hides-settings.md).
   The reporter's suggested anchor (`aria-label="Configuración"`) is not used: it is a translated
   label, and the chip's own component class plus `aria-pressed` carry the same identity in every
-  locale. ([#749](https://github.com/ffroliva/gflow-cli/issues/749))
+  locale. (#749)
 
-  **Follow-up ([#752](https://github.com/ffroliva/gflow-cli/issues/752)):** the fix worked and
+  **Follow-up (#752):** the fix worked and
   its diagnostics did not. Three states were collapsed into one message — the chip was clicked,
   the chip was found but the click was blocked, the chip was clicked and the mode is still on —
   and all three read as *"the chip was clicked to leave it … the mode may be pinned"*. A modal
@@ -2312,12 +2312,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   absolute delta, plus a settle check: two reads one poll-interval apart must agree, because
   the single discrete swap measured live was sampled at 250 ms and a partial write between
   samples was never ruled out. Found by an adversarial review of the fix, not by the fix's
-  own tests. ([#745](https://github.com/ffroliva/gflow-cli/issues/745))
+  own tests. (#745)
 
 - **The entity guard recorded a cause that was wrong, and it is retracted.** The
   `reference_entities` refusal in `_unported_form` said the submit *"never produces a
   YhhmEf/eb1hJf/MZZa6b reply"*, cause unknown, undiagnosable without fixing
-  [#722](https://github.com/ffroliva/gflow-cli/issues/722). Reading the wire live shows
+  #722. Reading the wire live shows
   otherwise: `MZZa6b` **does** reply, with a null payload and an error slot, and the generation
   is **accepted and queued** — Flow derives an `abra_r2v_8s` model key and renders it. What
   fails is the observer: a null payload never names a media id, so `submit_and_observe`'s
@@ -2330,8 +2330,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   accurate and the fix is named beside it: on a null submit payload, fall through to the
   `jwpduf`/`as29s` status poll. Two earlier comments on that guard, including one added in this
   release, asserted the wrong cause.
-  ([#723](https://github.com/ffroliva/gflow-cli/issues/723),
-  [#742](https://github.com/ffroliva/gflow-cli/pull/742))
+  (#723,
+  #742)
 - **`docs/CHARACTER.md` and `docs/CHARACTER_RECON.md` disagreed on the voice wire case, and one
   was wrong.** CHARACTER.md called the Capitalized UI name canonical while flagging the question
   UNVERIFIED; CHARACTER_RECON.md recorded `presetVoiceId: "gacrux"` and stated the preset id is
@@ -2339,7 +2339,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Both documents now also record that `personalityNotes` is **Agent-scoped** — Flow's own editor
   says *"The Flow agent can use this information to help craft scenes with your character"* — so
   it is not a control on the audio engine and should not be expected to steer a `t2v`/`r2v`
-  performance. ([#736](https://github.com/ffroliva/gflow-cli/pull/736))
+  performance. (#736)
 - **The "+ New project" CTA is found by structure again, not by English.** Its Tier-1 anchors
   all targeted the `add_2` ligature. The migrated `flow.google.com` gallery renders **`add`**
   under a `<mat-icon>` and renders `add_2` nowhere on that surface, so every structural entry
@@ -2360,7 +2360,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   third that was never probed, and a live run disproved it in one click by creating a project
   there. On a non-EN migrated profile it would have told the user that host has no such
   control — false, and a dead end — when the real fix was to anchor on `add`.
-  ([#730](https://github.com/ffroliva/gflow-cli/issues/730))
+  (#730)
 
 - **~~A migrated-host gallery no longer reports a missing control as selector drift.~~ REVERTED WITHIN THIS RELEASE — kept for the record, see the bullet above.** The guard described below shipped and was removed again before the tag, because a live run created a project on that very surface in one click. The net change in v0.71.0 is the one above: the CTA is anchored structurally on `add` instead of by English text. Nothing in the paragraph that follows is behaviour you will find in this release.
   `NEW_PROJECT_SELECTORS` anchors on the `add_2` ligature. The migrated `flow.google.com`
@@ -2379,7 +2379,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   requires `--project`. The `add_2` drift is therefore harmless **because of those guards**,
   which is precisely what a future port relaxes; the measured fact now sits beside the
   constant so the next person to un-guard a path meets it.
-  ([#730](https://github.com/ffroliva/gflow-cli/issues/730),
+  (#730,
   [spike](docs/superpowers/spikes/2026-09-07-ligature-carrier-and-name-drift.md))
 
 - **Flow's own diagnostics were blind on the migrated host, and two selectors were broken behind
@@ -2387,8 +2387,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `diagnostics.py`'s `STRUCTURAL_DOM_JS` queried `i.google-symbols` — so on `flow.google.com`,
   where every Material Symbols ligature rides a `<mat-icon>`, **both reported zero ligatures**.
   The instrument used to diagnose selector drift was blind to the host the drift lives on. That
-  is why [#727](https://github.com/ffroliva/gflow-cli/issues/727) and
-  [#731](https://github.com/ffroliva/gflow-cli/issues/731) stayed invisible, and why an incident
+  is why #727 and
+  #731 stayed invisible, and why an incident
   bundle from a migrated user named no ligatures at all. Both queries are now class-only.
 
   Two selectors were broken behind that blindness. `SUBMIT_BUTTON_SELECTORS` was **working by
@@ -2405,7 +2405,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   match and accepts `arrow_forward_ios`, a real Material Symbol; the `<i>` qualifier had been
   containing that, and dropping it for the class-only carrier made the over-match reachable on
   the submit path. The two-carrier fixture caught it as `matched 3 of 2` before it ran live.
-  ([#730](https://github.com/ffroliva/gflow-cli/issues/730),
+  (#730,
   [spike](docs/superpowers/spikes/2026-09-07-ligature-carrier-and-name-drift.md))
 
 - **`character create --format-prompt` works again — both halves of it.** The flag had two
@@ -2424,7 +2424,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   was not swept with. The EN `span:text-is('Format')` fallback missed too and is **deleted**
   rather than translated: the button's own `aria-label` reads `"Formatar"` on a pt account, and
   display labels are banned as anchors. The cascade now leads with the custom element and covers
-  both carriers. ([#727](https://github.com/ffroliva/gflow-cli/issues/727),
+  both carriers. (#727,
   [spike](docs/superpowers/spikes/2026-09-07-character-format-button-anchor.md))
 
 - **`video t2v --reference-entity` no longer bills a clip that ignores the entity.** On the
@@ -2437,7 +2437,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   sibling gate `migrated_can_serve` did refuse, but it only feeds `prefer_migrated`, and an
   account Flow has already moved is routed by its URL without consulting it — so the refusal was
   unreachable for exactly the accounts that needed it. The check is now mode-independent and
-  ahead of every early return. ([#716](https://github.com/ffroliva/gflow-cli/issues/716))
+  ahead of every early return. (#716)
 - **A credit shortfall is no longer diagnosed as a moved frontend.** On the migrated
   `flow.google.com` host, an account whose balance is short **for the model it asked for**
   produced `UiSelectorDriftError` (exit 23) — *"A Flow editor UI element could not be
@@ -2491,7 +2491,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   for the rewrite itself, and — because the reshaped prompt is longer and more detailed — the
   generation is materially slower: **406s vs a 210s control** on the same account and prompt,
   live-verified 2026-09-07.
-  ([#727](https://github.com/ffroliva/gflow-cli/issues/727),
+  (#727,
   [spike](docs/superpowers/spikes/2026-09-07-format-click-is-not-a-format.md))
 
 - **Retracted a false "measured" claim about the migrated composer.** A code comment asserted, as
@@ -2502,7 +2502,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   exactly, on a different account. That does **not** establish that `image` works there — nothing
   was clicked on the mode axis and nothing was submitted — only that the claim it cannot is
   unfounded. Stating it more strongly would repeat the defect being retracted. The guard stays
-  until the port lands, but it no longer tells anyone the host cannot do this. ([#692](https://github.com/ffroliva/gflow-cli/issues/692),
+  until the port lands, but it no longer tells anyone the host cannot do this. (#692,
   [spike](docs/superpowers/spikes/2026-09-07-migrated-composer-has-an-image-mode.md))
 - **A spike that cannot reach its surface now fails instead of concluding.**
   `spike_migrated_image_capability.py` opened the settings overlay best-effort and swallowed the
@@ -2522,12 +2522,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   that silently failed to attach was invisible to the whole suite while the command exited 0.
   Personality is asserted hard, unlike the sibling UTF-8 test which guards it as
   `if shown_personality:` and passes vacuously when the field is absent.
-  ([#736](https://github.com/ffroliva/gflow-cli/pull/736))
+  (#736)
 - `scripts/dev/spike_entity_submit_rpcs.py` — attaches a character, submits, and logs **every**
   `batchexecute` rpcid rather than only the three in `SUBMIT_RPCS`, plus the submit request's
   model key. `scripts/dev/spike_project_media_status.py` — reads a project's generation state
   read-only, `$0`, submitting nothing.
-  ([#741](https://github.com/ffroliva/gflow-cli/issues/741))
+  (#741)
 - **`video-production` skill § 4b-bis — the whole recipe for a cast with VOICES.** A character
   entity is the only thing that carries a voice; a plate carries face and wardrobe as pixels and
   the engine invents a new voice per clip. Measured across three plate-bound takes of one
@@ -2629,10 +2629,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   verdict, same required action. Now dedupes on the PR's latest ledger status via a new
   `latest_status()` helper: one alert per gate trip, and a PR that trips, gets fixed and reviewed,
   then regresses still alerts again. Ops tooling under `scripts/autopilot/`, not a Flow surface,
-  so no e2e applies. ([#697](https://github.com/ffroliva/gflow-cli/issues/697))
+  so no e2e applies. (#697)
 
 - **A reCAPTCHA mint that fails after the migrated-host handoff now reports exit 36, not exit 1**
-  ([#692](https://github.com/ffroliva/gflow-cli/issues/692)). The `raise_if_migrated` guard added
+  (#692). The `raise_if_migrated` guard added
   in #678 is a point-in-time read of `page.url`, and Flow's handoff to `flow.google.com` is a
   **client-side** navigation that can land after it. The bootstrap's own `await_url_settled` does
   not close that window either — it is skipped entirely for a profile latched at
@@ -2722,7 +2722,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   image generation uses separate per-model daily quotas.
 
 - **Image-to-video from a local start frame on the migrated `flow.google.com` host**
-  ([#639](https://github.com/ffroliva/gflow-cli/issues/639), slice 1). `gflow video i2v
+  (#639, slice 1). `gflow video i2v
   --initial-frame <local file> --project <id>` now runs on the new host — on a moved
   account, and by default (`GFLOW_CLI_FLOW_HOST=auto`) on an unmoved one too. The port
   is UI-driven and observed, never replayed: the composer selects the Frames submode,
@@ -2963,9 +2963,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **`<html lang>` was read before the app set it, so every account whose URL could not answer
-  resolved to `en` ([#651](https://github.com/ffroliva/gflow-cli/issues/651)).** Flow serves an
+  resolved to `en` (#651).** Flow serves an
   **`en` shell** and rewrites `lang` during hydration. The single early read added by
-  [#643](https://github.com/ffroliva/gflow-cli/issues/643) therefore returned the shell value —
+  #643 therefore returned the shell value —
   and the accounts it hit are exactly the ones #643 was written for: those where the URL carries
   no locale segment. Reported by
   [@maipmacrothorax-75](https://github.com/maipmacrothorax-75) on a pt-BR account resolving `en`
@@ -3000,7 +3000,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **v0.66.1's migrated-origin fast-fail never fired on a real run
-  ([#639](https://github.com/ffroliva/gflow-cli/issues/639)).** The guard read `page.url` once,
+  (#639).** The guard read `page.url` once,
   at `get_ui_driver` entry — but `routes.project_editor_url` only ever builds a `labs.google`
   URL and the hop to `flow.google.com` is a *post-`goto`* redirect that neither settle path
   waits for (no locale → `_settle_if_redirecting` returns immediately; a known locale →
@@ -3018,7 +3018,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **A `NOT_REDIRECTED` locale cache was an absorbing state, which made the #643 `<html lang>`
   recovery unreachable on exactly the profiles that needed it
-  ([#643](https://github.com/ffroliva/gflow-cli/issues/643)).** `_bootstrap_and_resolve_locale`
+  (#643).** `_bootstrap_and_resolve_locale`
   returned *before* `_resolve_account_locale` — the only site of that recovery and the only
   caller of `next_locale_state` — so nothing could ever move a latched profile off the state.
   Every profile that saw two migrated loads on ≤0.66.0 latched this way. `NOT_REDIRECTED` now
@@ -3028,7 +3028,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   observation.
 
 - **A `<html lang>` locale was treated as evidence that Flow redirects the account, which
-  switched the URL settle back on permanently ([#643](https://github.com/ffroliva/gflow-cli/issues/643)).**
+  switched the URL settle back on permanently (#643).**
   Shipped in v0.66.1 and present on `develop`: #643's `<html lang>` fallback returns a segment for
   an account Flow serves **bare** and never redirects, and `next_locale_state` recorded it as the
   cached state. Every later bootstrap then saw `cached != NOT_REDIRECTED`, settled, and burned the
@@ -3048,7 +3048,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **A migrated-origin run spent ~36 s discovering a failure knowable in microseconds
-  ([#639](https://github.com/ffroliva/gflow-cli/issues/639)).** `flow.google.com` renders none
+  (#639).** `flow.google.com` renders none
   of the controls gflow drives, so every DOM probe is doomed before it starts — yet the run
   still burned the full `detect_ui_mode` poll window (~8 s, both arms missing), the crop
   selector cascade (~24 s) and the URL settle (4 s) before raising `FlowHostMigratedError`.
@@ -3059,13 +3059,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   mistaken for a migrated origin.
 
 - **Locale resolution was blind on `flow.google.com`, and silently discarded a locale it had
-  already learned ([#643](https://github.com/ffroliva/gflow-cli/issues/643)).** The migrated
+  already learned (#643).** The migrated
   origin serves `/project/<id>` with no `/fx/<locale>/tools/flow` segment, so
   `locale_segment_from_url` could never match there. The locale had not disappeared — it moved
   into `<html lang>`, which stays correct on the migrated host. Two measured consequences:
   `next_locale_state("pt", None)` returned PROVISIONAL, **demoting** an already-learned locale
   on every migrated load (so a fully-migrated account could never learn it again, undoing
-  [#587](https://github.com/ffroliva/gflow-cli/issues/587)); and `await_url_settled` burned the
+  #587); and `await_url_settled` burned the
   full 4 s timeout per navigation waiting for a shape that can no longer exist. gflow now falls
   back to `<html lang>` when the URL carries no segment, and skips the settle wait entirely on
   the migrated origin.
@@ -3081,7 +3081,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - **Flow's migration to `flow.google.com` was reported as selector drift
-  ([#639](https://github.com/ffroliva/gflow-cli/issues/639)).** Google is moving Flow
+  (#639).** Google is moving Flow
   off Labs onto its own origin. The migrated frontend renders **zero** Material Symbols
   `<i>` elements, so every gflow selector — cohort detection included — misses at once,
   and the run died with `UiSelectorDriftError` (exit 23, `retryable: false`): an error
@@ -3096,7 +3096,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   separate work; see [KNOWN_ISSUES.md](KNOWN_ISSUES.md).
 
 - **A migrated page load was misread as a logged-out session
-  ([#639](https://github.com/ffroliva/gflow-cli/issues/639)).** `_check_logged_in`
+  (#639).** `_check_logged_in`
   hard-required `labs.google` in the URL, so a perfectly valid authenticated session on
   the migrated host failed the gate and drove a pointless re-auth. It now accepts both
   Flow origins.
@@ -3128,9 +3128,9 @@ completed exit 0, proving no regression. See
 ### Fixed
 
 - **`gflow video chain` and `gflow movie run` died MID-SPEND on `duration` × `model`
-  ([#634](https://github.com/ffroliva/gflow-cli/issues/634),
-  [#635](https://github.com/ffroliva/gflow-cli/issues/635)).** The same defect
-  [#632](https://github.com/ffroliva/gflow-cli/pull/632) fixed for single-clip i2v, but
+  (#634,
+  #635).** The same defect
+  #632 fixed for single-clip i2v, but
   on these two surfaces it crashed *after* earlier links or scenes had already rendered
   and billed — surfacing as exit 1 `"Unexpected error"` with the explanation lost.
 
@@ -3152,14 +3152,14 @@ completed exit 0, proving no regression. See
   `model = "omni-flash"`.
 
 - **`gflow video i2v --duration` with no `--model` died as `"Unexpected error"`
-  ([#630](https://github.com/ffroliva/gflow-cli/issues/630)).** An omitted `--model` on
+  (#630).** An omitted `--model` on
   i2v is not "no model" — it binds `veo-lite`, which renders no duration control, so the
   guard was bypassed in exactly the default case and the DTO's bare `ValueError` escaped
   as exit 1. It now exits 2 naming the model and the fix. MCP had the same hole and
   queued the task before failing; `gflow_generate_video` now returns a 400 up front.
 
 - **The `referenceEntity` guard was unobservable, and its e2e could not fail
-  ([#620](https://github.com/ffroliva/gflow-cli/issues/620)).**
+  (#620).**
   `tests/e2e/test_entity_smuggling_e2e.py` wrapped both checks in `if bodies:` /
   `if modified:`, so it passed whether the guard fired or never fired — and the second
   block only *printed*. It sat through #615 without noticing.
@@ -3182,7 +3182,7 @@ completed exit 0, proving no regression. See
   it discouraged is the one that would have caught #615.
 
 - **The `referenceEntity` guard never ran, on any image or video generation
-  ([#615](https://github.com/ffroliva/gflow-cli/issues/615)).**
+  (#615).**
   `_intercept_reference_entities` strips character entities the caller did not
   request, so a "poisoned" entity left in the Flow composer cannot smuggle itself
   into an unrelated generation. It had never fired once, on any released version.
@@ -3210,13 +3210,13 @@ completed exit 0, proving no regression. See
   **Coverage is partial by construction:** direct-wire routes issued through
   Playwright's `APIRequestContext` are not routable at all and bypass the guard
   regardless of matcher — tracked in
-  [#619](https://github.com/ffroliva/gflow-cli/issues/619).
+  #619.
 
 ## [0.64.0] — 2026-09-02
 
 ### Added
 
-- **`gflow video i2v --model omni-flash --end-frame` now works** ([#626](https://github.com/ffroliva/gflow-cli/issues/626)).
+- **`gflow video i2v --model omni-flash --end-frame` now works** (#626).
   Google shipped first-and-last-frame generation for Omni 1.1 Flash, so the
   guard that rejected that combination with exit 17 is gone:
 
@@ -3258,7 +3258,7 @@ completed exit 0, proving no regression. See
   canonical six mirror axes), `live-verify` treats the MCP queued path as
   separate code, and `doc-review` grades a *false* MCP claim as release-blocking.
   Automating the mechanically checkable part is tracked in
-  [#628](https://github.com/ffroliva/gflow-cli/issues/628).
+  #628.
 
 
 ### Fixed
@@ -3319,7 +3319,7 @@ completed exit 0, proving no regression. See
   request body or diagnostics bundle verbatim.
 
 - **The offline test suite could `git checkout develop` in the developer's own
-  clone ([#605](https://github.com/ffroliva/gflow-cli/issues/605)).** git's
+  clone (#605).** git's
   repository discovery walks *up* from `cwd`, and `--basetemp=tmp/pytest` puts
   every `tmp_path` inside this repository, so an autopilot test whose temp `.git`
   went missing had its `git checkout develop` silently resolved against the real
@@ -3342,7 +3342,7 @@ completed exit 0, proving no regression. See
 
 - **`--model omni-flash` was unselectable after Flow renamed the picker entry
   `Omni Flash` -> `Omni 1.1 Flash`
-  ([#604](https://github.com/ffroliva/gflow-cli/pull/604)).** Every explicit
+  (#604).** Every explicit
   `--model omni-flash` run failed with `VideoModelSelectionError` (exit 18) — the
   fail-loud gate worked, so no credits were spent and nothing was billed to the
   wrong tier, but the model could not be chosen. The selector now spans the
@@ -3359,7 +3359,7 @@ completed exit 0, proving no regression. See
 
 - **[`docs/ACCOUNT_SAFETY.md`](docs/ACCOUNT_SAFETY.md) — one honest page answering
   "will this get my account flagged?"
-  ([#602](https://github.com/ffroliva/gflow-cli/issues/602)).** Two Reddit
+  (#602).** Two Reddit
   commenters asked the same question from opposite directions on the same day, and
   the answer existed only as fragments across README, `DISCLAIMER.md`,
   `DEBUGGING § WAF cadence`, `KNOWN_ISSUES` and `CONFIGURATION` — findable if you
@@ -3372,7 +3372,7 @@ completed exit 0, proving no regression. See
   profiles, refuse-don't-retry), what it deliberately does **not** do (no proxy
   rotation, no fingerprint spoofing beyond the opt-in patched engine, no headless
   unlock, no pretence that it isn't automation), the knobs worth turning, the
-  [#241](https://github.com/ffroliva/gflow-cli/issues/241) field data on what
+  #241 field data on what
   actually triggered a 403, and what cannot be promised. Linked from the README
   banner, `docs/INDEX.md`, and back-linked from all three deep sources; published
   to the docs site under Getting started.
@@ -3387,7 +3387,7 @@ completed exit 0, proving no regression. See
 ### Changed
 
 - **`--ui-mode auto` (the default) now requires the *classic* Flow arm for image
-  generation ([#595](https://github.com/ffroliva/gflow-cli/issues/595)).** `auto`
+  generation (#595).** `auto`
   used to bind whatever the composer rendered, so an account that Flow moved into
   its **agentic** cohort — observed live on two accounts on 2026-08-27 — took a
   path that cannot satisfy an image request and failed with either
@@ -3395,7 +3395,7 @@ completed exit 0, proving no regression. See
   bytes. Neither error named the cause, and the workaround
   (`GFLOW_CLI_PREFER_CLASSIC=1`) had to be discovered from an error message.
   `auto` now means "no arm was asked for" and resolves to `classic`, matching the
-  rule video has followed since [#299](https://github.com/ffroliva/gflow-cli/issues/299).
+  rule video has followed since #299.
   The bind still attempts classic recovery first and the cohort flaps per page
   load, so a run only aborts (`UiModeUnavailableError`, **exit 28**, pre-submit,
   zero credits) when the arm is genuinely pinned — and that abort is retryable.
@@ -3410,7 +3410,7 @@ completed exit 0, proving no regression. See
 
 - **An announcement modal that mounts *during* a batch generation no longer
   silently changes the next prompt's settings**
-  ([#593](https://github.com/ffroliva/gflow-cli/issues/593) follow-up). #593 left a
+  (#593 follow-up). #593 left a
   stated gap: call sites that neither route through `_probe_selector_cascade` nor
   sit behind a navigation gate were still unguarded, and the set had not been
   enumerated. Auditing all 73 click/fill/press sites in the UI transports found
@@ -3426,7 +3426,7 @@ completed exit 0, proving no regression. See
   exit 23 and a screenshot instead of producing a quietly wrong image.
 
 - **A Flow announcement modal no longer wedges a run with an unexplained timeout
-  ([#593](https://github.com/ffroliva/gflow-cli/issues/593)).** When Google ships a
+  (#593).** When Google ships a
   feature, Flow puts a full changelog dialog over the editor and sets
   `body { pointer-events: none }` while leaving the app neither `aria-hidden` nor
   `inert` — so every control reads visible and enabled yet never receives a click,
@@ -3460,7 +3460,7 @@ completed exit 0, proving no regression. See
     from the probe guard rather than the navigation gate) and left the editor
     reachable.
   - The destructive Escape fallback is now **gated on the page actually being
-    blocked**, which retires the [#395](https://github.com/ffroliva/gflow-cli/issues/395)
+    blocked**, which retires the #395
     hazard structurally rather than by comment. That regression pressed Escape on the
     character composer and sent a generation out without `entityContext` — billed,
     silently wrong. A page we can positively see is clickable is never touched.
@@ -3485,7 +3485,7 @@ completed exit 0, proving no regression. See
 
 - **`gflow project list` / `project show` and the MCP `gflow_list_projects` tool now
   emit an account-correct editor URL
-  ([#587](https://github.com/ffroliva/gflow-cli/issues/587)).** They previously
+  (#587).** They previously
   emitted no URL at all: they are network-free catalog reads, so they had no way to
   resolve a locale and correctly declined to guess one. With the locale now cached
   per profile the link is readable offline. An unknown locale still yields the bare
@@ -3496,7 +3496,7 @@ completed exit 0, proving no regression. See
 ### Changed
 
 - **The account-locale probe no longer costs ~4 s on every command
-  ([#587](https://github.com/ffroliva/gflow-cli/issues/587)).** The probe added in
+  (#587).** The probe added in
   v0.61.0 settles the bootstrap navigation to learn where Flow lands. On an account
   Flow does *not* redirect there is nothing to settle, so `wait_for_url` ran to the
   full `URL_SETTLE_TIMEOUT_MS` every single invocation. Measured live 2026-08-27,
@@ -3545,7 +3545,7 @@ completed exit 0, proving no regression. See
 ### Fixed
 
 - **A requested image model that cannot be selected no longer generates silently
-  on a different one ([#586](https://github.com/ffroliva/gflow-cli/issues/586)).**
+  on a different one (#586).**
   `_select_image_model` swallowed every failure, logged a warning, and let the
   generation proceed on whatever the project's picker already held. Observed
   live: `--model imagen4` produced an image on `NARWHAL` and exited **0** —
@@ -3557,7 +3557,7 @@ completed exit 0, proving no regression. See
 
 - **A requested video model that cannot be selected no longer generates on a
   different one — and charges for it
-  ([#539](https://github.com/ffroliva/gflow-cli/issues/539)).** `_select_video_model`
+  (#539).** `_select_video_model`
   refused only on i2v-with-frames; a plain `t2v`/`r2v` miss logged "Flow default
   model applies" and returned, so the run generated on whatever the picker already
   held and spent that tier's credits — veo-quality costs 100 against veo-lite's 10.
@@ -3572,7 +3572,7 @@ completed exit 0, proving no regression. See
   returned success for a model Flow does not offer; the new code refuses.
 
 - **Four more navigations settle before acting on the page
-  ([#584](https://github.com/ffroliva/gflow-cli/issues/584)).** #580 settled the
+  (#584).** #580 settled the
   three sites it touched; an audit of every `page.goto` found four more with the
   same defect. The worst is `evaluate_fetch.refresh_auth`, which re-navigates to
   refresh page-context tokens and reported success while the page was still
@@ -3585,7 +3585,7 @@ completed exit 0, proving no regression. See
   by hand.
 
 - **The nightly canary now runs the version of itself that it just pulled
-  ([#582](https://github.com/ffroliva/gflow-cli/issues/582)).** `run_canary.py
+  (#582).** `run_canary.py
   --pull` fast-forwards the checkout and then keeps executing the copy Python
   loaded at startup, so every runner change was silently one night late. This was
   not theoretical: #572 added `-o junit_logging=all` so a preserved RED would
@@ -3597,12 +3597,12 @@ completed exit 0, proving no regression. See
   than `os.execv` so Task Scheduler still sees one process and the real exit code.
 
 - **Editor navigation no longer races a locale redirect on non-`en` accounts
-  ([#580](https://github.com/ffroliva/gflow-cli/issues/580)).** `_enter_editor`
+  (#580).** `_enter_editor`
   built its URL from a hardcoded `locale="en-US"` that no caller ever overrode,
   so every account was sent to `/fx/en/...`. On a pt-BR account Flow redirects
   that to `/fx/pt/...` **after `page.goto` has already returned** — leaving
   overlay dismissal and prompt submission running against a page about to be
-  navigated away. That is how [#395](https://github.com/ffroliva/gflow-cli/issues/395)'s
+  navigated away. That is how #395's
   "character-route bounce" presented. The client now learns the account's real
   locale from where Flow itself lands (the only trustworthy source: `auth/session`
   carries no locale, and `navigator.language` reports the value gflow sets when
@@ -3622,7 +3622,7 @@ completed exit 0, proving no regression. See
 ### Added
 
 - **Server-side model attribution
-  ([#586](https://github.com/ffroliva/gflow-cli/issues/586)).**
+  (#586).**
   `parse_media_attribution` reads `modelNameType` / `seed` / `aspectRatio` from
   the `flow.projectInitialData` listing gflow already fetches — the same payload
   the sync path walks for `name` and discards the rest of. This matters most on
@@ -3637,9 +3637,9 @@ completed exit 0, proving no regression. See
 ### Added
 
 - **Selector registry + nightly CI drift probe
-  ([#404](https://github.com/ffroliva/gflow-cli/issues/404),
-  [#493](https://github.com/ffroliva/gflow-cli/issues/493),
-  [#313](https://github.com/ffroliva/gflow-cli/issues/313)).** New
+  (#404,
+  #493,
+  #313).** New
   `gflow_cli.flow_selectors` package: a structured, enumerable inventory of the
   Flow DOM selectors gflow depends on (`Surface`, `Selector`) plus a pure
   grader (`HIT` / `FALLBACK` / `AMBIGUOUS` / `MISS` / `EXPECTED_ABSENT`), so
@@ -3651,7 +3651,7 @@ completed exit 0, proving no regression. See
   drift.
 
 - **Incident bundles record what was submitted
-  ([#528](https://github.com/ffroliva/gflow-cli/issues/528)).**
+  (#528).**
   `network.json` gains a `generation_requests` array carrying a counts-only
   summary of each outgoing generation submit (body size, reference-entity
   count, reference-field count). The reference shape that triggers a policy 400
@@ -3662,7 +3662,7 @@ completed exit 0, proving no regression. See
 ### Changed
 
 - **All labs.google requests now carry `origin`/`referer`
-  ([#578](https://github.com/ffroliva/gflow-cli/pull/578)).** Header
+  (#578).** Header
   construction moved into a single `_request_headers()` shared by
   `_post_json`/`_patch_json`/`_get_json`, which previously assembled headers
   inline three times and could diverge per verb. The labs lane now sends the
@@ -3675,7 +3675,7 @@ completed exit 0, proving no regression. See
 ### Fixed
 
 - **Content-policy 400s are no longer misclassified as `WireFormatError`
-  ([#528](https://github.com/ffroliva/gflow-cli/issues/528)).** An HTTP 400 from
+  (#528).** An HTTP 400 from
   `flowMedia:batchGenerateImages` or `batchAsyncGenerateVideo*` now raises
   `ContentPolicyError` with remediation that names the levers that actually
   work — reduce to a single face-bearing reference, replace age-explicit person
@@ -3683,9 +3683,9 @@ completed exit 0, proving no regression. See
   shortening the prompt does not help. Previously these surfaced as "the
   request was rejected as malformed… retry with a simpler prompt text", which
   sends operators down a path that cannot succeed. Same defect shape as
-  [#379](https://github.com/ffroliva/gflow-cli/issues/379) (429), one status
+  #379 (429), one status
   over, and the self-documenting-errors goal of
-  [#380](https://github.com/ffroliva/gflow-cli/issues/380).
+  #380.
 - **Video generation gained the 429 branch the image path got in #379.** A
   quota hit on `batchAsyncGenerateVideo*` raised `WireFormatError` instead of
   `RateLimitError`, losing `Retry-After` and the retryable classification.
@@ -3696,7 +3696,7 @@ completed exit 0, proving no regression. See
 ### Security
 
 - **CI/CD supply-chain hardening
-  ([#565](https://github.com/ffroliva/gflow-cli/issues/565)).** Every
+  (#565).** Every
   `actions/checkout` step now sets `persist-credentials: false` (12 existing
   steps fixed across `ci.yml`, `deps-watch.yml`, `governance-advisory.yml`,
   `governance-benchmark.yml`, `main-base-guard.yml`, `pages.yml` and
@@ -3720,7 +3720,7 @@ completed exit 0, proving no regression. See
 ### Added
 
 - **Refresh-on-miss: stale catalog names self-heal during generation
-  ([#546](https://github.com/ffroliva/gflow-cli/issues/546)).** When a UUID
+  (#546).** When a UUID
   reference's picker name-search misses (e.g. the asset was renamed in the
   Flow UI after being cataloged), the transport now consults the credit-free
   `flow.projectInitialData` listing once (~0.5 s) for the *current* name,
@@ -3730,11 +3730,11 @@ completed exit 0, proving no regression. See
   `redacted` heals the run without touching disk). Applies to `image i2i
   --ref <uuid>` and `video i2v` frame refs; any resolver failure is logged
   and the pre-existing fallback chain proceeds unchanged. Completes the
-  [#543](https://github.com/ffroliva/gflow-cli/issues/543) freshness model —
+  #543 freshness model —
   see [MEDIA_LIBRARY § freshness](docs/MEDIA_LIBRARY.md).
 
 - **`gflow doctor` — read-only pre-flight diagnostics
-  ([#542](https://github.com/ffroliva/gflow-cli/issues/542)).** Ten checks
+  (#542).** Ten checks
   across the catalog (missing display names / local files / sha256), the
   database (migration drift, WAL state + `PRAGMA quick_check`), stuck
   operations and queue tasks (24h recency threshold), and the environment
@@ -3751,11 +3751,11 @@ completed exit 0, proving no regression. See
   [USAGE § `gflow doctor`](docs/USAGE.md#gflow-doctor).
 
 - **`gflow data sync --names` — reconcile catalog display names from Flow's
-  listing endpoint ([#543](https://github.com/ffroliva/gflow-cli/issues/543)).**
+  listing endpoint (#543).**
   Sweeps nameless catalog rows project-by-project via the credit-free
   `flow.projectInitialData` listing (~0.5s/project, session-cookie auth, no
   generation surface) and writes back the display names the picker searches
-  by — restoring the [#529](https://github.com/ffroliva/gflow-cli/issues/529)
+  by — restoring the #529
   picker contract (search by name, verify by UUID) for rows recorded before
   their caption existed. Rows whose media no longer exists remotely are
   ghost-marked `sync.status = "missing_remote"` (tombstones, never deletions)
@@ -3809,7 +3809,7 @@ completed exit 0, proving no regression. See
   route guard that rejects a credit-spent T2V response.
   This supersedes #287's prompt-hint and UUID-grid-scroll guidance; the sanitized
   evidence is recorded in the [#529 picker spike](docs/superpowers/spikes/2026-08-15-picker-tile-alt-text.md),
-  and [#541](https://github.com/ffroliva/gflow-cli/issues/541) records the refuted
+  and #541 records the refuted
   prompt-hint hypothesis.
 
 ## [0.57.1] — 2026-08-14
@@ -4513,7 +4513,7 @@ completed exit 0, proving no regression. See
   known private identifier — `denon82`, the OS username `ffrol`, a real
   name/email — appears in a published file, catching an anonymization miss
   before it ships (the failure mode of #362). Public references such as
-  `github.com/ffroliva/gflow-cli` and the APP_AUTHOR path are trap-free by
+  `github.com/abm-dungtq/gflow-studio` and the APP_AUTHOR path are trap-free by
   construction, so the guard needs no allow-list.
 
 
@@ -4690,7 +4690,6 @@ completed exit 0, proving no regression. See
 - Profile lease kernel advisory lock prevents concurrent profile access
   across processes.
 
-[#357]: https://github.com/ffroliva/gflow-cli/pull/357
 [`docs/LIVE_VERIFICATION_v0.40.0-production-readiness.md`]: https://github.com/abm-dungtq/gflow-studio/blob/main/docs/LIVE_VERIFICATION_v0.40.0-production-readiness.md
 
 ## [0.40.0] — 2026-07-19
@@ -4710,7 +4709,6 @@ completed exit 0, proving no regression. See
   [`docs/LIVE_VERIFICATION_v0.40.0.md`](docs/LIVE_VERIFICATION_v0.40.0.md)
   for the live e2e evidence.
 
-[#344]: https://github.com/ffroliva/gflow-cli/issues/344
 
 ## [0.39.0] — 2026-07-19
 
@@ -4748,7 +4746,6 @@ completed exit 0, proving no regression. See
   redaction: `GFlowError` details are scrubbed and non-`GFlowError` messages
   are stored as SHA-256 hashes instead of raw text.
 
-[#341]: https://github.com/ffroliva/gflow-cli/issues/341
 
 ## [0.38.1] — 2026-07-17
 
@@ -5257,7 +5254,7 @@ completed exit 0, proving no regression. See
 
 ### Fixed
 
-- **Aspect ratio overrides in Agentic & Classic cohorts** ([#193](https://github.com/ffroliva/gflow-cli/issues/193)): Fixed a bug where aspect ratio settings were ignored under the pluggable `FlowUiDriver` strategies (both single and batch image generation paths).
+- **Aspect ratio overrides in Agentic & Classic cohorts** (#193): Fixed a bug where aspect ratio settings were ignored under the pluggable `FlowUiDriver` strategies (both single and batch image generation paths).
 - **`GFLOW_CLI_PREFER_CLASSIC`** (or `prefer_classic` setting): Added a configuration setting to force the classic UI driver, allowing users to bypass the Agentic UI cohort if preferred.
 
 ## [0.20.0] — 2026-06-15
@@ -5325,14 +5322,14 @@ completed exit 0, proving no regression. See
 
 ### Changed
 
-- Entity-attach `WireFormatError` failures (exit 7) now carry a remediation hint pointing at Flow's new full-page media-library UI rollout ([#174](https://github.com/ffroliva/gflow-cli/issues/174)) — affected accounts can stage entities via the include action but the submit never carries `referenceEntities`; the error now explains how to tell which UI an account has and where to follow the fix, instead of the generic file-a-bug hint. Both backstops also emit an `entity_attach_context` discovery field (`video`/`image`) for drift telemetry. New KNOWN_ISSUES entry documents the rollout
+- Entity-attach `WireFormatError` failures (exit 7) now carry a remediation hint pointing at Flow's new full-page media-library UI rollout (#174) — affected accounts can stage entities via the include action but the submit never carries `referenceEntities`; the error now explains how to tell which UI an account has and where to follow the fix, instead of the generic file-a-bug hint. Both backstops also emit an `entity_attach_context` discovery field (`video`/`image`) for drift telemetry. New KNOWN_ISSUES entry documents the rollout
 
 ## [0.16.0] — 2026-06-12
 
 
 ### Fixed
 
-- **`--reference-entity` no longer fails on non-Portuguese Flow accounts** ([#170](https://github.com/ffroliva/gflow-cli/issues/170)) — the resource-picker include selectors hardcoded the pt-BR caption "Incluir no comando"; they are now locale-free tier cascades (context-menu `add`-ligature anchor + pt/ru/en text fallback), fixing `gflow image t2i --reference-entity`, movie R2V entity attach, and Vozes voice attach for every account language. Failures are now typed (`TransportTimeoutError`, exit 9) with a locale-neutral remediation hint, the matched selector tier is logged (`include_selector_tier`) for drift telemetry, and a new image-side submit backstop raises `WireFormatError` (exit 7) if a staged character never reaches the wire instead of silently returning a text-only generation. Thanks @papushin7987 for the live-verified report
+- **`--reference-entity` no longer fails on non-Portuguese Flow accounts** (#170) — the resource-picker include selectors hardcoded the pt-BR caption "Incluir no comando"; they are now locale-free tier cascades (context-menu `add`-ligature anchor + pt/ru/en text fallback), fixing `gflow image t2i --reference-entity`, movie R2V entity attach, and Vozes voice attach for every account language. Failures are now typed (`TransportTimeoutError`, exit 9) with a locale-neutral remediation hint, the matched selector tier is logged (`include_selector_tier`) for drift telemetry, and a new image-side submit backstop raises `WireFormatError` (exit 7) if a staged character never reaches the wire instead of silently returning a text-only generation. Thanks @papushin7987 for the live-verified report
 
 ### Added
 
@@ -5838,7 +5835,7 @@ completed exit 0, proving no regression. See
   per-test `tmp_path` dirs and clears the `get_settings()` `lru_cache` before
   and after every test, preventing the cached singleton from ever resolving to
   a `platformdirs` production path. Closes
-  [#86](https://github.com/ffroliva/gflow-cli/issues/86).
+  #86.
 
 - `gflow video i2v` no longer silently breaks on non-English Chrome profiles.
   PR #70's structural-first `_attach_frame` cascade matched **zero** real
@@ -5853,7 +5850,7 @@ completed exit 0, proving no regression. See
   matches and the prior `.nth(slot_index)` went out-of-bounds). Live-verified
   with `tests/e2e/test_transports_e2e.py::test_e2e_i2v_start_end_frame_attach`
   on `ffroliva` + `GFLOW_CLI_LOCALE=de-DE` (Chrome rendered pt-BR; both
-  non-EN). Closes [#63](https://github.com/ffroliva/gflow-cli/issues/63).
+  non-EN). Closes #63.
 
 ### Changed
 
@@ -5863,7 +5860,7 @@ completed exit 0, proving no regression. See
   media ID exists under multiple profiles (the command refuses to
   guess and prints the list of candidate profiles, each annotated with
   its `kind`). Closes
-  [#87](https://github.com/ffroliva/gflow-cli/issues/87).
+  #87.
 
 
 ### Fixed
@@ -5873,12 +5870,12 @@ completed exit 0, proving no regression. See
   `DataStore.open`, which applies schema migrations on first connect —
   first-time users and anyone recovering from a wiped DB get an empty
   table and exit 0 instead of a `DataStoreError`. Closes
-  [#88](https://github.com/ffroliva/gflow-cli/issues/88).
+  #88.
 - `gflow auth list` no longer crashes with `UnicodeEncodeError` on Windows
   consoles whose code page cannot encode the default-profile marker `●`
   (cp1252 in PowerShell / cmd by default). The renderer now picks a glyph
   safe for the active `sys.stdout.encoding` — `●` on UTF-8, ASCII `*` on
-  cp1252 / ascii / latin-1 / unknown. Closes [#82](https://github.com/ffroliva/gflow-cli/issues/82).
+  cp1252 / ascii / latin-1 / unknown. Closes #82.
 
 ### Documentation
 
@@ -6040,7 +6037,7 @@ completed exit 0, proving no regression. See
   JSON or TSV manifests, with `--continue-on-error`. `MAX_BATCH_PROMPTS = 5`.
   All prompts share one Flow project; jitter (3–7 s default) spaces the
   submission clicks for anti-bot cadence, not completion wait. Closes
-  [#14](https://github.com/ffroliva/gflow-cli/issues/14) part 2.
+  #14 part 2.
 - Application-layer structlog events for image-batch submission:
   `image_batch.submission_attempt`, `image_batch.submission_result`,
   `image_batch.row_completed`, `image_batch.inter_submission_latency_ms`.
@@ -6064,17 +6061,17 @@ completed exit 0, proving no regression. See
   with a 200-char body prefix when a `batchGenerateImages` response is HTTP
   403 (WAF / reCAPTCHA), immediately before the `WafRejectionError` raise.
 - `VideoResult` dataclass — return type of `generate_video`, carries
-  `status` and `local_path` ([#29](https://github.com/ffroliva/gflow-cli/issues/29)).
+  `status` and `local_path` (#29).
 - `UiAutomationTransport._download_video` — downloads a generated mp4 via
   `media.getMediaUrlRedirect` using the authenticated page; falls back to
   `self._out_dir` then `tmp/` when no `out_dir` is supplied
-  ([#29](https://github.com/ffroliva/gflow-cli/issues/29)).
+  (#29).
 - `FlowApiClient.download_video(media_id, out_path)` — public API, mirrors
-  `download_image` ([#29](https://github.com/ffroliva/gflow-cli/issues/29)).
+  `download_image` (#29).
 - `gflow video t2v PROMPT` restored — generates and downloads a video
   end-to-end on `UiAutomationTransport`; supports `--aspect`
   (`9:16` / `16:9`), `--profile`, and `--out-dir`
-  ([#29](https://github.com/ffroliva/gflow-cli/issues/29)).
+  (#29).
 - `UiAutomationTransport._switch_to_image_mode` static method + module-level
   `IMAGE_TAB_IN_MENU_SELECTORS` cascade — mirror of the video side's
   `_switch_to_video_mode`. Called from both `generate_images` and
@@ -6096,7 +6093,7 @@ completed exit 0, proving no regression. See
   `^(1x|x[2-4])$` (Flow renders digit+x identically in every locale) +
   positional `.nth(count - 1)` fallback when read-back text is
   unrecognised. Partial fix for
-  [#24](https://github.com/ffroliva/gflow-cli/issues/24); `ONBOARDING_SELECTORS`
+  #24; `ONBOARDING_SELECTORS`
   still localized text — see KNOWN_ISSUES.
 
 
@@ -6118,7 +6115,7 @@ completed exit 0, proving no regression. See
   Flow project.
 - `gflow image t2i -n N` now makes one transport call using Flow's native
   xN count selector instead of fanning out N parallel single-image
-  submissions. Closes [#14](https://github.com/ffroliva/gflow-cli/issues/14) part 1.
+  submissions. Closes #14 part 1.
 - Structlog now uses `cache_logger_on_first_use=False` so per-test
   `LogCapture` fixtures see events fired from production modules
   (previously the cached logger froze the processor chain at import).
@@ -6160,17 +6157,17 @@ completed exit 0, proving no regression. See
 
 ### Added
 
-- `gflow_cli.exceptions` module as a standard alias for `gflow_cli.errors` — both module names resolve identically. Closes [#16](https://github.com/ffroliva/gflow-cli/issues/16).
-- `FlowApiClient.health_check()` async method — returns `True` if browser context is alive and on a Google domain; safe to call from long-lived workers without try/except. Closes [#16](https://github.com/ffroliva/gflow-cli/issues/16).
-- `FlowApiClient(out_dir=...)` constructor argument — when set, the resolved transport stores it as `_out_dir` so internal `_capture_debug_screenshot` calls inside `UiAutomationTransport._generate_images_locked` (entering the editor, dismissing overlays, sending prompts) save artifacts to that directory. Long-lived workers can now diagnose selector failures without restructuring their call sites. Closes [#18](https://github.com/ffroliva/gflow-cli/issues/18).
-- `BrowserSessionClosedError` (`gflow_cli.errors`, exit code 15) — raised from `FlowApiClient.generate_image()` / `generate_images_batch()` when the underlying Playwright page/context is closed mid-call (Playwright `TargetClosedError`). Callers can now catch a stable library-owned class and recreate the client via `async with FlowApiClient(...)` instead of importing from `playwright._impl._errors`. Closes [#18](https://github.com/ffroliva/gflow-cli/issues/18).
-- `UiAutomationTransport._dismiss_blocking_overlays(page)` — generic overlay-dismiss helper that detects Flow changelog ("What's new") iframes and dismisses them via a close-button selector cascade with an Escape-key fallback. Invoked after editor entry on both image and video flows so first-run profiles no longer fail on the next click. Closes [#26](https://github.com/ffroliva/gflow-cli/issues/26).
-- Release tags must now be **signed annotated tags** (`git tag -s vX.Y.Z`). CI's release job rejects unsigned tags so the GitHub release surfaces as Verified ([#30](https://github.com/ffroliva/gflow-cli/issues/30)).
+- `gflow_cli.exceptions` module as a standard alias for `gflow_cli.errors` — both module names resolve identically. Closes #16.
+- `FlowApiClient.health_check()` async method — returns `True` if browser context is alive and on a Google domain; safe to call from long-lived workers without try/except. Closes #16.
+- `FlowApiClient(out_dir=...)` constructor argument — when set, the resolved transport stores it as `_out_dir` so internal `_capture_debug_screenshot` calls inside `UiAutomationTransport._generate_images_locked` (entering the editor, dismissing overlays, sending prompts) save artifacts to that directory. Long-lived workers can now diagnose selector failures without restructuring their call sites. Closes #18.
+- `BrowserSessionClosedError` (`gflow_cli.errors`, exit code 15) — raised from `FlowApiClient.generate_image()` / `generate_images_batch()` when the underlying Playwright page/context is closed mid-call (Playwright `TargetClosedError`). Callers can now catch a stable library-owned class and recreate the client via `async with FlowApiClient(...)` instead of importing from `playwright._impl._errors`. Closes #18.
+- `UiAutomationTransport._dismiss_blocking_overlays(page)` — generic overlay-dismiss helper that detects Flow changelog ("What's new") iframes and dismisses them via a close-button selector cascade with an Escape-key fallback. Invoked after editor entry on both image and video flows so first-run profiles no longer fail on the next click. Closes #26.
+- Release tags must now be **signed annotated tags** (`git tag -s vX.Y.Z`). CI's release job rejects unsigned tags so the GitHub release surfaces as Verified (#30).
 - New documentation: [`docs/DEBUGGING.md`](docs/DEBUGGING.md) — evergreen reference for debugging, testing, and troubleshooting (listener log keys, selector-cascade discipline, lifecycle errors, Windows console encoding, test-suite memory). [`docs/LIVE_VERIFICATION_v0.7.0.md`](docs/LIVE_VERIFICATION_v0.7.0.md) — per-release end-to-end evidence (every CLI aspect ratio live-tested).
 
 ### Changed
 
-- `FlowApiClient.generate_image()` and `generate_images_batch()`: `project_id` is now optional (`str | None = None`). When omitted, a new Flow project is created automatically. Existing callers passing an explicit `project_id` are unaffected. Closes [#16](https://github.com/ffroliva/gflow-cli/issues/16).
+- `FlowApiClient.generate_image()` and `generate_images_batch()`: `project_id` is now optional (`str | None = None`). When omitted, a new Flow project is created automatically. Existing callers passing an explicit `project_id` are unaffected. Closes #16.
 - `gflow video t2v/i2v/batch` now report "temporarily unavailable" — video generation is being rebuilt on the UI-automation transport (Phase A ships the T2V transport; CLI commands return in Phase B).
 
 ### Removed
@@ -6181,13 +6178,13 @@ completed exit 0, proving no regression. See
 ### Fixed
 
 - `gflow auth login` now verifies a real Flow app session before reporting
-  success — fixes issue [#15](https://github.com/ffroliva/gflow-cli/issues/15), where a Google-only sign-in was wrongly accepted
+  success — fixes issue #15, where a Google-only sign-in was wrongly accepted
   and later failed with HTTP 401.
 - **`gflow auth login --browser internal` now fails fast when Google rejects
   Playwright's bundled Chromium**, returning `AuthBrowserRejectedError` exit
   code 14 with guidance to rerun using real Chrome
   (`gflow auth login --browser chrome`) or set
-  `GFLOW_CLI_AUTH_BROWSER=chrome` ([#17](https://github.com/ffroliva/gflow-cli/issues/17)).
+  `GFLOW_CLI_AUTH_BROWSER=chrome` (#17).
 - **`gflow image t2i --aspect 1:1` aspect-ratio tab regression** — Flow's
   `1:1` tab is now selected via an exact-match (`:text-is`) cascade against
   the labels `1:1`, `Square`, `1×1`, `1x1` instead of the prior

@@ -355,7 +355,7 @@ The video-generation feature has its own sub-phase plan (spike → Phase A → P
 - [x] **Issue #24: Locale-Agnostic Selectors — Phase 1 + Phase 2 + Phase 3 shipped.**
   - **Phase 1 (PR #51, 2026-05-24, post-v0.8.1):** added the `GFLOW_CLI_LOCALE` env override on Playwright's launch `locale=` parameter; live-verified `gflow video t2v` end-to-end under `pt-BR`.
   - **Phase 2 (PR #70, 2026-05-25, develop `c6e32aa`):** restructured `ONBOARDING_SELECTORS` into a two-tier cascade (3 strict ARIA/ID anchors + ~37 text entries spanning 14 locales). `_attach_frame` (I2V/R2V) was intended to flip to structural-first, but the shipped `FRAME_SLOTS_STRUCT` (`swap_horiz` icon container) matched **zero** elements on real Flow DOMs (wrong icon class + wrong slot tag). Discovered + corrected by PR #90 below. **T2V live-proof on de-DE: 70.9 s, 3.1 MB 1280×720 H.264 mp4.**
-  - **Phase 3 (PR #90 / [#63](https://github.com/ffroliva/gflow-cli/issues/63), 2026-05-26, develop `9a0896a8`):** replaced `FRAME_SLOTS_STRUCT` with the locale-free pattern `div[type='button'][aria-haspopup='dialog']` (verified via DOM probe — matches exactly 2). Also fixed the End-frame OOB index after Start is attached. **I2V live-proof on de-DE: 124 s, mp4 with `ftyp` magic bytes, both `frame_attached` events fired (Start + End).**
+  - **Phase 3 (PR #90 / #63, 2026-05-26, develop `9a0896a8`):** replaced `FRAME_SLOTS_STRUCT` with the locale-free pattern `div[type='button'][aria-haspopup='dialog']` (verified via DOM probe — matches exactly 2). Also fixed the End-frame OOB index after Start is attached. **I2V live-proof on de-DE: 124 s, mp4 with `ftyp` magic bytes, both `frame_attached` events fired (Start + End).**
   - **Phase 4 (Task #6, 2026-05-26, branch `claude/next-quick-win-gBPqS`, PR #93):** `NEW_PROJECT_SELECTORS` expanded to all 14 locales (icon-first tier + 14-locale text tier); English-only ARIA fallbacks (`[aria-label*='New project']`, `[aria-label*='Project']`) removed. `SUBMIT_BUTTON_SELECTORS` drops its English-only `button[aria-label*="Create"]` entry — `arrow_forward` icon selectors cover it in all locales. Both tuples are now fully locale-invariant. Note: issue #24 was closed 2026-05-24 after Phases 1–3; Phase 4 is cosmetic tail work. `--lang=en-US` retained only to stabilise `IMAGE_MODEL_OPTION_SELECTORS` (product names like "Nano Banana 2" may be localised). Removing it requires converting the image model picker to a structural anchor — tracked as issue #94 (Phase 5 below). **R2V live e2e on non-EN not yet exercised** — still open.
   - **Phase 5 (2026-05-30, branch `claude/issue-94-staleness-check-MnsEY`, PR #127):** `IMAGE_MODEL_OPTION_SELECTORS` and `VIDEO_MODEL_OPTION_SELECTORS` converted from `dict[Model, str]` to `dict[Model, tuple[str, ...]]` (cascade discipline; Tier 1 structural slots reserved for future DOM-probe-confirmed anchors). `--lang=en-US` removed from Chromium launch args — locale controlled by `locale=locale_env` Playwright kwarg (persists across all navigations including `/project/<uuid>` deep-links) + `FLOW_URL`'s `?hl=en` on initial load. Branded model names confirmed locale-stable. Four new `TestSelectorLocaleInvariance` tests + four `TestSelectImageModel` runtime tests. **R2V live e2e on non-EN still pending (owner gate — requires authenticated non-EN Chrome profile).**
 - [x] **Model Context Protocol (MCP) Server — SHIPPED** (stdio + HTTP/SSE server in v0.21.0, MCP→FlowWorker generation wiring in v0.23.0/PR #228; `gflow mcp run/setup` + `gflow serve`). Planned in [PREDICT.md](file:///C:/development/github/gflow-cli/docs/superpowers/plans/2026-06-22-mcp-server/PREDICT.md) / [SCENARIO.md](file:///C:/development/github/gflow-cli/docs/superpowers/plans/2026-06-22-mcp-server/SCENARIO.md) / [PLAN.md](file:///C:/development/github/gflow-cli/docs/superpowers/plans/2026-06-22-mcp-server/PLAN.md).
@@ -437,7 +437,7 @@ uvx --from "gflow-cli==0.7.0" gflow --version    # → gflow, version 0.7.0
 Phase A (T2V library transport) shipped with v0.7.0 via PR #23. PR #36 (2026-05-21) closed the T2V CLI gap; PR #48 (merged 2026-05-24) shipped I2V + R2V + model picker:
 
 - [x] Restore `gflow video t2v` CLI — shipped via PR #36 (`gflow video t2v PROMPT [--aspect 9:16|16:9] [--profile] [--out-dir]`)
-- [x] First-class video download mirroring the image side ([#29](https://github.com/ffroliva/gflow-cli/issues/29)) — shipped via PR #36 (`VideoResult`, `_download_video`, `FlowApiClient.download_video`)
+- [x] First-class video download mirroring the image side (#29) — shipped via PR #36 (`VideoResult`, `_download_video`, `FlowApiClient.download_video`)
 - [x] Live-verify T2V portrait/landscape — 2026-05-21 on profile `ffroliva` (both `9:16` and `16:9`); evidence in [`docs/LIVE_VERIFICATION_video_download.md`](docs/LIVE_VERIFICATION_video_download.md)
 - [x] **I2V (image-to-video)** on `UiAutomationTransport` — shipped via PR #48 (`gflow video i2v IMAGE PROMPT`)
 - [x] **R2V (reference-to-video)** on `UiAutomationTransport` — shipped via PR #48 (`gflow video r2v PROMPT --ref IMAGE`)
@@ -474,7 +474,7 @@ Identified during v0.6.0a1 Council Review. To be addressed before or during Phas
 
 ### Issue #5 — Auth: detect Google "browser may not be secure" guard — BACKLOG
 
-External report ([issue #5](https://github.com/ffroliva/gflow-cli/issues/5)): user on
+External report (issue #5): user on
 Ubuntu 24.04 installed via `uv tool install gflow-cli`, ran `gflow auth login`,
 hit Google's anti-automation guard ("This browser or app may not be secure")
 because the bundled internal Chromium is flagged. The workaround
@@ -515,7 +515,7 @@ real-Chrome path already works.
 
 ### Issue #14 — Batch redesign: native count selector + --same-project — BACKLOG
 
-[Issue #14](https://github.com/ffroliva/gflow-cli/issues/14) — two parts.
+Issue #14 — two parts.
 
 **Part 1 (bug fix):** `gflow image t2i -n N` should use Flow's native `x{N}`
 UI count selector (visible in the t2i menu, max `x4`), submitting once and
@@ -564,7 +564,7 @@ working. Re-run E2E #1 and #2 from `tmp/` after refactor.
 
 ### Issue #15 — i2v upload 401: hybrid-transport auth mismatch — INVESTIGATION REQUIRED
 
-[Issue #15](https://github.com/ffroliva/gflow-cli/issues/15) — `POST /v1/flow/uploadImage`
+Issue #15 — `POST /v1/flow/uploadImage`
 returns HTTP 401 even with a freshly verified session.
 t2i (UI-driven) works on the same session; i2v's REST upload path does not.
 Strongly suspect missing `SAPISIDHASH Authorization` header — the project

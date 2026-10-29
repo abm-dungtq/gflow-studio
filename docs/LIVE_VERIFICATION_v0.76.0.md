@@ -54,7 +54,7 @@ would have called the link dead:
 | request | result |
 |---|---|
 | `mcpservers.org/badge.svg` | **200**, `image/svg+xml` |
-| `/servers/ffroliva/gflow-cli` (browser UA) | **200**, 115 643 B, contains `gflow-cli` and `Google Flow` |
+| `/servers/abm-dungtq/gflow-studio` (browser UA) | **200**, 115 643 B, contains `gflow-cli` and `Google Flow` |
 | `/servers/ffroliva/<bogus>` (browser UA) | **404** — the control, so the 200 is not a catch-all |
 
 The 403 is user-agent bot-blocking.
@@ -96,7 +96,7 @@ A fix was built, council-reviewed across eight dimensions, and **withdrawn befor
 It read `a[href*="SignOutOptions"]` from the rendered DOM and claimed the signal was
 server-attested. It is not: Flow's `/about` hop is decided **client-side with zero requests
 to Flow**, and *"the backend grants access while the frontend declines to open it"*
-([#756](https://github.com/ffroliva/gflow-cli/issues/756),
+(#756,
 [spike](superpowers/spikes/2026-09-11-about-redirect-is-decided-client-side.md)). The probe
 would have reported authenticated users as logged out whenever their account was in that
 state — #791's own failure, reintroduced by its remedy.
@@ -104,7 +104,7 @@ state — #791's own failure, reintroduced by its remedy.
 Both accounts measured above are in the `/about` state, which is how it was caught: the e2e
 went red on a live account whose state moved mid-session, after eight green dimensions.
 Full retraction in the § Q6 section of the spike carried on PR
-[#835](https://github.com/ffroliva/gflow-cli/pull/835) — that document is not in this
+#835 — that document is not in this
 release because the branch was never merged. **#791 remains open**; PR #835 stays a draft because its HTTP findings and plumbing
 are reusable.
 

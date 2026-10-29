@@ -160,7 +160,7 @@ def test_every_forbidden_pattern_matches_its_sample() -> None:
 def test_public_references_survive_every_forbidden_pattern() -> None:
     # The PR #362 trap: `ffroliva` is the public handle and must not be scrubbed.
     for public in (
-        "https://github.com/ffroliva/gflow-cli/issues/288",
+        "#288",
         "Subscribe to GitHub Releases for `ffroliva/gflow-cli`.",
         # Assembled, not written literally: check_repo_hygiene.py forbids a
         # hardcoded user path in tracked source even when it is anonymised.

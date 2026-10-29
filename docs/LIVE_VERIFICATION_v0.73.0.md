@@ -130,7 +130,7 @@ successful selection.
 Re-running the success path needs a profile parked at a chooser with a matching
 `.gflow_account`, and `denon82` — the account that reaches a chooser — is currently behind
 a Google password challenge that needs a human sign-in. Follow-up hardening is tracked in
-[#773](https://github.com/ffroliva/gflow-cli/issues/773), items 3–5 of which remain open.
+#773, items 3–5 of which remain open.
 
 ---
 

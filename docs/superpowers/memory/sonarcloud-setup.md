@@ -3,17 +3,17 @@ name: sonarcloud-setup
 description: "How SonarCloud is wired for gflow-cli — project key, org, token location, hotspot-review API, quality-gate-wait + coverage-exclusion policy"
 ---
 
-SonarCloud project for gflow-cli: projectKey `ffroliva_gflow-cli`, organization `ffroliva-github` (see `sonar-project.properties`). CI analysis runs in `.github/workflows/ci.yml` — the `sonar` job (`needs: test`, `if: always()`), which consumes the `coverage.xml` artifact uploaded by the test job.
+SonarCloud project for gflow-cli: projectKey `abm-dungtq_gflow-studio`, organization `ffroliva-github` (see `sonar-project.properties`). CI analysis runs in `.github/workflows/ci.yml` — the `sonar` job (`needs: test`, `if: always()`), which consumes the `coverage.xml` artifact uploaded by the test job.
 
 For one-off API work, a SonarCloud user token lives in `.env.local` at the repo root as `SONAR_TOKEN=` (gitignored via `.gitignore:40`). The user is fine with API-driven operations; read the token inside a sandbox so it never lands in chat/logs.
 
 Read open issues / quality gate anonymously (no token):
-- `GET https://sonarcloud.io/api/issues/search?componentKeys=ffroliva_gflow-cli&resolved=false`
-- `GET https://sonarcloud.io/api/qualitygates/project_status?projectKey=ffroliva_gflow-cli`
+- `GET https://sonarcloud.io/api/issues/search?componentKeys=abm-dungtq_gflow-studio&resolved=false`
+- `GET https://sonarcloud.io/api/qualitygates/project_status?projectKey=abm-dungtq_gflow-studio`
 
 Mark a Security Hotspot reviewed (needs the token, `Authorization: Bearer <token>`):
 - `POST https://sonarcloud.io/api/hotspots/change_status` form body `hotspot=<key>&status=REVIEWED&resolution=SAFE&comment=<why>` → HTTP 204 on success.
-- List hotspots: `GET https://sonarcloud.io/api/hotspots/search?projectKey=ffroliva_gflow-cli&status=TO_REVIEW`.
+- List hotspots: `GET https://sonarcloud.io/api/hotspots/search?projectKey=abm-dungtq_gflow-studio&status=TO_REVIEW`.
 
 Hotspots reviewed Safe on 2026-05-17: `S2245` in `api/_retry.py` (backoff jitter randomness) and `S4790` in `api/transports/experimental/sapisidhash.py` (SHA-1 mandated by Google's SAPISIDHASH protocol). Both are correct code, not defects.
 

@@ -1,6 +1,6 @@
 # Migrated-host video extend via batchexecute fZytfe
 
-**Date:** 2026-09-19 · **Issues:** [#639](https://github.com/ffroliva/gflow-cli/issues/639) · **Cost:** credit-spending submit verified live
+**Date:** 2026-09-19 · **Issues:** #639 · **Cost:** credit-spending submit verified live
 **Probe:** `scripts/dev/spike_migrated_video_extend.py` (live inspection via Playwright)
 **Live proof:** `extend_live_proof_2026-09-19.json` · `wire_extend.mp4` (2 786 225 B, h264 720×1280, 7s)
 

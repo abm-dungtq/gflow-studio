@@ -6,7 +6,7 @@
 > each one whether this session ran it or is citing someone else's run.
 
 **Headline feature:** image-to-video from a **local start frame** on Flow's migrated
-`flow.google.com` host ([#639](https://github.com/ffroliva/gflow-cli/issues/639), slice 1) —
+`flow.google.com` host (#639, slice 1) —
 `gflow video i2v --initial-frame <file> --project <id>` served by the migrated composer
 (`src/gflow_cli/api/transports/migrated_composer.py`). Recon:
 `docs/superpowers/spikes/2026-09-05-migrated-frames-attach.md`. The plan and scenarios were
@@ -15,7 +15,7 @@ consolidated into `docs/superpowers/memory/migrated-host-driver-wire-lessons.md`
 Two moved accounts, two locales. The decisive run is the **CLI entrypoint** on the
 Portuguese-locale account (`[[live-verify-must-name-the-entrypoint]]`); the e2e tests in
 `tests/e2e/test_migrated_i2v_e2e.py` are the contributor-facing evidence layer
-([#675](https://github.com/ffroliva/gflow-cli/pull/675)) and ran on both. Credits: one
+(#675) and ran on both. Credits: one
 Veo 3.1 Lite clip per billed run; the attach-only tests spent nothing (they stop before
 any submit — the probe upload stays in the project's library, like any upload).
 
@@ -122,7 +122,7 @@ finding.
 
 ## Also shipped in v0.69.0
 
-### Flow credit balance — `gflow credits user` / `list`, `gflow_get_credits` ([#671](https://github.com/ffroliva/gflow-cli/pull/671))
+### Flow credit balance — `gflow credits user` / `list`, `gflow_get_credits` (#671)
 
 **Run by this session, 2026-09-06, on the maintainer machine.** $0 — the endpoint is a
 read-only GET. This is the feature's whole premise (a browser-free HTTP path), and the
@@ -141,7 +141,7 @@ Five-layer read: (1) one JSON object per profile; (2) n/a — no media; (3) shap
 credential and no value logged; (5) user-confirmable — 875 matches the balance the Flow UI
 shows for that account.
 
-### `--model veo-lite-lp` on the migrated host ([#669](https://github.com/ffroliva/gflow-cli/pull/669))
+### `--model veo-lite-lp` on the migrated host (#669)
 
 **Not run by this session — citing the contributor's run** recorded in the CHANGELOG entry:
 all five tiers driven through `_select_model` with the picker read back after each switch,
@@ -150,7 +150,7 @@ it. The menu entry `Veo 3.1 - Lite [Lower Priority]` was captured on a migrated 
 (`docs/superpowers/spikes/2026-09-05-migrated-model-menu-lower-priority.md`). Matching stays
 on the `[Lower Priority]` tag rather than the newly-known label.
 
-### Moved accounts exit 36 rather than `RecaptchaError` ([#673](https://github.com/ffroliva/gflow-cli/issues/673) / [#678](https://github.com/ffroliva/gflow-cli/pull/678))
+### Moved accounts exit 36 rather than `RecaptchaError` (#673 / #678)
 
 **Not run by this session — citing the fixing session's run:** the `e2e_auth` regression
 `test_e2e_image_on_a_moved_account_exits_36_not_recaptcha` passed live four times across four

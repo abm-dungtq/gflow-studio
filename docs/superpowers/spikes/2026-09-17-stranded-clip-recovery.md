@@ -1,6 +1,6 @@
 # A billed clip stranded by exit 7 is recoverable at $0 — `as29s` mints the signed URL
 
-**Date:** 2026-09-17 · **Issues:** [#865](https://github.com/ffroliva/gflow-cli/issues/865), [#871](https://github.com/ffroliva/gflow-cli/issues/871) · **Cost:** $0 (navigation, one click per clip; nothing generated)
+**Date:** 2026-09-17 · **Issues:** #865, #871 · **Cost:** $0 (navigation, one click per clip; nothing generated)
 **Probe:** [`scripts/dev/spike_recover_stranded_clip.py`](../../../scripts/dev/spike_recover_stranded_clip.py)
 **Captures:** `scripts/dev/_spike_out/` (gitignored — the frames carry signed CDN URLs)
 

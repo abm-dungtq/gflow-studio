@@ -8,8 +8,8 @@
 - **Cost:** $0 — one navigation, response *metadata* only, plus a DOM shape read. No
   bodies to disk unredacted, no generation, nothing submitted.
 - **Raw:** `scripts/dev/_spike_out/flow-unavailable-signal.json` (gitignored)
-- **Refs:** [#756](https://github.com/ffroliva/gflow-cli/issues/756) (the landing-state
-  family this joins), [#773](https://github.com/ffroliva/gflow-cli/issues/773)
+- **Refs:** #756 (the landing-state
+  family this joins), #773
 
 ## Why it was askable at all
 
@@ -21,7 +21,7 @@ of them said the true thing:
 | `image t2i` (no `--project`) | labs REST | 3 | *"Authentication expired -> Run `gflow auth login`"* |
 | `auth login` | session API | 8 | *"Signed in to your Google account, but the Flow app sign-in wasn't completed."* |
 | `auth status` | session API | 1 | *"Signed in to Google, but not to the Flow app."* |
-| `credits user` | labs REST | 3 | pointed at [#795](https://github.com/ffroliva/gflow-cli/issues/795) |
+| `credits user` | labs REST | 3 | pointed at #795 |
 | `project list` | local SQLite | 0 | `{"projects": [], "total": 0}` |
 
 A sixth surface was only found later, by driving the editor directly

@@ -5,7 +5,7 @@
 - **Profile / project:** `ci-probe` · `1e4efe0d-…` (migrated host)
 - **Cost:** four image generations — **0 Flow credits**, daily quota only. No video.
 - **Raw:** `scripts/dev/_spike_out/spike_nano2_lite_capability_20260911_2007*.json` (gitignored)
-- **Refs:** [#787](https://github.com/ffroliva/gflow-cli/pull/787)
+- **Refs:** #787
 
 ## Why it was run
 

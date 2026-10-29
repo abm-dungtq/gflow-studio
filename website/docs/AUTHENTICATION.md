@@ -147,10 +147,10 @@ gflow auth login --browser chrome  # force the chrome strategy (real Chrome + it
 ```
 
 > **Prefer `--browser chrome`.** Since 2026-10-22 labs.google's session URL answers HTTP
-> 410 ([#1023](https://github.com/ffroliva/gflow-cli/issues/1023)), so every login is
+> 410 (#1023), so every login is
 > verified against Google's account page with the profile's saved cookies. A
 > bundled-Chromium login (`--browser internal`, or `auto` on a machine without Chrome) runs
-> that check too ([#1026](https://github.com/ffroliva/gflow-cli/issues/1026)). It is verified
+> that check too (#1026). It is verified
 > on Windows; on macOS it is expected to fail (not measured), and generation needs a
 > chrome-strategy profile.
 
@@ -230,7 +230,7 @@ decision, because a cookie can be present while the endpoint still rejects. But 
 account Google serves from `flow.google.com`, labs hands off without ever minting a session,
 so that endpoint is an oracle that cannot answer: through v0.77.0 those logins held the
 window open for the full timeout while this page promised the opposite
-([#849](https://github.com/ffroliva/gflow-cli/issues/849)). gflow now also stops waiting when
+(#849). gflow now also stops waiting when
 the jar carries both halves of a migrated session — the `.google.com` SSO cookie *and* the
 `flow.google.com` app-session cookie. That second signal ends a wait; it does not decide
 anything. Verification still runs afterwards, against a server, on what actually landed on
@@ -263,8 +263,8 @@ accidental interference or data corruption.
 **Profile open in another Chrome window.** If a Chrome window you opened yourself has this
 profile's directory open, Chrome refuses gflow's launch. `gflow auth login`, credits and
 generation then stop with exit 11 (`ProfileLockedError`) and say to close that window or
-use another `--profile` ([#984](https://github.com/ffroliva/gflow-cli/issues/984),
-[#1059](https://github.com/ffroliva/gflow-cli/issues/1059)).
+use another `--profile` (#984,
+#1059).
 
 ### `gflow auth status`
 
@@ -281,7 +281,7 @@ Probing Flow session (may take up to ~45s on a slow network)...
 Flow session verified as you@example.com.
 ```
 
-> Note: `cookies_present: True` only confirms the file exists. The final verdict line is the live probe result, and it has four failing shapes — all exit 1, each with a different hint. A **dead session** prints a `gflow auth login` remediation hint. A probe that **cannot reach the endpoint** (offline, 5xx) suggests checking connectivity instead of re-logging in. And a profile **missing its `.gflow_browser_strategy` marker** — the state a failed *first* login leaves behind, since that rolls the marker back — says so and points at `gflow auth login --browser chrome --profile <name>`; it is local profile state, not a network fault, and "check connectivity" would send you to the wrong place ([#796](https://github.com/ffroliva/gflow-cli/issues/796), 0.73.2). A **corrupt or unreadable cookie store** says so and tells you to close any Chrome window using that profile, then run `gflow auth login --profile <name>` again; if that login reports the same, its hint names the last resort: delete the profile's `Default/Network/Cookies` file (this signs the profile out) and log in again ([#796](https://github.com/ffroliva/gflow-cli/issues/796), 0.90.0). The MCP twin `gflow_auth_status` reports the four as HTTP 401, 503 (`retryable: true`), 409 (`retryable: false`) and 409 (`cookie_store_unreadable`, `retryable: false`) — see [MCP.md](MCP.md).
+> Note: `cookies_present: True` only confirms the file exists. The final verdict line is the live probe result, and it has four failing shapes — all exit 1, each with a different hint. A **dead session** prints a `gflow auth login` remediation hint. A probe that **cannot reach the endpoint** (offline, 5xx) suggests checking connectivity instead of re-logging in. And a profile **missing its `.gflow_browser_strategy` marker** — the state a failed *first* login leaves behind, since that rolls the marker back — says so and points at `gflow auth login --browser chrome --profile <name>`; it is local profile state, not a network fault, and "check connectivity" would send you to the wrong place (#796, 0.73.2). A **corrupt or unreadable cookie store** says so and tells you to close any Chrome window using that profile, then run `gflow auth login --profile <name>` again; if that login reports the same, its hint names the last resort: delete the profile's `Default/Network/Cookies` file (this signs the profile out) and log in again (#796, 0.90.0). The MCP twin `gflow_auth_status` reports the four as HTTP 401, 503 (`retryable: true`), 409 (`retryable: false`) and 409 (`cookie_store_unreadable`, `retryable: false`) — see [MCP.md](MCP.md).
 
 ### `gflow auth renew`
 
@@ -293,9 +293,9 @@ weeks therefore drifts towards an expired session even though nothing about the 
 session reports `ACCESS_TOKEN_REFRESH_NEEDED`, and the page renews it through Google without a
 prompt. This step mattered because `gflow credits` read its token from that labs session; since
 2026-10-22 labs' session URL answers HTTP 410 for every account
-([#1023](https://github.com/ffroliva/gflow-cli/issues/1023)), so the step finds nothing to
+(#1023), so the step finds nothing to
 renew. `gflow credits` no longer needs it: it reads the balance from flow.google.com
-([#795](https://github.com/ffroliva/gflow-cli/issues/795)).
+(#795).
 The browser saves whatever cookies were rotated, and the
 result is verified exactly like `gflow auth status`. It spends no credits.
 

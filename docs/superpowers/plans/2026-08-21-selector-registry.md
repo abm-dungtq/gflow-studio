@@ -691,7 +691,7 @@ permissions:
 jobs:
   probe:
     runs-on: ubuntu-latest
-    if: github.repository == 'ffroliva/gflow-cli'
+    if: github.repository == 'abm-dungtq/gflow-studio'
     steps:
       - uses: actions/checkout@v4
         with: { persist-credentials: false }

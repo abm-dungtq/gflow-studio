@@ -8,7 +8,7 @@
 >
 > This page exists because everything below was already true and scattered across
 > five files, so a reasonable person could not find it before deciding to install
-> ([#602](https://github.com/ffroliva/gflow-cli/issues/602)).
+> (#602).
 
 Read [DISCLAIMER.md](../DISCLAIMER.md) first — it is the legal statement. This
 page is the operational one.
@@ -105,7 +105,7 @@ pacing is defensible; a stealth feature that fails silently in six months is not
 
 ## Field data — what actually triggers a block
 
-Real measurements from a real account ([#241](https://github.com/ffroliva/gflow-cli/issues/241), 2026-07-05):
+Real measurements from a real account (#241, 2026-07-05):
 
 - 3-prompt runs spread **30–60 min apart**: all passed.
 - A burst of **~14 image submissions in ~10 minutes**: ended in a 403.

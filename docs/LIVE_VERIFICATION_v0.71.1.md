@@ -128,20 +128,20 @@ This ships as an instrument only; no user-facing command reads the queue yet (#7
   and #719 stays open for it. This release only makes it *distinguishable*: the driver now
   watches the request, so this reports *"the request left the page and Flow did not answer in
   time"* rather than sharing a message with the consent case.
-- **Whether that 2.6 s burst is a page reload** ([#719](https://github.com/ffroliva/gflow-cli/issues/719)).
+- **Whether that 2.6 s burst is a page reload** (#719).
   It has the shape of one — the full project-load rpcid set, at once — but no navigation event
   was captured and nothing in `_upload_via_toolbar` navigates. **Blocker:** the shape occurs on
   ~1 run in 4, so catching it with navigation instrumentation attached needs repeated paid-path
   runs on a consented account; the instrument to do it is in the repo
   (`scripts/dev/spike_migrated_upload_wire.py`).
-- **The labs.google behaviour of either fix** ([#639](https://github.com/ffroliva/gflow-cli/issues/639)).
+- **The labs.google behaviour of either fix** (#639).
   Neither the agent-mode chip nor the upload-terms dialog was observed on labs.
   **Blocker:** Google has migrated every account available here — `ffroliva`, `denon82` and
   `ci-probe` all redirect from `labs.google/fx/tools/flow` to `flow.google.com/` — so there is
   no labs cohort to test against. Both fixes are scoped to `migrated_composer` and cannot
   affect the labs driver.
 - **`gflow image` / scenes / extend / instructions on the migrated host**
-  ([#639](https://github.com/ffroliva/gflow-cli/issues/639)). Untouched by this release and
+  (#639). Untouched by this release and
   still exit 36. **Blocker:** not implemented rather than unverifiable — PR #750 addresses the
   image half and was excluded from this release because it is branched pre-#751 and conflicts
   across six files.

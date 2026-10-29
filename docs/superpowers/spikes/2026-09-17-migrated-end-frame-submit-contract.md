@@ -4,7 +4,7 @@
 **Account:** `ffroliva` (served `flow.google.com`), project `c5550ed7-…`
 **Cost:** $0 — both frames really uploaded, the submit intercepted with `route.abort()`
 **Harness:** `scripts/dev/spike_migrated_end_frame.py` (`--mode chips`, `--mode submit`)
-**Issue:** [#639](https://github.com/ffroliva/gflow-cli/issues/639) · PR #831
+**Issue:** #639 · PR #831
 
 ## Why this spike exists
 

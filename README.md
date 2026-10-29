@@ -1,14 +1,16 @@
 <!-- mcp-name: io.github.ffroliva/gflow-cli -->
 
-# gflow-cli (ABM edition)
+# gflow-studio
+
+<p align="center"><img src="docs/assets/gflow-studio-banner.svg" alt="gflow-studio: Google Flow images and videos from your terminal" width="100%"></p>
 
 **English** · [Tiếng Việt](README.vi.md)
 
-Generate images and videos with [Google Flow](https://labs.google/fx/tools/flow) from your terminal. gflow-cli drives Imagen and Nano Banana (images) and Veo / Omni Flash (videos) through your own Flow account, so a whole storyboard can run as one batch command instead of an afternoon of clicking.
+Generate images and videos with [Google Flow](https://labs.google/fx/tools/flow) from your terminal. gflow-studio drives Imagen and Nano Banana (images) and Veo / Omni Flash (videos) through your own Flow account, so a whole storyboard can run as one batch command instead of an afternoon of clicking.
 
-This repository is the **ABM edition**: a fork of [ffroliva/gflow-cli](https://github.com/ffroliva/gflow-cli) maintained by **ABM.DũngTQ** for an animation pipeline. It keeps every upstream feature (currently 0.91.0) and adds 1080p downloads, a hidden browser on macOS, safer batches and a video batch runner. The full list is under [What this edition adds](#what-this-edition-adds).
+**gflow-studio** is maintained by **ABM.DũngTQ** for an animation pipeline. It is built on [ffroliva/gflow-cli](https://github.com/ffroliva/gflow-cli), keeps every upstream feature (currently 0.91.0) and adds 1080p downloads, a hidden browser on macOS, safer batches and a video batch runner. The command is still `gflow`, so scripts written for gflow-cli keep working. The full list is under [What this edition adds](#what-this-edition-adds).
 
-[![Release](https://img.shields.io/github/v/release/abm-dungtq/gflow-cli?include_prereleases&label=release)](https://github.com/abm-dungtq/gflow-cli/releases)
+[![Release](https://img.shields.io/github/v/release/abm-dungtq/gflow-studio?include_prereleases&label=release)](https://github.com/abm-dungtq/gflow-studio/releases)
 [![Upstream](https://img.shields.io/badge/upstream-ffroliva%2Fgflow--cli%200.91.0-blue.svg)](https://github.com/ffroliva/gflow-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)
@@ -21,7 +23,7 @@ This repository is the **ABM edition**: a fork of [ffroliva/gflow-cli](https://g
 
 [What it does](#what-it-does) · [What this edition adds](#what-this-edition-adds) · [Setup](#setup) · [Usage](#usage) · [Batches](#batches) · [Hiding the browser](#hiding-the-browser) · [Demo](#demo) · [When something fails](#when-something-fails) · [Documentation](#documentation) · [Author and credits](#author-and-credits)
 
-> ⚠️ **Read this before you install.** gflow-cli is not affiliated with Google. It reverse-engineers Flow and drives a real Chrome window signed in to *your* Google account, so automation happens on your account and under Google's terms. Flow can change its pages at any time. Images are free; Veo video generation spends your Flow credits. Read the [DISCLAIMER](DISCLAIMER.md) and [docs/ACCOUNT_SAFETY.md](docs/ACCOUNT_SAFETY.md).
+> ⚠️ **Read this before you install.** gflow-studio is not affiliated with Google. It reverse-engineers Flow and drives a real Chrome window signed in to *your* Google account, so automation happens on your account and under Google's terms. Flow can change its pages at any time. Images are free; Veo video generation spends your Flow credits. Read the [DISCLAIMER](DISCLAIMER.md) and [docs/ACCOUNT_SAFETY.md](docs/ACCOUNT_SAFETY.md).
 
 ## What it does
 
@@ -69,12 +71,12 @@ On top of upstream 0.91.0:
 ### 1. Install
 
 ```bash
-uv tool install "git+https://github.com/abm-dungtq/gflow-cli.git@main"
-uvx --from "git+https://github.com/abm-dungtq/gflow-cli.git@main" playwright install chromium
+uv tool install "git+https://github.com/abm-dungtq/gflow-studio.git@main"
+uvx --from "git+https://github.com/abm-dungtq/gflow-studio.git@main" playwright install chromium
 gflow --version
 ```
 
-To upgrade later, run the same `uv tool install` command with `--force`. The package on PyPI (`uv tool install gflow-cli`) is upstream and does not include this edition's features.
+To upgrade later, run the same `uv tool install` command with `--force`. The package on PyPI (`uv tool install gflow-cli`) is the upstream project and does not include these features.
 
 ### 2. Sign in once
 
@@ -277,6 +279,6 @@ No sponsors yet. <a href="https://github.com/sponsors/ffroliva/sponsorships?freq
 
 ## Author and credits
 
-- **ABM edition:** ABM.DũngTQ · 0976202028 · [github.com/abm-dungtq/gflow-cli](https://github.com/abm-dungtq/gflow-cli)
+- **gflow-studio:** ABM.DũngTQ · 0976202028 · [github.com/abm-dungtq/gflow-studio](https://github.com/abm-dungtq/gflow-studio)
 - **Original project:** [gflow-cli](https://github.com/ffroliva/gflow-cli) by Flavio Oliva (`ffroliva`). The core of this tool is Flavio's work; fixes that apply upstream are worth sending there.
 - **License:** [MIT](LICENSE), © 2026 Flavio Oliva, kept unchanged in this fork. The license covers the code only. Google's own terms govern Flow and everything you generate with it. See the [DISCLAIMER](DISCLAIMER.md).

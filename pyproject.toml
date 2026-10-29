@@ -162,11 +162,11 @@ flow = "gflow_cli.cli:main"
 gflow-cli = "gflow_cli.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/abm-dungtq/gflow-cli"
-Documentation = "https://github.com/abm-dungtq/gflow-cli#readme"
-Repository = "https://github.com/abm-dungtq/gflow-cli"
-Changelog = "https://github.com/abm-dungtq/gflow-cli/blob/main/CHANGELOG.md"
-Issues = "https://github.com/abm-dungtq/gflow-cli/issues"
+Homepage = "https://github.com/abm-dungtq/gflow-studio"
+Documentation = "https://github.com/abm-dungtq/gflow-studio#readme"
+Repository = "https://github.com/abm-dungtq/gflow-studio"
+Changelog = "https://github.com/abm-dungtq/gflow-studio/blob/main/CHANGELOG.md"
+Issues = "https://github.com/abm-dungtq/gflow-studio/issues"
 Upstream = "https://github.com/ffroliva/gflow-cli"
 Funding = "https://github.com/sponsors/ffroliva"
 

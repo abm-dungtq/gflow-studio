@@ -1,12 +1,14 @@
-# gflow-cli (bản ABM)
+# gflow-studio
+
+<p align="center"><img src="docs/assets/gflow-studio-banner.svg" alt="gflow-studio: tạo ảnh và video Google Flow từ terminal" width="100%"></p>
 
 [English](README.md) · **Tiếng Việt**
 
-Tạo ảnh và video bằng [Google Flow](https://labs.google/fx/tools/flow) ngay trong terminal. gflow-cli điều khiển Imagen, Nano Banana (ảnh) và Veo, Omni Flash (video) qua chính tài khoản Flow của bạn. Cả một storyboard chạy bằng một lệnh, thay cho một buổi chiều ngồi bấm chuột.
+Tạo ảnh và video bằng [Google Flow](https://labs.google/fx/tools/flow) ngay trong terminal. gflow-studio điều khiển Imagen, Nano Banana (ảnh) và Veo, Omni Flash (video) qua chính tài khoản Flow của bạn. Cả một storyboard chạy bằng một lệnh, thay cho một buổi chiều ngồi bấm chuột.
 
-Repo này là **bản ABM**, nhánh tách (fork) từ [ffroliva/gflow-cli](https://github.com/ffroliva/gflow-cli), do **ABM.DũngTQ** duy trì để phục vụ dây chuyền làm phim hoạt hình. Bản này giữ mọi tính năng của bản gốc (hiện là 0.91.0) và thêm: tải video 1080p, chạy Chrome ẩn trên macOS, chạy lô an toàn hơn và lệnh chạy lô video. Danh sách đầy đủ ở mục [Bản ABM có thêm gì](#bản-abm-có-thêm-gì).
+**gflow-studio** do **ABM.DũngTQ** duy trì để phục vụ dây chuyền làm phim hoạt hình, xây trên nền [ffroliva/gflow-cli](https://github.com/ffroliva/gflow-cli). Bản này giữ mọi tính năng của bản gốc (hiện là 0.91.0) và thêm: tải video 1080p, chạy Chrome ẩn trên macOS, chạy lô an toàn hơn và lệnh chạy lô video. Lệnh vẫn là `gflow`, nên script viết cho gflow-cli chạy tiếp được. Danh sách đầy đủ ở mục [Bản ABM có thêm gì](#bản-abm-có-thêm-gì).
 
-[![Release](https://img.shields.io/github/v/release/abm-dungtq/gflow-cli?include_prereleases&label=release)](https://github.com/abm-dungtq/gflow-cli/releases)
+[![Release](https://img.shields.io/github/v/release/abm-dungtq/gflow-studio?include_prereleases&label=release)](https://github.com/abm-dungtq/gflow-studio/releases)
 [![Upstream](https://img.shields.io/badge/upstream-ffroliva%2Fgflow--cli%200.91.0-blue.svg)](https://github.com/ffroliva/gflow-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)
@@ -14,7 +16,7 @@ Repo này là **bản ABM**, nhánh tách (fork) từ [ffroliva/gflow-cli](https
 
 [Công dụng](#công-dụng) · [Bản ABM có thêm gì](#bản-abm-có-thêm-gì) · [Cài đặt](#cài-đặt) · [Cách dùng](#cách-dùng) · [Chạy lô](#chạy-lô) · [Ẩn trình duyệt](#ẩn-trình-duyệt) · [Demo](#demo) · [Khi có lỗi](#khi-có-lỗi) · [Tài liệu](#tài-liệu) · [Tác giả](#tác-giả-và-ghi-công)
 
-> ⚠️ **Đọc trước khi cài.** gflow-cli không liên quan đến Google. Công cụ này dò ngược cách Flow hoạt động và điều khiển một cửa sổ Chrome thật đã đăng nhập tài khoản Google *của bạn*, nên mọi thao tác tự động diễn ra trên tài khoản đó và chịu điều khoản của Google. Flow có thể đổi giao diện bất cứ lúc nào. Tạo ảnh không tốn credit; tạo video Veo trừ credit Flow của bạn. Hãy đọc [DISCLAIMER](DISCLAIMER.md) và [docs/ACCOUNT_SAFETY.md](docs/ACCOUNT_SAFETY.md).
+> ⚠️ **Đọc trước khi cài.** gflow-studio không liên quan đến Google. Công cụ này dò ngược cách Flow hoạt động và điều khiển một cửa sổ Chrome thật đã đăng nhập tài khoản Google *của bạn*, nên mọi thao tác tự động diễn ra trên tài khoản đó và chịu điều khoản của Google. Flow có thể đổi giao diện bất cứ lúc nào. Tạo ảnh không tốn credit; tạo video Veo trừ credit Flow của bạn. Hãy đọc [DISCLAIMER](DISCLAIMER.md) và [docs/ACCOUNT_SAFETY.md](docs/ACCOUNT_SAFETY.md).
 
 ## Công dụng
 
@@ -64,8 +66,8 @@ Chi tiết ở [CHANGELOG.md](CHANGELOG.md) mục Unreleased. Số đo về ch�
 ### 1. Cài
 
 ```bash
-uv tool install "git+https://github.com/abm-dungtq/gflow-cli.git@main"
-uvx --from "git+https://github.com/abm-dungtq/gflow-cli.git@main" playwright install chromium
+uv tool install "git+https://github.com/abm-dungtq/gflow-studio.git@main"
+uvx --from "git+https://github.com/abm-dungtq/gflow-studio.git@main" playwright install chromium
 gflow --version
 ```
 
@@ -265,6 +267,6 @@ Bản gốc gflow-cli do một người làm, và mỗi bản phát hành ở đ
 
 ## Tác giả và ghi công
 
-- **Bản ABM:** ABM.DũngTQ · 0976202028 · [github.com/abm-dungtq/gflow-cli](https://github.com/abm-dungtq/gflow-cli)
+- **gflow-studio:** ABM.DũngTQ · 0976202028 · [github.com/abm-dungtq/gflow-studio](https://github.com/abm-dungtq/gflow-studio)
 - **Dự án gốc:** [gflow-cli](https://github.com/ffroliva/gflow-cli) của Flavio Oliva (`ffroliva`). Phần lõi của công cụ này là công sức của Flavio Oliva; bản sửa nào dùng được cho bản gốc thì nên gửi về đó.
 - **Giấy phép:** [MIT](LICENSE), © 2026 Flavio Oliva, giữ nguyên trong bản fork này. Giấy phép chỉ áp dụng cho mã nguồn. Flow và mọi thứ bạn tạo bằng Flow chịu điều khoản riêng của Google. Xem [DISCLAIMER](DISCLAIMER.md).

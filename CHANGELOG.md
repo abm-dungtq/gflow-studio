@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **A video saved with `-o` onto another filesystem no longer fails after it is billed**
+  ([#1114](https://github.com/ffroliva/gflow-cli/issues/1114)). Moving the downloaded clip
+  to `--output` used a rename, which raises `EXDEV` across mounts (a tmpfs `/tmp`, another
+  drive), so the run ended in "Unexpected error" with the clip left in `./tmp/`. The CLI
+  and the MCP queued path now move it with a copy when a rename cannot.
+
 ## [0.91.0] — 2026-10-28
 
 ### Fixed

@@ -409,7 +409,10 @@ class FlowWorker:
                             output_file = Path(output_file_val)
                             output_file.parent.mkdir(parents=True, exist_ok=True)
                             if result.local_path != output_file:
-                                result.local_path.replace(output_file)
+                                import shutil
+
+                                # Not Path.replace: a rename across mounts raises EXDEV (#1114).
+                                shutil.move(result.local_path, output_file)
                                 from dataclasses import replace
 
                                 result = replace(result, local_path=output_file)

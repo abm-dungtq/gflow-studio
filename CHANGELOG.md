@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.92.0] — 2026-10-29
+
 ### Fixed
 
 - **A video saved with `-o` onto another filesystem no longer fails after it is billed**
@@ -26,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   so an MCP client, or content steering one, could write or replace files anywhere the
   server's user can. They are now resolved against `GFLOW_CLI_OUTPUT_DIR` and refused with a
   400 envelope when they resolve outside it; an `output` that resolves to a directory is
-  refused too. The `profile` argument of every MCP tool is likewise refused (400 `Invalid
+  refused too. The `profile` argument of every MCP tool that opens a browser profile is likewise refused (400 `Invalid
   Profile`) unless it is a plain name: a path in it pointed Chrome's user-data-dir, and the
   files Chrome writes there, at any existing directory. **Breaking for MCP callers** that passed an absolute path outside the output
   directory: pass a path relative to it, or set `GFLOW_CLI_OUTPUT_DIR`. The CLI is
@@ -6758,7 +6760,8 @@ shell-script template that branches on these codes.
 
 First skeleton. Not functional end-to-end yet.
 
-[Unreleased]: https://github.com/ffroliva/gflow-cli/compare/v0.91.0...HEAD
+[Unreleased]: https://github.com/ffroliva/gflow-cli/compare/v0.92.0...HEAD
+[0.92.0]: https://github.com/ffroliva/gflow-cli/compare/v0.91.0...v0.92.0
 [0.91.0]: https://github.com/ffroliva/gflow-cli/compare/v0.90.0...v0.91.0
 [0.90.0]: https://github.com/ffroliva/gflow-cli/compare/v0.89.1...v0.90.0
 [0.89.1]: https://github.com/ffroliva/gflow-cli/compare/v0.89.0...v0.89.1

@@ -4,6 +4,25 @@
 
 ## Current release
 
+**v0.92.0 — alpha.** A security release: MCP tool arguments can no longer direct a write
+outside the configured output directory, and a video saved with `-o` onto another filesystem no
+longer fails after it is billed.
+
+**Security ([GHSA-hqfj-4jww-76f2](https://github.com/ffroliva/gflow-cli/security/advisories/GHSA-hqfj-4jww-76f2)).**
+The MCP `output` (`gflow_generate_image` / `gflow_generate_video`) and `out_dir`
+(`gflow_download_media`, `gflow_upscale_image`, `gflow_upscale_video`) must resolve inside
+`GFLOW_CLI_OUTPUT_DIR`, and an MCP tool that opens a browser profile takes `profile` only as a plain name. Anything else is refused
+with a 400 envelope before anything runs. **Breaking for MCP callers** that passed an
+absolute path outside the output dir. The CLI is unchanged. Reported by Filip Kulisiewicz.
+
+**Cross-filesystem `-o` (#1114).** The CLI and the MCP worker move a finished clip with
+`shutil.move`, so an output on another mount or volume lands instead of failing with
+`EXDEV` after the credits are spent.
+
+Full ledger: [LIVE_VERIFICATION_v0.92.0](LIVE_VERIFICATION_v0.92.0.md).
+
+<details><summary>v0.91.0 — MCP background runs, SEP-2663 tasks, r2v with a character</summary>
+
 **v0.91.0 — alpha.** MCP background generations now run, read back the way the Tasks
 extension says, an agent-only credit confirmation is read before it is approved, and on
 flow.google.com a reference-to-video takes a character and a lost video submit reply no
@@ -27,6 +46,8 @@ local files, gflow follows the clip carrying the files it uploaded to completion
 failing a billed generation; t2v and character-only r2v still end in exit 9 (#1112).
 
 Full ledger: [LIVE_VERIFICATION_v0.91.0](LIVE_VERIFICATION_v0.91.0.md).
+
+</details>
 
 <details><summary>v0.90.0 — batch resume, a reference uploaded once</summary>
 
@@ -682,6 +703,7 @@ migrated accounts (#795), and the agent-only composer driver (#799, #824 open).
 
 | Milestone | Status |
 |---|---|
+| MCP `output` / `out_dir` confined to the output dir, `profile` a plain name (GHSA-hqfj-4jww-76f2); cross-filesystem `-o` (#1114) | ✅ done (v0.92.0) |
 | MCP `wait=false` runs (#1097); `tasks/get` and `tasks/cancel` follow SEP-2663 (#1102); agent-only credit confirmation read before approval (#988); r2v with a character on flow.google.com (#723); a lost video submit reply followed to its clip (#1112) | ✅ done (v0.91.0) |
 | `gflow run --resume` (#934); a local `--ref` uploaded once per project (#772); unwritable output, corrupt cookie store and signed-URL errors classified (#1091, #796, #941) | ✅ done (v0.90.0) |
 | Lost image replies recovered from the grid, upscale after generating, hidden picker refused (#1075, #1067, #788) | ✅ done (v0.89.1) |

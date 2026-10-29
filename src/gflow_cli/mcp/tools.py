@@ -588,7 +588,9 @@ def _confine_to_output_dir(value: str) -> Path:
     base = get_settings().output_dir.resolve()
     candidate = (base / Path(value)).resolve()  # absolute `value` replaces base; checked below
     if not candidate.is_relative_to(base):
-        raise ValueError(f"path {value!r} is outside the configured output directory")
+        raise ValueError(
+            f"path {value!r} is outside the configured output directory; pass a path relative to it"
+        )
     return candidate
 
 
@@ -880,6 +882,7 @@ def _build_video_media_inputs(
     description=(
         "Generate an image using Google Flow's image models. "
         "Produces 1-4 images from a text prompt. "
+        "output, if given, must resolve inside the configured output directory. "
         "Models: nano2 (Nano Banana 2.1, fast; 'nano2.1' also accepted), "
         "nano2-lite (Nano Banana 2 Lite), "
         "nano-pro (Nano Banana Pro), image4 (Imagen 4, no longer in Flow's menu). "
@@ -946,7 +949,7 @@ async def gflow_generate_image(
             and/or GFLOW_CLI_LLM_BASE_URL); degrades gracefully to the
             original prompt when unavailable (mirrors the CLI ``--tool/-t``
             flag).
-        profile: gflow-cli profile name to use.  Leave as ``"default"`` (or
+        profile: gflow-cli profile name (a plain name, never a path).  Leave as ``"default"`` (or
             omit) to auto-resolve using the same precedence as the CLI:
             ``GFLOW_CLI_PROFILE`` env var → ``config.toml`` default →
             auto-select if exactly one profile exists.
@@ -963,6 +966,8 @@ async def gflow_generate_image(
             given), or 'auto' (bind whatever renders, the default). If the arm
             can't be reached, generation aborts before submitting (no credits).
             Overrides GFLOW_CLI_UI_MODE.
+        output: Optional file to write, inside the configured output dir: a relative path
+            is taken relative to it; an escape or a directory is refused (400 Invalid Output).
         wait: Block until the generation finishes (default) or run it in the background;
             agents read it from the tool schema (#481).
 
@@ -1145,6 +1150,7 @@ def _build_video_payload(
         "ingredient images via reference_images. See docs/REFERENCE_STRATEGIES.md. "
         "Optional ui_mode ('classic'/'auto') verifies the classic editor pre-submit and aborts "
         "before spending credits if unreachable; 'agentic' is not supported for video. "
+        "output, if given, must resolve inside the configured output directory. "
         "Returns the local file path to the generated video."
     ),
 )
@@ -1226,7 +1232,7 @@ async def gflow_generate_video(  # NOSONAR
             and/or GFLOW_CLI_LLM_BASE_URL); degrades gracefully to the
             original prompt when unavailable (mirrors the CLI ``--tool/-t``
             flag on ``video t2v``).
-        profile: gflow-cli profile name to use.  Leave as ``"default"`` (or
+        profile: gflow-cli profile name (a plain name, never a path).  Leave as ``"default"`` (or
             omit) to auto-resolve using the same precedence as the CLI:
             ``GFLOW_CLI_PROFILE`` env var → ``config.toml`` default →
             auto-select if exactly one profile exists.
@@ -1253,6 +1259,8 @@ async def gflow_generate_video(  # NOSONAR
             agent-only flow.google.com composer (#799) is routed to its own
             driver before that check, so 't2v' runs there under 'auto' or
             'classic'.
+        output: Optional file to write, inside the configured output dir: a relative path
+            is taken relative to it; an escape or a directory is refused (400 Invalid Output).
         wait: Block until the generation finishes (default) or run it in the background;
             agents read it from the tool schema (#481).
         **kwargs: Additional optional keyword arguments such as ``project_name``.
@@ -1644,7 +1652,8 @@ async def gflow_character_show(
         "disk. For a generation that finished and was billed but whose download failed "
         "— the clip is in the Flow project and the local catalog shows no file for it. "
         "Spends no credits: the generation was already paid for. The bytes are verified "
-        "against the size Flow reports before the file is written. Video only: an image "
+        "against the size Flow reports before the file is written. out_dir, if given, "
+        "must resolve inside the configured output directory. Video only: an image "
         "media ID is refused immediately (exit 11) because the signed URL this needs "
         "comes from a record only a clip's route emits. See issue #877. "
         "The transfer already retries a dropped connection internally, so a failure "
@@ -1720,7 +1729,7 @@ async def gflow_upscale_image(
         media_id: The Flow media ID (UUID) of the generated image.
         scale: Target resolution: '2k' or '4k' (4k is Ultra-only).
         project: Project UUID that owns the media. Resolved from local catalog when omitted.
-        out_dir: Output directory (defaults to configured images directory).
+        out_dir: Output directory, inside the configured output dir (the default).
         profile: Profile name (overrides default).
 
     Returns:
@@ -1783,7 +1792,7 @@ async def gflow_upscale_video(
         media_id: The Flow media ID (UUID) of the generated video.
         scale: Target quality: '1080p' (enhanced), '720p' (original), or '270p' (GIF).
         project: Project UUID that owns the media. Resolved from local catalog when omitted.
-        out_dir: Output directory (defaults to configured videos directory).
+        out_dir: Output directory, inside the configured output dir (the default).
         profile: Profile name (overrides default).
 
     Returns:

@@ -95,6 +95,11 @@ Set, `image t2i`/`i2i`, `video t2v`/`i2v`/`r2v`, `gflow run` and the MCP
 **CLI override:** command-specific output flags such as `--out` for image
 commands and `--out-dir` for video commands.
 
+**MCP boundary:** the MCP server never writes outside this directory. A tool's
+`output` / `out_dir` is resolved against it and refused when it resolves outside
+([MCP.md](MCP.md), GHSA-hqfj-4jww-76f2), so set it to wherever an agent's files
+should land.
+
 If [`GFLOW_CLI_STORAGE_URI`](#gflow_cli_storage_uri) is set, generated asset
 bytes are uploaded to the configured cloud bucket instead of this local output
 root. `GFLOW_CLI_OUTPUT_DIR` still matters for local mode and for deriving the

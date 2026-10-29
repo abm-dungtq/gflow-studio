@@ -17,6 +17,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   tool also refuses an `output` that names a directory before anything is billed, as the
   CLI's `-o` already did ([spike](docs/superpowers/spikes/2026-10-29-cross-device-relocate.md)).
 
+### Security
+
+- **MCP tools can no longer write outside the configured output directory**
+  ([GHSA-hqfj-4jww-76f2](https://github.com/ffroliva/gflow-cli/security/advisories/GHSA-hqfj-4jww-76f2)).
+  `output` on `gflow_generate_image` / `gflow_generate_video` and `out_dir` on
+  `gflow_download_media` / `gflow_upscale_image` / `gflow_upscale_video` accepted any path,
+  so an MCP client, or content steering one, could write or replace files anywhere the
+  server's user can. They are now resolved against `GFLOW_CLI_OUTPUT_DIR` and refused with a
+  400 envelope when they resolve outside it; an `output` that resolves to a directory is
+  refused too. **Breaking for MCP callers** that passed an absolute path outside the output
+  directory: pass a path relative to it, or set `GFLOW_CLI_OUTPUT_DIR`. The CLI is
+  unchanged. Reported by Filip Kulisiewicz.
+
 ## [0.91.0] — 2026-10-28
 
 ### Fixed

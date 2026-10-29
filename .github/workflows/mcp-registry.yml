@@ -56,7 +56,7 @@ jobs:
       id-token: write # OIDC exchange with registry.modelcontextprotocol.io
     env:
       # Pinned by version AND digest: this step runs in a job holding id-token
-      # write and publishes publicly under io.github.ffroliva, so a moved tag
+      # write and publishes publicly under io.github.abm-dungtq, so a moved tag
       # must not silently change the binary that does it.
       MCP_PUBLISHER_VERSION: "1.8.1"
       MCP_PUBLISHER_SHA256: "a06c9096dcb9727c13555b6be26c7effa707b01f06a4c561ba7a3635443cf2cc"

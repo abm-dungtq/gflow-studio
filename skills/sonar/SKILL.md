@@ -15,7 +15,7 @@ gate verdict. This command answers one question: **is the SonarCloud gate green
 `$ARGUMENTS` is the PR number. If empty, resolve it from the current branch
 (`gh pr view --json number -q .number`).
 
-Project: key `ffroliva_gflow-cli`, org `ffroliva-github` (see `sonar-project.properties`).
+Project: key `abm-dungtq_gflow-studio`, org `abm-dungtq` (see `sonar-project.properties`).
 The CI scan sets `sonar.qualitygate.wait=true`, so a **green `SonarCloud analysis`
 check means the gate genuinely passed** — but the gate **API is stale until that
 check finishes**, so always check the GitHub check FIRST.
@@ -45,11 +45,11 @@ New-code issues live on the PR branch, NOT `main`. **Scope every call with
 
 ```bash
 # Which gate conditions are ERROR:
-GET /api/qualitygates/project_status?projectKey=ffroliva_gflow-cli&pullRequest=<N>
+GET /api/qualitygates/project_status?projectKey=abm-dungtq_gflow-studio&pullRequest=<N>
 # New issues (bugs/smells) with file:line + rule + creationDate:
-GET /api/issues/search?componentKeys=ffroliva_gflow-cli&pullRequest=<N>&resolved=false
+GET /api/issues/search?componentKeys=abm-dungtq_gflow-studio&pullRequest=<N>&resolved=false
 # Unreviewed security hotspots:
-GET /api/hotspots/search?projectKey=ffroliva_gflow-cli&pullRequest=<N>&status=TO_REVIEW
+GET /api/hotspots/search?projectKey=abm-dungtq_gflow-studio&pullRequest=<N>&status=TO_REVIEW
 ```
 
 **3. Fix by condition — no gaming.**

@@ -1933,7 +1933,7 @@ The v0.1 scaffold left `upload_image`, `start_generation`, `get_job`, `download`
 
 If you hit something not listed here:
 
-1. Search existing issues at <https://github.com/ffroliva/gflow-cli/issues>.
+1. Search existing issues at <https://github.com/abm-dungtq/gflow-studio/issues>.
 2. If none match, open a new issue with:
    - `gflow-cli` version (`gflow --version`)
    - Python version (`python --version`)

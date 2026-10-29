@@ -73,7 +73,7 @@ def _fetch_runs(repo: str, head_sha: str) -> list[dict[str, object]]:
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--repo", default="ffroliva/gflow-cli")
+    ap.add_argument("--repo", default="abm-dungtq/gflow-studio")
     ap.add_argument("--pr", required=True, help="pull request number")
     args = ap.parse_args()
 

@@ -4027,7 +4027,7 @@ def _labs_rpc_retired_hint(body_text: str, *, route: str) -> str | None:
         f"there is no prompt to simplify, and there is no bug to file. Flow has moved "
         f"to flow.google.com, and gflow has not ported this read to that frontend yet, "
         f"so the command has no working path today. Track "
-        f"https://github.com/ffroliva/gflow-cli/issues/639 for the port."
+        f"https://github.com/abm-dungtq/gflow-studio/issues for the port."
     )
 
 

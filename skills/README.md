@@ -43,7 +43,7 @@ This directory ships installable agent skill docs for `gflow-cli`. Each `SKILL.m
 ### Install for Claude Code
 
 ```bash
-git clone git@github.com:ffroliva/gflow-cli.git
+git clone git@github.com:abm-dungtq/gflow-studio.git
 cd gflow-cli
 ln -s "$(pwd)/skills/gflow-cli" ~/.claude/skills/gflow-cli
 

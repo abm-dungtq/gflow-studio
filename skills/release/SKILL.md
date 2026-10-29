@@ -174,8 +174,8 @@ rg -n "__version__|<OLD_VERSION>|version assertion" tests src pyproject.toml .co
   uses the `compare/vPREV...vNEW` form, so use that for the new version too (NOT the
   `releases/tag/` form), or `/gflow:doc-review` will flag the inconsistency:
   ```
-  [Unreleased]: https://github.com/ffroliva/gflow-cli/compare/v<NEW_VERSION>...HEAD
-  [<NEW_VERSION>]: https://github.com/ffroliva/gflow-cli/compare/v<PREV_VERSION>...v<NEW_VERSION>
+  [Unreleased]: https://github.com/abm-dungtq/gflow-studio/compare/v<NEW_VERSION>...HEAD
+  [<NEW_VERSION>]: https://github.com/abm-dungtq/gflow-studio/compare/v<PREV_VERSION>...v<NEW_VERSION>
   ```
 
 **9b. Update `docs/PROJECT_STATUS.md` — this is an ACTION, not a review finding.**
@@ -248,10 +248,7 @@ entries under `## [<NEW_VERSION>]`, re-run steps 4, **4b** and 10 — 4b because
 newcomers are user-facing features that just entered this release and each needs its
 `LIVE_VERIFICATION_v<NEW_VERSION>.md` row (v0.68.0 shipped #672 this way and the ledger
 had no row until a reviewer supplied one) — amend or add to the step 11 commit, and only
-then tag. **Exception:** if the only newcomers are `docs(sponsors): refresh hall of fame`
-commits from `.github/workflows/sponsors.yml` (a daily bot that cannot see a release
-freeze), `git merge origin/develop` and move on — they carry no `[Unreleased]` entry, no
-4b row and nothing to re-verify. If a tag was already created locally, `git tag -d v<NEW_VERSION>` and re-sign
+then tag. If a tag was already created locally, `git tag -d v<NEW_VERSION>` and re-sign
 it on the merged head — this is safe only while the tag is unpushed (see the **NEVER
 force-push a release tag** reminder below). `develop` can still move between this check
 and the step 13 push; that cannot corrupt the tag, it only means a late commit ships in
@@ -291,7 +288,7 @@ git cat-file -p v<NEW_VERSION> | grep -c "BEGIN SSH SIGNATURE"   # expect 1 (or 
 git push origin v<NEW_VERSION>
 ```
 
-CI will start building the release. Watch <https://github.com/ffroliva/gflow-cli/actions>.
+CI will start building the release. Watch <https://github.com/abm-dungtq/gflow-studio/actions>.
 Wait for the `Release` run to report **completed / success** and confirm the GitHub
 Release published before continuing (`gh release view v<NEW_VERSION>`).
 
@@ -363,7 +360,7 @@ If there are conflicts (rare — only if `develop` has commits that touched the 
 
 Tell the user:
 - Tag push triggered `.github/workflows/release.yml`.
-- Watch <https://github.com/ffroliva/gflow-cli/actions> for the release workflow.
+- Watch <https://github.com/abm-dungtq/gflow-studio/actions> for the release workflow.
 - On success: PyPI publish + GitHub Release with auto-generated notes.
 - On failure (most common: PyPI Trusted Publishing not yet configured): point to <https://pypi.org/manage/account/publishing/>.
 - `develop` is now synced with `main` (back-merge done in step 15).

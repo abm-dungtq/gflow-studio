@@ -17,7 +17,7 @@ optimization_notes: |
 
 # gflow-cli skill
 
-`gflow-cli` is a Python CLI that drives [Google Flow](https://labs.google/fx/tools/flow) — Veo (T2V/I2V) and Imagen / Nano Banana — from the terminal by automating the real Flow web UI in a headed Chrome session (Playwright), not by bypassing it. Source: <https://github.com/ffroliva/gflow-cli>. Canonical command reference: [`docs/USAGE.md`](https://github.com/ffroliva/gflow-cli/blob/main/docs/USAGE.md).
+`gflow-cli` is a Python CLI that drives [Google Flow](https://labs.google/fx/tools/flow) — Veo (T2V/I2V) and Imagen / Nano Banana — from the terminal by automating the real Flow web UI in a headed Chrome session (Playwright), not by bypassing it. Source: <https://github.com/abm-dungtq/gflow-studio>. Canonical command reference: [`docs/USAGE.md`](https://github.com/abm-dungtq/gflow-studio/blob/main/docs/USAGE.md).
 
 ## When to invoke this skill
 
@@ -198,7 +198,7 @@ gflow character voices            # discover valid --voice ids first
 gflow character list --project "$PROJECT_ID"
 ```
 
-See [`docs/CHARACTER.md`](https://github.com/ffroliva/gflow-cli/blob/main/docs/CHARACTER.md) for the full domain model, wire protocol, and the crash-recoverable persist-before-spend saga.
+See [`docs/CHARACTER.md`](https://github.com/abm-dungtq/gflow-studio/blob/main/docs/CHARACTER.md) for the full domain model, wire protocol, and the crash-recoverable persist-before-spend saga.
 
 ### Compose clips into an extended video (credit-free)
 
@@ -309,4 +309,4 @@ Documented errors agents commonly make — negative examples for the SkillOpt tr
 
 ## Disclaimer
 
-gflow-cli is **not affiliated with Google**. Reverse-engineered; may break when Google changes Flow's private API. Read the [DISCLAIMER](https://github.com/ffroliva/gflow-cli/blob/main/DISCLAIMER.md) before deploying in any sensitive setting.
+gflow-cli is **not affiliated with Google**. Reverse-engineered; may break when Google changes Flow's private API. Read the [DISCLAIMER](https://github.com/abm-dungtq/gflow-studio/blob/main/DISCLAIMER.md) before deploying in any sensitive setting.

@@ -50,7 +50,7 @@ _SIGNALS_JS = """() => {
 
 
 def _resolve_profile_dir(profile: str) -> Path:
-    base = Path.home() / "AppData" / "Local" / "ffroliva" / "gflow-cli" / f"profile_{profile}"
+    base = Path.home() / "AppData" / "Local" / "abm-dungtq" / "gflow-cli" / f"profile_{profile}"
     if not base.exists():
         msg = f"profile dir not found: {base}"
         raise SystemExit(msg)

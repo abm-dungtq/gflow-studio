@@ -13,7 +13,7 @@ installs no browser, by design. This page says what that image is for and what i
 
 ## What the image is for
 
-[Glama](https://glama.ai/mcp/servers/ffroliva/gflow-cli) runs automated safety and quality checks
+[Glama](https://glama.ai/mcp/servers) runs automated safety and quality checks
 on the MCP servers it lists, and only servers that pass those checks appear in its search
 results. To run them it builds a container from a spec and asks the server to introspect itself.
 

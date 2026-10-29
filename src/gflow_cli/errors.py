@@ -391,7 +391,7 @@ class WireFormatError(FlowApiError):
     title = "Unexpected response shape from Flow"
     _default_remediation = (
         "Check request payload parameters or retry with a simpler prompt text. "
-        "File a bug at https://github.com/ffroliva/gflow-cli/issues with the "
+        "File a bug at https://github.com/abm-dungtq/gflow-studio/issues with the "
         "discovery payload above."
     )
 
@@ -726,7 +726,7 @@ class UiSelectorDriftError(GFlowError):
     _default_remediation = (
         "A Flow editor UI element could not be located — Google may have updated "
         "their frontend. Check for a newer gflow-cli release, then file a bug at "
-        "https://github.com/ffroliva/gflow-cli/issues referencing the probe name "
+        "https://github.com/abm-dungtq/gflow-studio/issues referencing the probe name "
         "and attaching the diagnostics JSON and/or debug screenshot referenced in "
         "this message, plus the incident bundle's report.md when one was written "
         "(review artifacts before sharing — screenshots may show your account "
@@ -878,8 +878,8 @@ class FlowHostMigratedError(GFlowError):
         "off, or because this request type is not ported to the migrated host yet. "
         "This is a per-account setting applied on every load, so retrying will not "
         "land the old frontend. The REST surface (gflow project list, gflow data ...) "
-        "still works. Follow https://github.com/ffroliva/gflow-cli/issues/639 for "
-        "the migrated-frontend feature matrix."
+        "still works. Follow https://github.com/abm-dungtq/gflow-studio/issues for "
+        "updates on the migrated frontend."
     )
 
 

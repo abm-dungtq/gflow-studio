@@ -20,7 +20,7 @@
 - Confirms: `info.version` = `0.8.1`; `info.summary` = `Unofficial CLI for Google Flow — drive Veo image-to-video generations from the terminal.`; `info.description` starts with `# gflow-cli` + the new tagline (`> **Unofficial Python CLI for Google Flow.** Drive [Veo]…`). **The stale v0.7.0 README content is gone from the package page** — primary goal of this release achieved.
 
 ### GitHub Release — ✅
-- URL: https://github.com/ffroliva/gflow-cli/releases/tag/v0.8.1
+- URL: https://github.com/abm-dungtq/gflow-studio/releases/tag/v0.8.1
 - Tag commit: `55255b2` (the PR #44 merge commit on main).
 - Signed-tag CI gate: PASSED in release workflow run `26342414187` (status: completed / success). The SSH signature verification gate in `release.yml` accepted the tag.
 - Local `git tag -v v0.8.1` reports the tagger / message correctly; the local "gpg.ssh.allowedSignersFile" warning is a per-machine config issue unrelated to the tag signature itself.

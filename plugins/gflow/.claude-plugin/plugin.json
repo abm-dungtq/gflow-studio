@@ -1,14 +1,14 @@
 {
   "name": "gflow",
-  "displayName": "gflow-cli",
+  "displayName": "gflow-studio",
   "version": "0.91.0",
   "description": "Drive Google Flow from your agent: Veo text-to-video, image-to-video and clip extension, Imagen images, reusable Characters and scene composition.",
   "author": {
-    "name": "Flavio Oliva",
-    "url": "https://github.com/ffroliva"
+    "name": "ABM.DũngTQ",
+    "url": "https://github.com/abm-dungtq"
   },
-  "homepage": "https://ffroliva.github.io/gflow-cli/",
-  "repository": "https://github.com/ffroliva/gflow-cli",
+  "homepage": "https://github.com/abm-dungtq/gflow-studio#readme",
+  "repository": "https://github.com/abm-dungtq/gflow-studio",
   "license": "MIT",
   "keywords": [
     "google-flow",

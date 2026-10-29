@@ -41,7 +41,7 @@ hermes cron "pr-triage-autopilot" (hourly)
   │    tick entirely and log it — no overlap, no concurrent daily-cap races (see
   │    "Operational hardening").
   │
-  ├─ gh pr list --repo ffroliva/gflow-cli --state open --json number,author,isDraft,headRefOid,
+  ├─ gh pr list --repo abm-dungtq/gflow-studio --state open --json number,author,isDraft,headRefOid,
   │    additions,deletions,changedFiles,statusCheckRollup,comments,state
   │
   ├─ Stage 0 — cheap deterministic gate (pr_triage_gate.py, no LLM, free):

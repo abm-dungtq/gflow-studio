@@ -48,7 +48,7 @@ _PLUGIN_SKILLS = _REPO / "plugins" / "gflow" / "skills"
 #: add one only after deciding it is a *user* skill.
 SHIPPED = ("gflow-cli", "video-production")
 
-_BLOB = "https://github.com/ffroliva/gflow-cli/blob/main/"
+_BLOB = "https://github.com/abm-dungtq/gflow-studio/blob/main/"
 
 #: ``](../../path)`` — a link climbing out of ``skills/<name>/`` to the repo root. Anything
 #: shallower stays put: it still resolves inside the installed plugin.

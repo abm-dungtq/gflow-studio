@@ -73,7 +73,7 @@ def _db_path() -> Path:
     agree on the path.  The prior platformdirs lookup here used the wrong
     appauthor + filename and resolved to a non-existent path on Windows
     (``AppData\\Local\\gflow-cli\\gflow-cli\\data.db`` vs the real
-    ``AppData\\Local\\ffroliva\\gflow-cli\\gflow.db``).
+    ``AppData\\Local\\abm-dungtq\\gflow-cli\\gflow.db``).
     """
     if env := os.environ.get("GFLOW_CLI_DB_PATH"):
         return Path(env)

@@ -9,12 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **gflow-studio: new home and bilingual README.** The ABM edition now lives at
-  `abm-dungtq/gflow-studio`; the command is still `gflow`. `README.md` (English) and the new
-  `README.vi.md` (Vietnamese) open with a banner and describe what the tool does, what this
-  edition adds, setup on macOS / Windows / Linux from the repository's git URL, usage and batch
+- **gflow-studio: its own project, with a bilingual README.** gflow-studio lives at
+  `abm-dungtq/gflow-studio` and is developed there; the command is still `gflow`. `README.md`
+  (English) and the new `README.vi.md` (Vietnamese) open with a banner and describe what the
+  tool does, setup on macOS / Windows / Linux from the repository's git URL, usage and batch
   examples, hiding the browser, a real `gflow run` transcript, and the exit codes to act on.
-  Upstream authorship and the MIT license are credited unchanged.
+  Links, error hints, the MCP registry name (`io.github.abm-dungtq/gflow-studio`), plugin
+  manifests and security contacts point at gflow-studio; the sponsor badges and the daily
+  sponsor and star-history workflows are gone. **Windows:** the data folder is now
+  `%LOCALAPPDATA%\abm-dungtq\gflow-cli`; move an existing `ffroliva\gflow-cli` folder there
+  to keep saved profiles.
 - **`--upscale` post-download 1080p export on `gflow video t2v`, `i2v`, `r2v`, `batch`, and MCP `gflow_generate_video(upscale=True)`**.
   After a 720p video finishes generating and downloading, passing `--upscale` (or `upscale=True` on
   `gflow_generate_video`) calls `client.upsample_video(..., scale="1080p")` in the same browser
@@ -1754,7 +1758,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Sponsorship: a Support section, a sponsor hall of fame, and a Funding link on PyPI.** The
-  README gains one-click sponsor links; [docs/SPONSORS.md](docs/SPONSORS.md) lists the tiers and
+  README gains one-click sponsor links; `docs/SPONSORS.md` lists the tiers and
   what each one gets. `.github/workflows/sponsors.yml` refreshes the hall of fame daily from GitHub
   Sponsors, plus a Gold row at the top of both pages, and only ever lists sponsors who chose to
   sponsor publicly. No CLI or MCP behaviour
@@ -4687,7 +4691,7 @@ completed exit 0, proving no regression. See
   across processes.
 
 [#357]: https://github.com/ffroliva/gflow-cli/pull/357
-[`docs/LIVE_VERIFICATION_v0.40.0-production-readiness.md`]: https://github.com/ffroliva/gflow-cli/blob/main/docs/LIVE_VERIFICATION_v0.40.0-production-readiness.md
+[`docs/LIVE_VERIFICATION_v0.40.0-production-readiness.md`]: https://github.com/abm-dungtq/gflow-studio/blob/main/docs/LIVE_VERIFICATION_v0.40.0-production-readiness.md
 
 ## [0.40.0] — 2026-07-19
 
@@ -6762,7 +6766,7 @@ shell-script template that branches on these codes.
 - Project renamed `flow-cli` → `gflow-cli` across all docs and source. The
   PyPI package and GitHub repo were already at the new name in v0.2.0a1;
   this commit completes the in-source rename. Local clones may want to
-  rename their working directory to match `gh clone https://github.com/ffroliva/gflow-cli`
+  rename their working directory to match `gh clone https://github.com/abm-dungtq/gflow-studio`
   behavior.
 
 ### Security
@@ -6829,120 +6833,120 @@ shell-script template that branches on these codes.
 
 First skeleton. Not functional end-to-end yet.
 
-[Unreleased]: https://github.com/ffroliva/gflow-cli/compare/v0.91.0...HEAD
-[0.91.0]: https://github.com/ffroliva/gflow-cli/compare/v0.90.0...v0.91.0
-[0.90.0]: https://github.com/ffroliva/gflow-cli/compare/v0.89.1...v0.90.0
-[0.89.1]: https://github.com/ffroliva/gflow-cli/compare/v0.89.0...v0.89.1
-[0.89.0]: https://github.com/ffroliva/gflow-cli/compare/v0.88.0...v0.89.0
-[0.88.0]: https://github.com/ffroliva/gflow-cli/compare/v0.87.1...v0.88.0
-[0.87.1]: https://github.com/ffroliva/gflow-cli/compare/v0.87.0...v0.87.1
-[0.87.0]: https://github.com/ffroliva/gflow-cli/compare/v0.86.0...v0.87.0
-[0.86.0]: https://github.com/ffroliva/gflow-cli/compare/v0.85.0...v0.86.0
-[0.85.0]: https://github.com/ffroliva/gflow-cli/compare/v0.84.0...v0.85.0
-[0.84.0]: https://github.com/ffroliva/gflow-cli/compare/v0.83.2...v0.84.0
-[0.83.2]: https://github.com/ffroliva/gflow-cli/compare/v0.83.1...v0.83.2
-[0.83.1]: https://github.com/ffroliva/gflow-cli/compare/v0.83.0...v0.83.1
-[0.83.0]: https://github.com/ffroliva/gflow-cli/compare/v0.82.1...v0.83.0
-[0.82.1]: https://github.com/ffroliva/gflow-cli/compare/v0.82.0...v0.82.1
-[0.82.0]: https://github.com/ffroliva/gflow-cli/compare/v0.81.0...v0.82.0
-[0.81.0]: https://github.com/ffroliva/gflow-cli/compare/v0.80.0...v0.81.0
-[0.80.0]: https://github.com/ffroliva/gflow-cli/compare/v0.79.1...v0.80.0
-[0.79.1]: https://github.com/ffroliva/gflow-cli/compare/v0.79.0...v0.79.1
-[0.79.0]: https://github.com/ffroliva/gflow-cli/compare/v0.78.0...v0.79.0
-[0.78.0]: https://github.com/ffroliva/gflow-cli/compare/v0.77.1...v0.78.0
-[0.77.1]: https://github.com/ffroliva/gflow-cli/compare/v0.77.0...v0.77.1
-[0.77.0]: https://github.com/ffroliva/gflow-cli/compare/v0.76.0...v0.77.0
-[0.76.0]: https://github.com/ffroliva/gflow-cli/compare/v0.75.0...v0.76.0
-[0.75.0]: https://github.com/ffroliva/gflow-cli/compare/v0.74.0...v0.75.0
-[0.74.0]: https://github.com/ffroliva/gflow-cli/compare/v0.73.2...v0.74.0
-[0.73.2]: https://github.com/ffroliva/gflow-cli/compare/v0.73.1...v0.73.2
-[0.73.1]: https://github.com/ffroliva/gflow-cli/compare/v0.73.0...v0.73.1
-[0.73.0]: https://github.com/ffroliva/gflow-cli/compare/v0.72.0...v0.73.0
-[0.72.0]: https://github.com/ffroliva/gflow-cli/compare/v0.71.1...v0.72.0
-[0.71.1]: https://github.com/ffroliva/gflow-cli/compare/v0.71.0...v0.71.1
-[0.71.0]: https://github.com/ffroliva/gflow-cli/compare/v0.70.0...v0.71.0
-[0.70.0]: https://github.com/ffroliva/gflow-cli/compare/v0.69.0...v0.70.0
-[0.69.0]: https://github.com/ffroliva/gflow-cli/compare/v0.68.0...v0.69.0
-[0.68.0]: https://github.com/ffroliva/gflow-cli/compare/v0.67.0...v0.68.0
-[0.67.0]: https://github.com/ffroliva/gflow-cli/compare/v0.66.3...v0.67.0
-[0.66.3]: https://github.com/ffroliva/gflow-cli/compare/v0.66.2...v0.66.3
-[0.66.2]: https://github.com/ffroliva/gflow-cli/compare/v0.66.1...v0.66.2
-[0.66.1]: https://github.com/ffroliva/gflow-cli/compare/v0.66.0...v0.66.1
-[0.66.0]: https://github.com/ffroliva/gflow-cli/compare/v0.65.0...v0.66.0
-[0.65.0]: https://github.com/ffroliva/gflow-cli/compare/v0.64.0...v0.65.0
-[0.64.0]: https://github.com/ffroliva/gflow-cli/compare/v0.63.0...v0.64.0
-[0.63.0]: https://github.com/ffroliva/gflow-cli/compare/v0.62.1...v0.63.0
-[0.62.1]: https://github.com/ffroliva/gflow-cli/compare/v0.62.0...v0.62.1
-[0.62.0]: https://github.com/ffroliva/gflow-cli/compare/v0.61.0...v0.62.0
-[0.61.0]: https://github.com/ffroliva/gflow-cli/compare/v0.60.0...v0.61.0
-[0.60.0]: https://github.com/ffroliva/gflow-cli/compare/v0.59.0...v0.60.0
-[0.59.0]: https://github.com/ffroliva/gflow-cli/compare/v0.58.0...v0.59.0
-[0.58.0]: https://github.com/ffroliva/gflow-cli/compare/v0.57.1...v0.58.0
-[0.57.1]: https://github.com/ffroliva/gflow-cli/compare/v0.57.0...v0.57.1
-[0.57.0]: https://github.com/ffroliva/gflow-cli/compare/v0.56.0...v0.57.0
-[0.56.0]: https://github.com/ffroliva/gflow-cli/compare/v0.55.0...v0.56.0
-[0.55.0]: https://github.com/ffroliva/gflow-cli/compare/v0.54.0...v0.55.0
-[0.54.0]: https://github.com/ffroliva/gflow-cli/compare/v0.53.1...v0.54.0
-[0.53.1]: https://github.com/ffroliva/gflow-cli/compare/v0.53.0...v0.53.1
-[0.53.0]: https://github.com/ffroliva/gflow-cli/compare/v0.52.0...v0.53.0
-[0.52.0]: https://github.com/ffroliva/gflow-cli/compare/v0.51.0...v0.52.0
-[0.51.0]: https://github.com/ffroliva/gflow-cli/compare/v0.50.0...v0.51.0
-[0.50.0]: https://github.com/ffroliva/gflow-cli/compare/v0.49.0...v0.50.0
-[0.49.0]: https://github.com/ffroliva/gflow-cli/compare/v0.48.0...v0.49.0
-[0.48.0]: https://github.com/ffroliva/gflow-cli/compare/v0.47.0...v0.48.0
-[0.47.0]: https://github.com/ffroliva/gflow-cli/compare/v0.46.1...v0.47.0
-[0.46.1]: https://github.com/ffroliva/gflow-cli/compare/v0.46.0...v0.46.1
-[0.46.0]: https://github.com/ffroliva/gflow-cli/compare/v0.45.0...v0.46.0
-[0.45.0]: https://github.com/ffroliva/gflow-cli/compare/v0.44.0...v0.45.0
-[0.44.0]: https://github.com/ffroliva/gflow-cli/compare/v0.43.0...v0.44.0
-[0.43.0]: https://github.com/ffroliva/gflow-cli/compare/v0.42.0...v0.43.0
-[0.42.0]: https://github.com/ffroliva/gflow-cli/compare/v0.41.0...v0.42.0
-[0.41.0]: https://github.com/ffroliva/gflow-cli/compare/v0.40.0...v0.41.0
-[0.40.0]: https://github.com/ffroliva/gflow-cli/compare/v0.39.0...v0.40.0
-[0.39.0]: https://github.com/ffroliva/gflow-cli/compare/v0.38.1...v0.39.0
-[0.38.1]: https://github.com/ffroliva/gflow-cli/compare/v0.38.0...v0.38.1
-[0.38.0]: https://github.com/ffroliva/gflow-cli/compare/v0.37.0...v0.38.0
-[0.37.0]: https://github.com/ffroliva/gflow-cli/compare/v0.36.0...v0.37.0
-[0.36.0]: https://github.com/ffroliva/gflow-cli/compare/v0.35.0...v0.36.0
-[0.35.0]: https://github.com/ffroliva/gflow-cli/compare/v0.34.0...v0.35.0
-[0.34.0]: https://github.com/ffroliva/gflow-cli/compare/v0.33.0...v0.34.0
-[0.33.0]: https://github.com/ffroliva/gflow-cli/compare/v0.32.1...v0.33.0
-[0.32.1]: https://github.com/ffroliva/gflow-cli/compare/v0.32.0...v0.32.1
-[0.32.0]: https://github.com/ffroliva/gflow-cli/compare/v0.31.0...v0.32.0
-[0.31.0]: https://github.com/ffroliva/gflow-cli/compare/v0.30.0...v0.31.0
-[0.30.0]: https://github.com/ffroliva/gflow-cli/compare/v0.29.0...v0.30.0
-[0.29.0]: https://github.com/ffroliva/gflow-cli/compare/v0.28.0...v0.29.0
-[0.28.0]: https://github.com/ffroliva/gflow-cli/compare/v0.27.1...v0.28.0
-[0.27.1]: https://github.com/ffroliva/gflow-cli/compare/v0.27.0...v0.27.1
-[0.27.0]: https://github.com/ffroliva/gflow-cli/compare/v0.26.0...v0.27.0
-[0.26.0]: https://github.com/ffroliva/gflow-cli/compare/v0.25.0...v0.26.0
-[0.25.0]: https://github.com/ffroliva/gflow-cli/compare/v0.24.0...v0.25.0
-[0.24.0]: https://github.com/ffroliva/gflow-cli/compare/v0.23.0...v0.24.0
-[0.23.0]: https://github.com/ffroliva/gflow-cli/compare/v0.22.0...v0.23.0
-[0.22.0]: https://github.com/ffroliva/gflow-cli/compare/v0.21.0...v0.22.0
-[0.21.0]: https://github.com/ffroliva/gflow-cli/compare/v0.20.1...v0.21.0
-[0.20.1]: https://github.com/ffroliva/gflow-cli/compare/v0.20.0...v0.20.1
-[0.20.0]: https://github.com/ffroliva/gflow-cli/compare/v0.19.0...v0.20.0
-[0.19.0]: https://github.com/ffroliva/gflow-cli/compare/v0.18.0...v0.19.0
-[0.18.0]: https://github.com/ffroliva/gflow-cli/compare/v0.17.0...v0.18.0
-[0.17.0]: https://github.com/ffroliva/gflow-cli/compare/v0.16.0...v0.17.0
-[0.16.0]: https://github.com/ffroliva/gflow-cli/compare/v0.15.1...v0.16.0
-[0.15.1]: https://github.com/ffroliva/gflow-cli/compare/v0.15.0...v0.15.1
-[0.15.0]: https://github.com/ffroliva/gflow-cli/compare/v0.14.0...v0.15.0
-[0.14.0]: https://github.com/ffroliva/gflow-cli/compare/v0.13.0...v0.14.0
-[0.13.0]: https://github.com/ffroliva/gflow-cli/compare/v0.12.0...v0.13.0
-[0.12.0]: https://github.com/ffroliva/gflow-cli/compare/v0.11.0...v0.12.0
-[0.11.0]: https://github.com/ffroliva/gflow-cli/compare/v0.10.0...v0.11.0
-[0.10.0]: https://github.com/ffroliva/gflow-cli/compare/v0.9.1...v0.10.0
-[0.9.1]: https://github.com/ffroliva/gflow-cli/compare/v0.9.0...v0.9.1
-[0.9.0]: https://github.com/ffroliva/gflow-cli/compare/v0.8.1...v0.9.0
-[0.8.1]: https://github.com/ffroliva/gflow-cli/compare/v0.8.0...v0.8.1
-[0.8.0]: https://github.com/ffroliva/gflow-cli/compare/v0.7.0...v0.8.0
-[0.7.0]: https://github.com/ffroliva/gflow-cli/compare/v0.6.0a6...v0.7.0
-[0.6.0a6]: https://github.com/ffroliva/gflow-cli/compare/v0.6.0a5...v0.6.0a6
-[0.6.0a5]: https://github.com/ffroliva/gflow-cli/compare/v0.6.0a4...v0.6.0a5
-[0.6.0a1]: https://github.com/ffroliva/gflow-cli/compare/v0.5.0a1...v0.6.0a1
-[0.5.0a1]: https://github.com/ffroliva/gflow-cli/compare/v0.4.0a2...v0.5.0a1
-[0.3.0a1]: https://github.com/ffroliva/gflow-cli/releases/tag/v0.3.0a1
-[0.2.0a1]: https://github.com/ffroliva/gflow-cli/releases/tag/v0.2.0a1
-[0.1.0]: https://github.com/ffroliva/gflow-cli/releases/tag/v0.1.0
+[Unreleased]: https://github.com/abm-dungtq/gflow-studio/compare/v0.91.0...HEAD
+[0.91.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.90.0...v0.91.0
+[0.90.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.89.1...v0.90.0
+[0.89.1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.89.0...v0.89.1
+[0.89.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.88.0...v0.89.0
+[0.88.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.87.1...v0.88.0
+[0.87.1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.87.0...v0.87.1
+[0.87.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.86.0...v0.87.0
+[0.86.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.85.0...v0.86.0
+[0.85.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.84.0...v0.85.0
+[0.84.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.83.2...v0.84.0
+[0.83.2]: https://github.com/abm-dungtq/gflow-studio/compare/v0.83.1...v0.83.2
+[0.83.1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.83.0...v0.83.1
+[0.83.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.82.1...v0.83.0
+[0.82.1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.82.0...v0.82.1
+[0.82.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.81.0...v0.82.0
+[0.81.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.80.0...v0.81.0
+[0.80.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.79.1...v0.80.0
+[0.79.1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.79.0...v0.79.1
+[0.79.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.78.0...v0.79.0
+[0.78.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.77.1...v0.78.0
+[0.77.1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.77.0...v0.77.1
+[0.77.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.76.0...v0.77.0
+[0.76.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.75.0...v0.76.0
+[0.75.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.74.0...v0.75.0
+[0.74.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.73.2...v0.74.0
+[0.73.2]: https://github.com/abm-dungtq/gflow-studio/compare/v0.73.1...v0.73.2
+[0.73.1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.73.0...v0.73.1
+[0.73.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.72.0...v0.73.0
+[0.72.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.71.1...v0.72.0
+[0.71.1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.71.0...v0.71.1
+[0.71.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.70.0...v0.71.0
+[0.70.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.69.0...v0.70.0
+[0.69.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.68.0...v0.69.0
+[0.68.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.67.0...v0.68.0
+[0.67.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.66.3...v0.67.0
+[0.66.3]: https://github.com/abm-dungtq/gflow-studio/compare/v0.66.2...v0.66.3
+[0.66.2]: https://github.com/abm-dungtq/gflow-studio/compare/v0.66.1...v0.66.2
+[0.66.1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.66.0...v0.66.1
+[0.66.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.65.0...v0.66.0
+[0.65.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.64.0...v0.65.0
+[0.64.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.63.0...v0.64.0
+[0.63.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.62.1...v0.63.0
+[0.62.1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.62.0...v0.62.1
+[0.62.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.61.0...v0.62.0
+[0.61.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.60.0...v0.61.0
+[0.60.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.59.0...v0.60.0
+[0.59.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.58.0...v0.59.0
+[0.58.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.57.1...v0.58.0
+[0.57.1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.57.0...v0.57.1
+[0.57.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.56.0...v0.57.0
+[0.56.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.55.0...v0.56.0
+[0.55.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.54.0...v0.55.0
+[0.54.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.53.1...v0.54.0
+[0.53.1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.53.0...v0.53.1
+[0.53.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.52.0...v0.53.0
+[0.52.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.51.0...v0.52.0
+[0.51.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.50.0...v0.51.0
+[0.50.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.49.0...v0.50.0
+[0.49.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.48.0...v0.49.0
+[0.48.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.47.0...v0.48.0
+[0.47.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.46.1...v0.47.0
+[0.46.1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.46.0...v0.46.1
+[0.46.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.45.0...v0.46.0
+[0.45.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.44.0...v0.45.0
+[0.44.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.43.0...v0.44.0
+[0.43.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.42.0...v0.43.0
+[0.42.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.41.0...v0.42.0
+[0.41.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.40.0...v0.41.0
+[0.40.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.39.0...v0.40.0
+[0.39.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.38.1...v0.39.0
+[0.38.1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.38.0...v0.38.1
+[0.38.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.37.0...v0.38.0
+[0.37.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.36.0...v0.37.0
+[0.36.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.35.0...v0.36.0
+[0.35.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.34.0...v0.35.0
+[0.34.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.33.0...v0.34.0
+[0.33.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.32.1...v0.33.0
+[0.32.1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.32.0...v0.32.1
+[0.32.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.31.0...v0.32.0
+[0.31.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.30.0...v0.31.0
+[0.30.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.29.0...v0.30.0
+[0.29.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.28.0...v0.29.0
+[0.28.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.27.1...v0.28.0
+[0.27.1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.27.0...v0.27.1
+[0.27.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.26.0...v0.27.0
+[0.26.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.25.0...v0.26.0
+[0.25.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.24.0...v0.25.0
+[0.24.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.23.0...v0.24.0
+[0.23.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.22.0...v0.23.0
+[0.22.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.21.0...v0.22.0
+[0.21.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.20.1...v0.21.0
+[0.20.1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.20.0...v0.20.1
+[0.20.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.19.0...v0.20.0
+[0.19.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.18.0...v0.19.0
+[0.18.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.17.0...v0.18.0
+[0.17.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.16.0...v0.17.0
+[0.16.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.15.1...v0.16.0
+[0.15.1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.15.0...v0.15.1
+[0.15.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.14.0...v0.15.0
+[0.14.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.13.0...v0.14.0
+[0.13.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.12.0...v0.13.0
+[0.12.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.11.0...v0.12.0
+[0.11.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.10.0...v0.11.0
+[0.10.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.9.1...v0.10.0
+[0.9.1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.9.0...v0.9.1
+[0.9.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.8.1...v0.9.0
+[0.8.1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.8.0...v0.8.1
+[0.8.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.7.0...v0.8.0
+[0.7.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.6.0a6...v0.7.0
+[0.6.0a6]: https://github.com/abm-dungtq/gflow-studio/compare/v0.6.0a5...v0.6.0a6
+[0.6.0a5]: https://github.com/abm-dungtq/gflow-studio/compare/v0.6.0a4...v0.6.0a5
+[0.6.0a1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.5.0a1...v0.6.0a1
+[0.5.0a1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.4.0a2...v0.5.0a1
+[0.3.0a1]: https://github.com/abm-dungtq/gflow-studio/releases/tag/v0.3.0a1
+[0.2.0a1]: https://github.com/abm-dungtq/gflow-studio/releases/tag/v0.2.0a1
+[0.1.0]: https://github.com/abm-dungtq/gflow-studio/releases/tag/v0.1.0

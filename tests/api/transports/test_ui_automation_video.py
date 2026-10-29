@@ -1823,7 +1823,7 @@ class TestAssertEntitiesAttached:
         with pytest.raises(WireFormatError) as exc_info:
             VideoGenerationMixin._assert_entities_attached(captured, expected=["ent-1"])
         err = exc_info.value
-        assert "github.com/ffroliva/gflow-cli/issues/174" in err.remediation_hint
+        assert "github.com/abm-dungtq/gflow-studio/issues" in err.remediation_hint
         assert err.to_problem_details().get("remediation_hint") == err.remediation_hint
         assert err.discovery == {"entity_attach_context": "video"}
 

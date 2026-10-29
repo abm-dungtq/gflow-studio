@@ -49,7 +49,7 @@ def missing_tile_hint(media_id: str, project_id: str) -> str:
     return (
         f"Check that media {media_id} belongs to project {project_id}: pass the owning "
         "project with --project (a catalog-resolved project may not hold it). If it does, "
-        "Flow's page changed — file a bug at https://github.com/ffroliva/gflow-cli/issues."
+        "Flow's page changed — file a bug at https://github.com/abm-dungtq/gflow-studio/issues."
     )
 
 

@@ -92,7 +92,7 @@ a raw HAR or an unredacted incident bundle into an issue.
 ## Development setup
 
 ```bash
-git clone git@github.com:ffroliva/gflow-cli.git
+git clone git@github.com:abm-dungtq/gflow-studio.git
 cd gflow-cli
 uv sync --extra dev
 uv run playwright install chromium

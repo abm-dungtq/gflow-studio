@@ -1,12 +1,12 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.ffroliva/gflow-cli",
+  "name": "io.github.abm-dungtq/gflow-studio",
   "title": "gflow-cli",
   "description": "Drive Google Flow from an agent: Veo video and Imagen image generation",
   "version": "0.91.0",
-  "websiteUrl": "https://ffroliva.github.io/gflow-cli/",
+  "websiteUrl": "https://github.com/abm-dungtq/gflow-studio#readme",
   "repository": {
-    "url": "https://github.com/ffroliva/gflow-cli",
+    "url": "https://github.com/abm-dungtq/gflow-studio",
     "source": "github"
   },
   "packages": [

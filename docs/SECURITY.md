@@ -177,7 +177,7 @@ The following controls are active on this repository to prevent accidental leaka
 
 ### OpenSSF Scorecard
 
-[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/ffroliva/gflow-cli/badge)](https://scorecard.dev/viewer/?uri=github.com/ffroliva/gflow-cli)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/abm-dungtq/gflow-studio/badge)](https://scorecard.dev/viewer/?uri=github.com/abm-dungtq/gflow-studio)
 
 [OpenSSF Scorecard](https://scorecard.dev) is an automated audit of a repository's
 **supply-chain security posture**, scored 0–10 across ~18 checks. Highlights of
@@ -188,7 +188,7 @@ releases are signed, and how actively the project is maintained.
 
 The score is recomputed by our own SHA-pinned `scorecard.yml` workflow weekly
 and on every `develop` push, with `publish_results: true` — so the badge above
-and the [public viewer](https://scorecard.dev/viewer/?uri=github.com/ffroliva/gflow-cli)
+and the [public viewer](https://scorecard.dev/viewer/?uri=github.com/abm-dungtq/gflow-studio)
 always reflect the current state (the badge links there for the full
 per-check breakdown). The run also uploads a SARIF report to the repository's
 Security tab. Scoring wasn't enabled until *after* the least-privilege +
@@ -229,7 +229,7 @@ For users on shared / multi-user / production-adjacent machines:
 - [ ] **Use `--profile sandbox`** for short-lived experiments. Easy to delete (`rm -rf $GFLOW_CLI_HOME/profile_sandbox`) without disturbing your main profile.
 - [ ] **Rotate sessions monthly** by signing out of Google → re-running `gflow auth login`. Limits blast radius of an unnoticed session theft.
 - [ ] **Pin a gflow-cli version** in production (`uv tool install gflow-cli==0.5.0a1`) and review release diffs before upgrading.
-- [ ] **Keep the package up-to-date for security fixes.** Subscribe to GitHub Releases for `ffroliva/gflow-cli`.
+- [ ] **Keep the package up-to-date for security fixes.** Subscribe to GitHub Releases for `abm-dungtq/gflow-studio`.
 - [ ] **Scan your repo for accidentally-committed profiles** before pushing: `git ls-files | grep -E "profile_|cookies\.json|\.env$"`.
 
 ## "I committed a session by mistake"
@@ -312,9 +312,9 @@ Controls:
 
 | Issue type | How |
 |---|---|
-| **Security vulnerability** (RCE, auth bypass, secret leak in logs/output) | Email <ffroliva@gmail.com> with `gflow-cli SECURITY` in the subject. **Do not** open a public GitHub issue. PGP key available on request. |
-| **Suspected supply-chain compromise** | Email + open a private GitHub Security Advisory at <https://github.com/ffroliva/gflow-cli/security/advisories/new>. |
-| **Functional bug** (something just broke) | Public issue at <https://github.com/ffroliva/gflow-cli/issues> — include error output, OS, Python version. |
+| **Security vulnerability** (RCE, auth bypass, secret leak in logs/output) | Report privately via GitHub's [private vulnerability reporting](https://github.com/abm-dungtq/gflow-studio/security/advisories/new) form. **Do not** open a public GitHub issue. |
+| **Suspected supply-chain compromise** | Open a private GitHub Security Advisory at <https://github.com/abm-dungtq/gflow-studio/security/advisories/new>. |
+| **Functional bug** (something just broke) | Public issue at <https://github.com/abm-dungtq/gflow-studio/issues> — include error output, OS, Python version. |
 | **Documentation issue** (this page is wrong / unclear) | PR welcome. |
 
 Acknowledgement target: **48 hours** for security reports. Initial fix or mitigation: **7 days** for high/critical, best-effort for medium/low.

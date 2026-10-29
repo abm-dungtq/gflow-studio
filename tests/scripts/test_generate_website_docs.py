@@ -53,17 +53,12 @@ def test_render_strips_every_forbidden_pii_token() -> None:
 
 
 def test_security_reporting_row_is_semantically_rewritten() -> None:
-    """SECURITY's maintainer-email reporting row becomes GitHub private
-    reporting — not a placeholder email (a token swap would be wrong). Feeds the
-    override's exact canonical literal, which also proves the override target
-    still exists in the map (the generator raises if canonical drifts from it)."""
-    # Feed ALL of SECURITY's canonical override rows (render fails loud if any
-    # override target is absent — a feature that catches canonical drift).
-    canonical = "\n".join(old for old, _new in _gen.FILE_OVERRIDES["SECURITY.md"]) + "\n"
+    """SECURITY's reporting table points at GitHub private reporting and names no
+    maintainer email, so the mirror needs no per-file rewrite."""
+    canonical = (_gen._DOCS / "SECURITY.md").read_text(encoding="utf-8")  # noqa: SLF001
     out = _gen.render("SECURITY.md", canonical)
     assert "private vulnerability reporting" in out
-    assert "gmail.com" not in out  # the email is GONE, not placeholdered
-    assert "@" not in out
+    assert "ffroliva@" not in out
 
 
 def test_bespoke_pages_are_never_generated() -> None:

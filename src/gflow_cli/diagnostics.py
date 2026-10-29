@@ -846,7 +846,7 @@ def render_report(manifest: dict[str, object]) -> bytes:
         "> OUT OF THE BUNDLE before editing — retention prunes old bundles and",
         "> would take your notes with them. Complete the 'What I was doing'",
         "> section, review every artifact, then file at",
-        "> https://github.com/ffroliva/gflow-cli/issues/new attaching this file,",
+        "> https://github.com/abm-dungtq/gflow-studio/issues/new attaching this file,",
         "> `manifest.json`, and any artifacts you are comfortable sharing.",
         "",
         f"- **gflow-cli:** {manifest.get('cli_version')} · "

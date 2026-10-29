@@ -89,4 +89,4 @@ Runs on the release tree (`ffroliva`, `GFLOW_CLI_E2E_PROJECT` set for the projec
 | Signed tag | `v0.87.0` on `f8ef90c5` (SSH signature present) |
 | Release workflow | run `39779889040`: **success** (`build-and-publish` ✅, `mcp-registry / publish` ✅) |
 | PyPI | `gflow-cli` latest = **0.87.0** |
-| GitHub Release | https://github.com/ffroliva/gflow-cli/releases/tag/v0.87.0, stable (not a prerelease), published 2026-10-22T12:38:36Z |
+| GitHub Release | https://github.com/abm-dungtq/gflow-studio/releases/tag/v0.87.0, stable (not a prerelease), published 2026-10-22T12:38:36Z |

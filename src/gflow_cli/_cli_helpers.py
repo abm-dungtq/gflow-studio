@@ -381,7 +381,7 @@ def _handle_unhandled_error(exc: BaseException, *, cli_command: str) -> int:
         _console.print(
             "[red]Unexpected error.[/red] Re-run with GFLOW_CLI_DEBUG_TRACEBACK=1 "
             "to see the real error. If this persists, file a bug at "
-            "https://github.com/ffroliva/gflow-cli/issues.",
+            "https://github.com/abm-dungtq/gflow-studio/issues.",
         )
     # Unexpected exceptions ALSO get incident bundles (should_capture returns
     # True for them) — surface the path or the evidence is written and never

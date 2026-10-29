@@ -119,7 +119,7 @@ Write-Host $statusOutput
 if ($LASTEXITCODE -ne 0) {
     Warn "gflow auth status exited $LASTEXITCODE - continuing; the real 'gflow run' is the actual test."
 }
-$profileDir = "$env:LOCALAPPDATA\ffroliva\gflow-cli\profile_$ProfileName"
+$profileDir = "$env:LOCALAPPDATA\abm-dungtq\gflow-cli\profile_$ProfileName"
 if (-not (Test-Path $profileDir)) {
     Die "Profile dir not found: $profileDir. Run 'uv run gflow auth login --profile $ProfileName' first."
 }

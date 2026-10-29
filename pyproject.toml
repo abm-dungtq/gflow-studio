@@ -5,8 +5,7 @@ description = "CLI and MCP server for Google Flow — drive Veo text-to-video, i
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.11"
-authors = [{ name = "Flavio Oliva", email = "ffroliva@gmail.com" }]
-maintainers = [{ name = "ABM.DũngTQ" }]
+authors = [{ name = "ABM.DũngTQ" }]
 # PyPI search matches on these, and every downstream catalog copies the summary
 # above verbatim. Both previously described only image-to-video and never
 # mentioned MCP, which is half of what this package is.
@@ -167,8 +166,6 @@ Documentation = "https://github.com/abm-dungtq/gflow-studio#readme"
 Repository = "https://github.com/abm-dungtq/gflow-studio"
 Changelog = "https://github.com/abm-dungtq/gflow-studio/blob/main/CHANGELOG.md"
 Issues = "https://github.com/abm-dungtq/gflow-studio/issues"
-Upstream = "https://github.com/ffroliva/gflow-cli"
-Funding = "https://github.com/sponsors/ffroliva"
 
 [build-system]
 requires = ["hatchling"]

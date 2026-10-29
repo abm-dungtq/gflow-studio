@@ -101,7 +101,7 @@ def mp4_track_dimensions(data: bytes) -> tuple[int, int] | None:
 #: 1080p export measured 0 credits, 2026-10-07) and the prompt is irrelevant here.
 _EXPORT_HINT = (
     "Re-run the export; it spends no credits. If it keeps failing, Flow changed how it "
-    "delivers exports — file a bug at https://github.com/ffroliva/gflow-cli/issues."
+    "delivers exports — file a bug at https://github.com/abm-dungtq/gflow-studio/issues."
 )
 
 

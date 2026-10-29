@@ -88,8 +88,8 @@ Load `https://labs.google/fx/tools/flow/project/<id>` in the profile's Chrome an
 | `flow.google.com/project/…` | **B, partial** | `video t2v --project`, `video i2v --initial-frame <local file> --project`, **`video r2v --ref <local file> --project`** (ported in v0.70.0, #683; a named character with `--reference-entity` + `--reference-entity-name` since v0.91.0, #723), and **`image t2i` / `image i2i` with local `--ref` files (#639)**, and **`video extend` for ONE segment** (#882; `-n` > 1, `--scene`/`--resume-from`, `--seed` and an `--aspect` other than the source's exit 36). `character create` worked there from v0.70.0 until its labs route was retired: since 2026-10-14 it exits 7 on a profile served flow.google.com. Everything else — `image batch`, multi-segment `extend`, `scene create`, `movie run`, r2v by `@Name` or `--reference-entity`, i2v by media UUID / `@Name`, and Imagen 4 — exits 36 **[CONSTRAINT]**. A **local** `--end-frame` IS ported (start+end interpolation, #639) |
 
 Lane B grows as forms are ported, so **confirm the row rather than trusting it**: the
-maintained list is [CONFIGURATION § `GFLOW_CLI_FLOW_HOST`](https://github.com/ffroliva/gflow-cli/blob/main/docs/CONFIGURATION.md#gflow_cli_flow_host)
-and the [#639 entry in KNOWN_ISSUES](https://github.com/ffroliva/gflow-cli/blob/main/KNOWN_ISSUES.md). Exit 36 on a form the table
+maintained list is [CONFIGURATION § `GFLOW_CLI_FLOW_HOST`](https://github.com/abm-dungtq/gflow-studio/blob/main/docs/CONFIGURATION.md#gflow_cli_flow_host)
+and the [#639 entry in KNOWN_ISSUES](https://github.com/abm-dungtq/gflow-studio/blob/main/KNOWN_ISSUES.md). Exit 36 on a form the table
 says is ported is a regression worth filing, not the environment.
 
 An unported command on lane B exits **36**, non-retryable, with a message naming the
@@ -263,7 +263,7 @@ lookup instead of a hope.
 one generation. The manifest parser therefore **rejects** `variants` on an
 `identity = "entity"` character (exit 11, #724): express costume states as **separate entries
 in the manifest's characters array**, each with `identity = "entity"` and a shared face
-prompt. See [MOVIE.md](https://github.com/ffroliva/gflow-cli/blob/main/docs/MOVIE.md) for the TOML.
+prompt. See [MOVIE.md](https://github.com/abm-dungtq/gflow-studio/blob/main/docs/MOVIE.md) for the TOML.
 
 Full method in **[`consistency.md`](consistency.md)**. The rest of the short form:
 

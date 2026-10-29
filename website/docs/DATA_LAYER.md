@@ -305,7 +305,7 @@ See [`SECURITY.md`](SECURITY.md) for the broader threat model.
 gflow data list projects
 
 # All images for one profile, aggregated by asset by default
-gflow data list images --profile ffroliva --limit 50 --offset 0
+gflow data list images --profile main --limit 50 --offset 0
 
 # Show every local file copy instead of aggregating
 gflow data list images --all-copies

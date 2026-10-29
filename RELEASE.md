@@ -143,10 +143,10 @@ python -m pip install --pre gflow-cli
    git push origin vX.Y.Z
    ```
 10. Watch the release workflow:
-    <https://github.com/ffroliva/gflow-cli/actions/workflows/release.yml>
+    <https://github.com/abm-dungtq/gflow-studio/actions/workflows/release.yml>
 11. Confirm the new version appears on:
     - <https://pypi.org/project/gflow-cli/>
-    - <https://github.com/ffroliva/gflow-cli/releases>
+    - <https://github.com/abm-dungtq/gflow-studio/releases>
 
 ## Known Historical Quirk
 

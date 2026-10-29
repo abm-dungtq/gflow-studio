@@ -3,11 +3,11 @@
   "version": "0.91.0",
   "description": "Reusable development and operations workflows for gflow-cli",
   "author": {
-    "name": "Flavio Oliva",
-    "url": "https://github.com/ffroliva"
+    "name": "ABM.DũngTQ",
+    "url": "https://github.com/abm-dungtq"
   },
-  "homepage": "https://github.com/ffroliva/gflow-cli",
-  "repository": "https://github.com/ffroliva/gflow-cli",
+  "homepage": "https://github.com/abm-dungtq/gflow-studio",
+  "repository": "https://github.com/abm-dungtq/gflow-studio",
   "license": "MIT",
   "keywords": [
     "gflow-cli",
@@ -25,7 +25,7 @@
       "Interactive",
       "Write"
     ],
-    "websiteURL": "https://github.com/ffroliva/gflow-cli",
+    "websiteURL": "https://github.com/abm-dungtq/gflow-studio",
     "defaultPrompt": [
       "Show the current gflow-cli task with $gflow:status.",
       "Run the gflow-cli quality gates with $gflow:check."

@@ -29,7 +29,7 @@ External PR routing starts with `.github/workflows/external-pr-triage.yml` (trig
 - label external PRs as `external-contribution`
 - label them as `needs-maintainer-review`
 - label them as `needs-copilot-review`
-- request `@ffroliva` as reviewer
+- request `@abm-dungtq` as reviewer
 - post or update the external-contribution checklist comment
 
 Bot PRs such as Dependabot updates are skipped by this human-contributor triage. They still run normal CI and remain subject to branch protection.
@@ -128,7 +128,7 @@ exclusion list.
 
 ### Reading a red gate
 
-Open the PR Summary at `sonarcloud.io/summary/new_code?id=ffroliva_gflow-cli&pullRequest=<N>`.
+Open the PR Summary at `sonarcloud.io/summary/new_code?id=abm-dungtq_gflow-studio&pullRequest=<N>`.
 - **Coverage failed** → add tests for the changed non-excluded lines.
 - **New issues** (e.g. `S5655` "function expects a different type" after a
   `cast(...)` removal) → fix them, or keep the

@@ -13,8 +13,8 @@ from scripts.ci import check_website_docs_pii as guard
 
 # Public references that contain 'ffroliva' but MUST pass — the #362 trap.
 ALLOWED = [
-    "See https://github.com/ffroliva/gflow-cli for the source.",
-    "Report a vulnerability: https://github.com/ffroliva/gflow-cli/security/advisories/new",
+    "See https://github.com/abm-dungtq/gflow-studio for the source.",
+    "Report a vulnerability: https://github.com/abm-dungtq/gflow-studio/security/advisories/new",
     "Subscribe to GitHub Releases for `ffroliva/gflow-cli`.",
     r"type $env:LOCALAPPDATA\ffroliva\gflow-cli\profile_<name>\Default",
     "Use a placeholder like you@gmail.com or your.name@gmail.com.",

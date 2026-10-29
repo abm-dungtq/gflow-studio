@@ -1,4 +1,4 @@
-<!-- mcp-name: io.github.ffroliva/gflow-cli -->
+<!-- mcp-name: io.github.abm-dungtq/gflow-studio -->
 
 # gflow-studio
 
@@ -8,20 +8,14 @@
 
 Generate images and videos with [Google Flow](https://labs.google/fx/tools/flow) from your terminal. gflow-studio drives Imagen and Nano Banana (images) and Veo / Omni Flash (videos) through your own Flow account, so a whole storyboard can run as one batch command instead of an afternoon of clicking.
 
-**gflow-studio** is maintained by **ABM.DũngTQ** for an animation pipeline. It is built on [ffroliva/gflow-cli](https://github.com/ffroliva/gflow-cli), keeps every upstream feature (currently 0.91.0) and adds 1080p downloads, a hidden browser on macOS, safer batches and a video batch runner. The command is still `gflow`, so scripts written for gflow-cli keep working. The full list is under [What this edition adds](#what-this-edition-adds).
+**gflow-studio** is built and maintained by **ABM.DũngTQ** for an animation pipeline: 1080p downloads, a hidden browser on macOS, batches that stop when Google pushes back, and a video batch runner. The command is `gflow`. Highlights are under [Highlights](#highlights).
 
 [![Release](https://img.shields.io/github/v/release/abm-dungtq/gflow-studio?include_prereleases&label=release)](https://github.com/abm-dungtq/gflow-studio/releases)
-[![Upstream](https://img.shields.io/badge/upstream-ffroliva%2Fgflow--cli%200.91.0-blue.svg)](https://github.com/ffroliva/gflow-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)
 ![Platforms](https://img.shields.io/badge/platforms-macOS%20%C2%B7%20Windows%20%C2%B7%20Linux-lightgrey.svg)
 
-<!-- Gold sponsors of the original project appear here: filled by scripts/ci/update_sponsors.py, empty until there is one. -->
-<!-- sponsors-gold:start -->
-
-<!-- sponsors-gold:end -->
-
-[What it does](#what-it-does) · [What this edition adds](#what-this-edition-adds) · [Setup](#setup) · [Usage](#usage) · [Batches](#batches) · [Hiding the browser](#hiding-the-browser) · [Demo](#demo) · [When something fails](#when-something-fails) · [Documentation](#documentation) · [Author and credits](#author-and-credits)
+[What it does](#what-it-does) · [Highlights](#highlights) · [Setup](#setup) · [Usage](#usage) · [Batches](#batches) · [Hiding the browser](#hiding-the-browser) · [Demo](#demo) · [When something fails](#when-something-fails) · [Documentation](#documentation) · [Author](#author)
 
 > ⚠️ **Read this before you install.** gflow-studio is not affiliated with Google. It reverse-engineers Flow and drives a real Chrome window signed in to *your* Google account, so automation happens on your account and under Google's terms. Flow can change its pages at any time. Images are free; Veo video generation spends your Flow credits. Read the [DISCLAIMER](DISCLAIMER.md) and [docs/ACCOUNT_SAFETY.md](docs/ACCOUNT_SAFETY.md).
 
@@ -45,9 +39,7 @@ Generate images and videos with [Google Flow](https://labs.google/fx/tools/flow)
 
 Every command takes `--profile` to pick a Google account and `--project` to work inside an existing Flow project. Most commands take `--json` for scripts. `gflow docs` prints the bundled documentation offline.
 
-## What this edition adds
-
-On top of upstream 0.91.0:
+## Highlights
 
 - **`--upscale`: keep the 1080p clip.** After a video downloads, Flow's 1080p export (no extra credits) replaces the 720p file at the same path. If the export fails, the 720p clip is kept and the command prints a retry command. Works on `video t2v`, `i2v`, `r2v`, `video batch` and the MCP tool `gflow_generate_video(upscale=True)`.
 - **`gflow video batch`.** Runs 1–50 image-to-video rows from a JSON file in one browser session and one Flow project, with `--resume`, `--jitter` and `--json`. A clip that was generated and billed but failed to download is fetched again for free instead of being lost.
@@ -76,7 +68,7 @@ uvx --from "git+https://github.com/abm-dungtq/gflow-studio.git@main" playwright 
 gflow --version
 ```
 
-To upgrade later, run the same `uv tool install` command with `--force`. The package on PyPI (`uv tool install gflow-cli`) is the upstream project and does not include these features.
+To upgrade later, run the same `uv tool install` command with `--force`.
 
 ### 2. Sign in once
 
@@ -264,21 +256,7 @@ Every error is printed as RFC 9457 problem details with a remediation hint. [KNO
 
 [docs/INDEX.md](docs/INDEX.md) indexes everything.
 
-## Support the original project
-
-gflow-cli is built by one person upstream, and every release there is verified against real Flow with real credits. If this tool saves you time, sponsor the original author:
-
-[![Sponsor $5 one-time](https://img.shields.io/badge/☕_sponsor-$5_one--time-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/ffroliva/sponsorships?frequency=one-time&amount=5)
-[![Sponsor $5 a month](https://img.shields.io/badge/💖_sponsor-$5_a_month-ea4aaa?logo=githubsponsors&logoColor=white)](https://github.com/sponsors/ffroliva/sponsorships?frequency=monthly&amount=5)
-
-Tiers are listed in [docs/SPONSORS.md](docs/SPONSORS.md).
-
-<!-- sponsors:start -->
-No sponsors yet. <a href="https://github.com/sponsors/ffroliva/sponsorships?frequency=one-time&amp;amount=5">Be the first</a> — every public sponsor is listed here.
-<!-- sponsors:end -->
-
-## Author and credits
+## Author
 
 - **gflow-studio:** ABM.DũngTQ · 0976202028 · [github.com/abm-dungtq/gflow-studio](https://github.com/abm-dungtq/gflow-studio)
-- **Original project:** [gflow-cli](https://github.com/ffroliva/gflow-cli) by Flavio Oliva (`ffroliva`). The core of this tool is Flavio's work; fixes that apply upstream are worth sending there.
-- **License:** [MIT](LICENSE), © 2026 Flavio Oliva, kept unchanged in this fork. The license covers the code only. Google's own terms govern Flow and everything you generate with it. See the [DISCLAIMER](DISCLAIMER.md).
+- **License:** [MIT](LICENSE). The license covers the code only. Google's own terms govern Flow and everything you generate with it. See the [DISCLAIMER](DISCLAIMER.md).

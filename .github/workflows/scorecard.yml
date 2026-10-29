@@ -5,7 +5,7 @@ name: OpenSSF Scorecard
 # hardening landed, so the first published public score reflects the hardened
 # state — Token-Permissions and Pinned-Dependencies are heavily weighted.
 # publish_results feeds the public API/badge:
-#   https://api.scorecard.dev/projects/github.com/ffroliva/gflow-cli/badge
+#   https://api.scorecard.dev/projects/github.com/abm-dungtq/gflow-studio/badge
 
 on:
   # Re-evaluates the Branch-Protection check when protection rules change.

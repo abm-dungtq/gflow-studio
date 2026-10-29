@@ -39,7 +39,7 @@ log = structlog.get_logger(__name__)
 
 _CHECK_INTERVAL_SECONDS = 86_400.0
 _PYPI_JSON_URL = "https://pypi.org/pypi/gflow-cli/json"
-_RELEASE_URL_BASE = "https://github.com/ffroliva/gflow-cli/releases/tag/"
+_RELEASE_URL_BASE = "https://github.com/abm-dungtq/gflow-studio/releases/tag/"
 _VERSION_CHARS = re.compile(r"[0-9A-Za-z.!+-]+")
 _FETCH_TIMEOUT_SECONDS = 3.0  # background notice poll — must never be felt
 _COMMAND_FETCH_TIMEOUT_SECONDS = 10.0  # explicit `gflow update` — the user is waiting for it

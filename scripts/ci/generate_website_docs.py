@@ -58,27 +58,7 @@ TOKEN_SUBS: tuple[tuple[re.Pattern[str], str], ...] = (
 # BEFORE the token pass. Used where a token swap would be wrong — e.g. the
 # maintainer's email in SECURITY's reporting table becomes actionable GitHub
 # private-reporting steps, not a placeholder address.
-FILE_OVERRIDES: dict[str, tuple[tuple[str, str], ...]] = {
-    "SECURITY.md": (
-        (
-            "| **Security vulnerability** (RCE, auth bypass, secret leak in logs/output) | "
-            "Email <ffroliva@gmail.com> with `gflow-cli SECURITY` in the subject. **Do not** "
-            "open a public GitHub issue. PGP key available on request. |",
-            "| **Security vulnerability** (RCE, auth bypass, secret leak in logs/output) | "
-            "Report privately via GitHub's [private vulnerability reporting]"
-            "(https://github.com/ffroliva/gflow-cli/security/advisories/new) form. **Do not** "
-            "open a public GitHub issue. |",
-        ),
-        (
-            "| **Suspected supply-chain compromise** | Email + open a private GitHub "
-            "Security Advisory at "
-            "<https://github.com/ffroliva/gflow-cli/security/advisories/new>. |",
-            "| **Suspected supply-chain compromise** | Open a private GitHub "
-            "Security Advisory at "
-            "<https://github.com/ffroliva/gflow-cli/security/advisories/new>. |",
-        ),
-    ),
-}
+FILE_OVERRIDES: dict[str, tuple[tuple[str, str], ...]] = {}
 
 
 def _source_for(dest_name: str) -> Path | None:
@@ -95,7 +75,7 @@ def _source_for(dest_name: str) -> Path | None:
     return None
 
 
-_GITHUB_DOCS_BLOB = "https://github.com/ffroliva/gflow-cli/blob/main/docs/"
+_GITHUB_DOCS_BLOB = "https://github.com/abm-dungtq/gflow-studio/blob/main/docs/"
 
 
 def _rewrite_root_doc_links(text: str) -> str:

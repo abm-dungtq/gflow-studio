@@ -122,7 +122,7 @@ path is default-in-scope; skipping this gate requires a named reason, not silenc
    re-spend): grep `KNOWN_ISSUES.md` and open GitHub issues for a matching error signature.
 
 ```bash
-gh issue list --repo ffroliva/gflow-cli --search "<error text>" --state all
+gh issue list --repo abm-dungtq/gflow-studio --search "<error text>" --state all
 ```
 
 **2. If no match, re-test once.** Free for `t2i`/`i2i` — just re-run. For a costed failure,

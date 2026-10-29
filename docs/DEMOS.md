@@ -44,4 +44,4 @@ The split-screen demo is rendered from one clean master into several social form
 ## Reproduce
 
 - **Terminal → image:** [`scripts/record_demo.ps1`](../scripts/record_demo.ps1) (Windows + OBS + ffmpeg + gifski).
-- **Split-screen:** rendered with [Remotion](https://www.remotion.dev/) in the companion repo [`gflow-cli-remotion`](https://github.com/ffroliva/gflow-cli-remotion), composing the rendered terminal over a clean OBS window-capture master.
+- **Split-screen:** rendered with [Remotion](https://www.remotion.dev/) in the companion repo [`gflow-cli-remotion`](https://github.com/abm-dungtq/gflow-studio-remotion), composing the rendered terminal over a clean OBS window-capture master.

@@ -2,9 +2,9 @@ site_name: gflow-cli
 site_description: >-
   CLI and MCP server for Google Flow — script Veo video and Imagen
   stills from the terminal, or let your AI assistant drive it.
-site_url: https://ffroliva.github.io/gflow-cli/docs/
-repo_url: https://github.com/ffroliva/gflow-cli
-repo_name: ffroliva/gflow-cli
+site_url: https://github.com/abm-dungtq/gflow-studio#readmedocs/
+repo_url: https://github.com/abm-dungtq/gflow-studio
+repo_name: abm-dungtq/gflow-studio
 copyright: >-
   Not affiliated with Google · MIT-licensed · your credits, your account, your risk.
 docs_dir: docs
@@ -61,7 +61,7 @@ markdown_extensions:
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
 
 nav:
-  - Home ↗: https://ffroliva.github.io/gflow-cli/
+  - Home ↗: https://github.com/abm-dungtq/gflow-studio#readme
   - Getting started:
       - Introduction: index.md
       - Onboarding: onboarding.md
@@ -90,7 +90,6 @@ nav:
       - E2E Testing: E2E_TESTING.md
       - Security: SECURITY.md
       - Known issues: KNOWN_ISSUES.md
-  - Sponsors: SPONSORS.md
 
 plugins:
   - search
@@ -98,6 +97,6 @@ plugins:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/ffroliva/gflow-cli
+      link: https://github.com/abm-dungtq/gflow-studio
     - icon: fontawesome/brands/youtube
       link: https://www.youtube.com/shorts/SyJb2jfLMrw

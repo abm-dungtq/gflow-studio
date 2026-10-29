@@ -85,9 +85,9 @@ true).
 
 ## Post-tag evidence
 
-- **Release workflow:** [run 36928643524](https://github.com/ffroliva/gflow-cli/actions/runs/36928643524) — success (build-and-publish, mcp-registry publish).
+- **Release workflow:** [run 36928643524](https://github.com/abm-dungtq/gflow-studio/actions/runs/36928643524) — success (build-and-publish, mcp-registry publish).
 - **PyPI:** `gflow_cli-0.82.0-py3-none-any.whl` and `gflow_cli-0.82.0.tar.gz`, uploaded 2026-10-01T21:26Z.
-- **GitHub Release:** [v0.82.0](https://github.com/ffroliva/gflow-cli/releases/tag/v0.82.0), published 2026-10-01T21:26Z.
+- **GitHub Release:** [v0.82.0](https://github.com/abm-dungtq/gflow-studio/releases/tag/v0.82.0), published 2026-10-01T21:26Z.
 - **Release PR:** #937, merged to `main` with a merge commit (`00ff5720`).
 - **Back-merge:** `main` → `develop` (`e45532d0`).
 - **Install from PyPI:** `uvx --from gflow-cli==0.82.0 gflow --version` → `gflow, version 0.82.0`.

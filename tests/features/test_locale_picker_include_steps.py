@@ -117,7 +117,7 @@ def _mock_include_timeout_runner(monkeypatch: pytest.MonkeyPatch) -> None:
             remediation_hint=(
                 "Flow's context menu may have changed or your account language "
                 "is not yet covered — open the menu manually and report its "
-                "captions on https://github.com/ffroliva/gflow-cli/issues."
+                "captions on https://github.com/abm-dungtq/gflow-studio/issues."
             ),
         )
 
@@ -206,7 +206,7 @@ def _check_output_locale_neutral(cli_result_holder: dict[str, Any]) -> None:
     assert "Incluir no comando" not in result.output, result.output
 
 
-@then('the output contains "issues/174"')
+@then('the output contains "gflow-studio/issues"')
 def _check_output_issue_174(cli_result_holder: dict[str, Any]) -> None:
     result = cli_result_holder["result"]
-    assert "issues/174" in result.output, result.output
+    assert "gflow-studio/issues" in result.output, result.output

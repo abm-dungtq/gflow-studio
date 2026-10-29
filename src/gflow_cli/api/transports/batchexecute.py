@@ -269,7 +269,7 @@ def generation_record(
             remediation_hint=(
                 "Flow may already have accepted and billed this generation. Open the "
                 "project in Flow before re-running: a blind resubmit can bill twice. File "
-                "a bug at https://github.com/ffroliva/gflow-cli/issues with this error."
+                "a bug at https://github.com/abm-dungtq/gflow-studio/issues with this error."
             ),
             route=f"batchexecute:{rpcid}",
             discovery={"rpcid": rpcid, "payload_head": _discovery_head(payload)},

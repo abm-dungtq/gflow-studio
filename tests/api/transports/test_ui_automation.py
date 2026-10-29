@@ -1629,7 +1629,7 @@ class TestImageEntityBackstop:
         with pytest.raises(WireFormatError) as exc_info:
             UiAutomationTransport._assert_image_entities_attached([], expected=["ent-1"])
         err = exc_info.value
-        assert "github.com/ffroliva/gflow-cli/issues/174" in err.remediation_hint
+        assert "github.com/abm-dungtq/gflow-studio/issues" in err.remediation_hint
         assert err.to_problem_details().get("remediation_hint") == err.remediation_hint
         assert err.discovery == {"entity_attach_context": "image"}
 

@@ -464,8 +464,8 @@ ENTITY_ATTACH_DRIFT_HINT = (
     "If clicking 'Add Media' on this account opens a full-page media library "
     "instead of a picker dialog, this is Flow's new library UI rollout, where "
     "the include action no longer stages entities — follow "
-    "https://github.com/ffroliva/gflow-cli/issues/174 for status and progress. "
-    "Otherwise, file a bug at https://github.com/ffroliva/gflow-cli/issues "
+    "https://github.com/abm-dungtq/gflow-studio/issues for status and progress. "
+    "Otherwise, file a bug at https://github.com/abm-dungtq/gflow-studio/issues "
     "(do NOT include captured tokens or signed URLs)."
 )
 # The picker grid is virtualised (react-virtuoso): off-screen tiles are not in
@@ -3315,7 +3315,7 @@ class VideoGenerationMixin:
                 "Flow's resource picker may have changed, or your account's "
                 "UI language is not yet covered by the selector fallbacks. "
                 "Report the visible menu/button captions (plus the screenshot) "
-                "at https://github.com/ffroliva/gflow-cli/issues."
+                "at https://github.com/abm-dungtq/gflow-studio/issues."
             ),
         ) from last_exc
 

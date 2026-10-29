@@ -55,7 +55,7 @@ refused with exit `11` on purpose.
 ### Claude Code plugin
 
 ```
-/plugin marketplace add ffroliva/gflow-cli
+/plugin marketplace add abm-dungtq/gflow-studio
 /plugin install gflow@gflow-cli
 ```
 
@@ -105,7 +105,7 @@ to PyPI or this repository.
 
 | Catalog | What it is |
 |---|---|
-| [Glama](https://glama.ai/mcp/servers/ffroliva/gflow-cli) | MCP directory with automated build + quality checks. Also builds the container — [CONTAINER.md](CONTAINER.md). |
+| [Glama](https://glama.ai/mcp/servers) | MCP directory with automated build + quality checks. Also builds the container — [CONTAINER.md](CONTAINER.md). |
 | cursor.directory | Cursor's community MCP directory. |
 | MCP Market, skills.sh | Listed us without being asked, by scanning the repository. |
 | `awesome-mcp-servers` and friends | Curated GitHub lists. |
@@ -129,7 +129,7 @@ Worth stating plainly, because each of these is a reasonable thing to expect and
 
 ## Verifying a channel is really us
 
-Anything claiming to be gflow-cli should trace back to **`github.com/ffroliva/gflow-cli`** or
+Anything claiming to be gflow-cli should trace back to **`github.com/abm-dungtq/gflow-studio`** or
 **`pypi.org/project/gflow-cli`**. The project is MIT-licensed, so mirrors and forks are allowed —
 but they are not us, and we cannot vouch for what they ship. If you find a listing that looks
-wrong or stale, [open an issue](https://github.com/ffroliva/gflow-cli/issues).
+wrong or stale, [open an issue](https://github.com/abm-dungtq/gflow-studio/issues).

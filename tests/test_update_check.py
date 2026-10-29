@@ -251,7 +251,7 @@ class TestInstalledFromIndex:
             json.dumps({"url": "file:///dev/gflow-cli", "dir_info": {}}),
             # VCS / direct-URL installs: `pip install -U` would silently
             # replace a deliberate pin — never advise it.
-            json.dumps({"url": "https://github.com/ffroliva/gflow-cli", "vcs_info": {}}),
+            json.dumps({"url": "https://github.com/abm-dungtq/gflow-studio", "vcs_info": {}}),
         ],
     )
     def test_any_direct_url_install_is_not(

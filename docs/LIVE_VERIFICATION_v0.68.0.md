@@ -116,8 +116,8 @@ path (no payload key changed; it reaches the identical `submit_and_observe`).
 | Item | Evidence |
 |---|---|
 | Tag | `v0.68.0` on `16ed7e2` (release branch head after folding #672), SSH-signed, `git tag -v` → "Good git signature" |
-| Release workflow | https://github.com/ffroliva/gflow-cli/actions/runs/33984171793 — completed, success |
-| GitHub Release | https://github.com/ffroliva/gflow-cli/releases/tag/v0.68.0 — published 2026-09-05T18:29:12Z, not a prerelease, 5 assets |
+| Release workflow | https://github.com/abm-dungtq/gflow-studio/actions/runs/33984171793 — completed, success |
+| GitHub Release | https://github.com/abm-dungtq/gflow-studio/releases/tag/v0.68.0 — published 2026-09-05T18:29:12Z, not a prerelease, 5 assets |
 | PyPI | `pip index versions gflow-cli` → `gflow-cli (0.68.0)` |
 | Release PR | #674 `chore/release-v0.68.0 → main`, 16 checks passing at the tagged head (SonarCloud included) |
 

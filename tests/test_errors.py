@@ -683,7 +683,7 @@ def test_specific_remediation_hints() -> None:
     assert (
         WireFormatError().remediation_hint
         == "Check request payload parameters or retry with a simpler prompt text. "
-        "File a bug at https://github.com/ffroliva/gflow-cli/issues with the "
+        "File a bug at https://github.com/abm-dungtq/gflow-studio/issues with the "
         "discovery payload above."
     )
     assert (
@@ -717,7 +717,7 @@ def test_specific_remediation_hints() -> None:
     assert UiSelectorDriftError().remediation_hint == (
         "A Flow editor UI element could not be located — Google may have updated "
         "their frontend. Check for a newer gflow-cli release, then file a bug at "
-        "https://github.com/ffroliva/gflow-cli/issues referencing the probe name "
+        "https://github.com/abm-dungtq/gflow-studio/issues referencing the probe name "
         "and attaching the diagnostics JSON and/or debug screenshot referenced in "
         "this message, plus the incident bundle's report.md when one was written "
         "(review artifacts before sharing — screenshots may show your account "

@@ -90,7 +90,7 @@ jobs:
                 owner,
                 repo,
                 pull_number: issue_number,
-                reviewers: ["ffroliva"],
+                reviewers: ["abm-dungtq"],
               });
             } catch (error) {
               core.warning(`Could not request maintainer review: ${error.message}`);

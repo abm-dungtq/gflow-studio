@@ -83,7 +83,7 @@ Resulting profile dir becomes `$GFLOW_CLI_HOME/profile_<name>/`.
 A profile dir is a full Chromium user-data-dir. The interesting files for `gflow-cli`:
 
 ```
-profile_your-name/
+profile_main/
 ├── Default/
 │   ├── Cookies              ← SQLite DB of cookies (incl. Google session)
 │   ├── IndexedDB/           ← Flow's per-account state
@@ -95,7 +95,7 @@ profile_your-name/
 └── (lots of other Chromium files we don't care about)
 ```
 
-`.gflow_account` contains the plain email address (`your.name@gmail.com`) and is
+`.gflow_account` contains the plain email address (`you@gmail.com`) and is
 written by `gflow auth login` immediately after the session is verified. It is the
 source of truth for "which Google account is this profile signed into?", surfaced by
 `gflow auth list` and `profile_store.list_profiles()`.
@@ -162,7 +162,7 @@ so you typically just have to click "Continue as <you>" on the Google account ch
 When no `--profile` flag is given and no profiles exist yet, `gflow auth login`
 creates a profile with a temporary name of `default`. Once the session is verified
 and the signed-in email is known, it **automatically renames** the profile to the
-local-part of the email address (e.g. `profile_default` → `profile_your-name`) and
+local-part of the email address (e.g. `profile_default` → `profile_main`) and
 updates `config.toml`'s `default_profile` pointer atomically.
 
 The local-part is sanitized to a filesystem-safe name: any character outside
@@ -173,10 +173,10 @@ If nothing usable remains, the profile keeps the name `default`.
 ```text
 $ gflow auth login
 Launching real Chrome...
-[OK] Flow session verified (your.name@gmail.com).
-Session saved. Profile dir: …/profile_your-name
-Renamed profile from default to ffroliva (derived from Google account).
-Set ffroliva as default profile.
+[OK] Flow session verified (you@gmail.com).
+Session saved. Profile dir: …/profile_main
+Renamed profile from default to main (derived from Google account).
+Set main as default profile.
 ```
 
 If a profile named after the email local-part already exists, the rename is skipped
@@ -326,7 +326,7 @@ $ gflow auth list
 Profiles in /home/you/.local/share/gflow-cli
 
   Default  Name       Google account          Session   Last used (UTC)        Profile dir
-    ●      ffroliva   your.name@gmail.com       present   2026-05-28 10:14:22    …/profile_your-name
+    ●      main   you@gmail.com       present   2026-05-28 10:14:22    …/profile_main
            work       alice@work.example.com   present   2026-05-27 08:30:01    …/profile_work
            old        unknown                  missing   -                      …/profile_old
 ```
@@ -339,7 +339,7 @@ until `gflow auth login` is re-run against them — the file is written on every
 
 ```bash
 $ gflow auth list --json | jq '.[] | {name, google_account}'
-{"name": "ffroliva", "google_account": "your.name@gmail.com"}
+{"name": "main", "google_account": "you@gmail.com"}
 {"name": "work",     "google_account": "alice@work.example.com"}
 {"name": "old",      "google_account": null}
 ```
@@ -413,7 +413,7 @@ Or rename it manually:
 gflow auth list
 
 # Then re-login under a meaningful name
-gflow auth login --profile ffroliva
+gflow auth login --profile main
 gflow auth logout --profile default --yes   # delete the old one
 ```
 
@@ -429,8 +429,8 @@ from a sandbox one.
 
 ```
 Default  Name           Google account           Session
-  ●      ffroliva       your.name@gmail.com        present
-         sandbox        your.name@gmail.com        present   ← same account, different dir
+  ●      main       you@gmail.com        present
+         sandbox        you@gmail.com        present   ← same account, different dir
          work           alice@work.example.com    present
 ```
 

@@ -1,7 +1,7 @@
 # gflow-cli — Implementation Plan
 
 > **Status:** Living document. Updated as phases complete.
-> **Owner:** [@ffroliva](https://github.com/ffroliva)
+> **Owner:** [@abm-dungtq](https://github.com/abm-dungtq)
 > **Last revised:** 2026-06-03 (v0.12.0 release — `gflow character` reusable Flow Character entities (#145), `gflow scene` Add Clip + credit-free server-side extended video, `gflow video chain` last-frame I2V chaining, create-project fix under Flow's Agent chat panel)
 
 This plan turns the v0.1 scaffold into a production-grade CLI for Google AI Ultra/Pro subscribers who want to spend their Flow credits via batch automation. The plan is opinionated, treating this repo as a portfolio-grade benchmark.

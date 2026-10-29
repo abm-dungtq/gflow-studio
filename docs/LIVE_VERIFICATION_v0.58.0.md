@@ -89,7 +89,7 @@ the caption asynchronously, so a fresh generation may record without a
 
 ## Post-tag evidence
 
-- Release workflow: [run 31934310984](https://github.com/ffroliva/gflow-cli/actions/runs/31934310984)
+- Release workflow: [run 31934310984](https://github.com/abm-dungtq/gflow-studio/actions/runs/31934310984)
   — **success**, digital attestations generated and uploaded.
 - GitHub Release: `v0.58.0` published 2026-08-16T07:37:15Z, stable (not draft,
   not prerelease).

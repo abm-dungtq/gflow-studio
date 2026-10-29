@@ -23,7 +23,7 @@ from PIL import Image
 from gflow_cli.api.client import FlowApiClient
 from gflow_cli.api.image_upscale import TargetResolution
 from gflow_cli.api.transports.migrated_video_upscale import mp4_track_dimensions
-from gflow_cli.config import get_settings
+from gflow_cli.config import get_settings, reset_settings
 from gflow_cli.data.queries import list_images, list_videos
 from gflow_cli.errors import UpscaleUnavailableError
 
@@ -144,6 +144,7 @@ async def test_mcp_upscale_image_2k_e2e(
     e2e_profile_dir: Path,
     real_catalog: None,
     tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     """The MCP twin, run separately: ``gflow_upscale_image`` resolves the profile, finds
     the project and drives the same migrated transport ($0). The CLI run proves the
@@ -160,9 +161,15 @@ async def test_mcp_upscale_image_2k_e2e(
     if row is None:
         pytest.skip(f"no catalogued images for profile {profile!r} to upscale")
 
-    result: dict[str, Any] = await tools.gflow_upscale_image(
-        media_id=row.media_id, scale="2k", out_dir=str(tmp_path), profile=profile
-    )
+    # MCP may only write inside the output dir (GHSA-hqfj-4jww-76f2).
+    monkeypatch.setenv("GFLOW_CLI_OUTPUT_DIR", str(tmp_path))
+    reset_settings()
+    try:
+        result: dict[str, Any] = await tools.gflow_upscale_image(
+            media_id=row.media_id, scale="2k", out_dir=str(tmp_path), profile=profile
+        )
+    finally:
+        reset_settings()
 
     assert result.get("status") == "ok", f"MCP upscale failed: {result}"
     saved = Path(result["path"])

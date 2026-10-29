@@ -291,6 +291,10 @@ def _resolve_and_validate_profile(profile: str) -> str | dict[str, Any]:
     # Sanity-check: the profile directory must exist on disk. If auth was never
     # completed the FlowApiClient would fail with a cryptic Playwright error;
     # surface a clear message here instead.
+    # A name with a separator or drive would point Chrome's user-data-dir outside gflow's
+    # home, and an MCP caller may be steered by untrusted content (GHSA-hqfj-4jww-76f2).
+    if Path(resolved).name != resolved:
+        return _bad_param("Invalid Profile", f"Profile {resolved!r} is not a profile name.")
     settings = get_settings()
     profile_dir = settings.profile_subdir(resolved)
     if not profile_dir.exists():
@@ -574,16 +578,16 @@ def _bad_param(title: str, detail: str) -> dict[str, Any]:
     }
 
 
-def confine_to_output_dir(value: str, *, root: Path | None = None) -> Path:
+def _confine_to_output_dir(value: str) -> Path:
     """Resolve a caller-supplied path and require it to stay inside the output directory.
 
     MCP callers may be driven by untrusted content, so ``output`` / ``out_dir`` must not be
     able to write outside ``settings.output_dir``. Relative values are taken relative to it.
     Raises ``ValueError`` for escapes (``..``, absolute paths elsewhere, symlinks out).
     """
-    base = (root if root is not None else get_settings().output_dir).resolve()
+    base = get_settings().output_dir.resolve()
     candidate = (base / Path(value)).resolve()  # absolute `value` replaces base; checked below
-    if candidate != base and not candidate.is_relative_to(base):
+    if not candidate.is_relative_to(base):
         raise ValueError(f"path {value!r} is outside the configured output directory")
     return candidate
 
@@ -591,11 +595,12 @@ def confine_to_output_dir(value: str, *, root: Path | None = None) -> Path:
 def _confined_output_file(output: str) -> str | dict[str, Any]:
     """``output`` resolved inside the output dir, or the 400 envelope refusing it."""
     try:
-        path = confine_to_output_dir(output)
+        path = _confine_to_output_dir(output)
     except ValueError as exc:
         return _bad_param("Invalid Output", str(exc))
     # Mirrors the CLI's dir_okay=False: the file would land inside it, unrecorded (#1114).
-    if path.is_dir():
+    # The output dir itself counts even before it exists ("" or ".").
+    if path.is_dir() or path == get_settings().output_dir.resolve():
         return _bad_param("Invalid Output", f"Output '{output}' is a directory, not a file.")
     return str(path)
 
@@ -1669,7 +1674,7 @@ async def gflow_download_media(
     """
     log.info("mcp.tool.download_media", media_id=media_id, profile=profile)
     try:
-        safe_out_dir = confine_to_output_dir(out_dir) if out_dir else None
+        safe_out_dir = _confine_to_output_dir(out_dir) if out_dir else None
     except ValueError as exc:
         return _bad_param("Invalid out_dir", str(exc))
     result = await download_media(
@@ -1841,7 +1846,9 @@ async def _run_upscale_tool(
     settings = get_settings()
     profile_dir = settings.profile_subdir(profile)
     try:
-        output_root = confine_to_output_dir(out_dir) if out_dir is not None else settings.output_dir
+        output_root = (
+            _confine_to_output_dir(out_dir) if out_dir is not None else settings.output_dir
+        )
     except ValueError as exc:
         return _bad_param("Invalid out_dir", str(exc))
     from datetime import date

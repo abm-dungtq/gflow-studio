@@ -1232,6 +1232,9 @@ async def gflow_generate_video(  # NOSONAR
         return proj_err
     if output is not None:
         refuse_cloud_storage_for_local_file(get_settings().storage_uri, "output")
+        # Mirrors the CLI's dir_okay=False: the clip would land inside it, unrecorded (#1114).
+        if Path(output).is_dir():
+            return _bad_param("Invalid Output", f"Output '{output}' is a directory, not a file.")
 
     if ui_mode is not None:
         # Normalize case to mirror the CLI's click.Choice(case_sensitive=False);

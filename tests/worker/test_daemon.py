@@ -1127,7 +1127,7 @@ async def test_worker_relocates_output_file_across_filesystems(
 
     updated = repo.get_task("task-exdev")
     assert updated is not None
-    assert updated.status == "completed", updated.error_json
+    assert updated.status == "completed", updated.error
     assert out_file.read_bytes() == b"clip"
     assert not src.exists()
     worker.close()

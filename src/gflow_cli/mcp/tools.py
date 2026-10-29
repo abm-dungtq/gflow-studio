@@ -291,6 +291,10 @@ def _resolve_and_validate_profile(profile: str) -> str | dict[str, Any]:
     # Sanity-check: the profile directory must exist on disk. If auth was never
     # completed the FlowApiClient would fail with a cryptic Playwright error;
     # surface a clear message here instead.
+    # A name with a separator or drive would point Chrome's user-data-dir outside gflow's
+    # home, and an MCP caller may be steered by untrusted content (GHSA-hqfj-4jww-76f2).
+    if Path(resolved).name != resolved:
+        return _bad_param("Invalid Profile", f"Profile {resolved!r} is not a profile name.")
     settings = get_settings()
     profile_dir = settings.profile_subdir(resolved)
     if not profile_dir.exists():
@@ -572,6 +576,33 @@ def _bad_param(title: str, detail: str) -> dict[str, Any]:
         "status": "error",
         "error": {"type": _BAD_PARAM_TYPE, "title": title, "status": 400, "detail": detail},
     }
+
+
+def _confine_to_output_dir(value: str) -> Path:
+    """Resolve a caller-supplied path and require it to stay inside the output directory.
+
+    MCP callers may be driven by untrusted content, so ``output`` / ``out_dir`` must not be
+    able to write outside ``settings.output_dir``. Relative values are taken relative to it.
+    Raises ``ValueError`` for escapes (``..``, absolute paths elsewhere, symlinks out).
+    """
+    base = get_settings().output_dir.resolve()
+    candidate = (base / Path(value)).resolve()  # absolute `value` replaces base; checked below
+    if not candidate.is_relative_to(base):
+        raise ValueError(f"path {value!r} is outside the configured output directory")
+    return candidate
+
+
+def _confined_output_file(output: str) -> str | dict[str, Any]:
+    """``output`` resolved inside the output dir, or the 400 envelope refusing it."""
+    try:
+        path = _confine_to_output_dir(output)
+    except ValueError as exc:
+        return _bad_param("Invalid Output", str(exc))
+    # Mirrors the CLI's dir_okay=False: the file would land inside it, unrecorded (#1114).
+    # The output dir itself counts even before it exists ("" or ".").
+    if path.is_dir() or path == get_settings().output_dir.resolve():
+        return _bad_param("Invalid Output", f"Output '{output}' is a directory, not a file.")
+    return str(path)
 
 
 def _resolve_ref_local_path(
@@ -946,6 +977,12 @@ async def gflow_generate_image(
     if (proj_err := _validate_project(project)) is not None:
         return proj_err
 
+    if output is not None:
+        confined = _confined_output_file(output)
+        if isinstance(confined, dict):
+            return confined
+        output = confined
+
     if ui_mode is not None:
         # Normalize case to mirror the CLI's click.Choice(case_sensitive=False)
         # and answer with the same _bad_param RFC 9457 envelope the video tool
@@ -1232,9 +1269,10 @@ async def gflow_generate_video(  # NOSONAR
         return proj_err
     if output is not None:
         refuse_cloud_storage_for_local_file(get_settings().storage_uri, "output")
-        # Mirrors the CLI's dir_okay=False: the clip would land inside it, unrecorded (#1114).
-        if Path(output).is_dir():
-            return _bad_param("Invalid Output", f"Output '{output}' is a directory, not a file.")
+        confined = _confined_output_file(output)
+        if isinstance(confined, dict):
+            return confined
+        output = confined
 
     if ui_mode is not None:
         # Normalize case to mirror the CLI's click.Choice(case_sensitive=False);
@@ -1626,7 +1664,7 @@ async def gflow_download_media(
     Args:
         media_id: The Flow media ID, as shown by ``gflow_list_projects`` assets or the
             catalog. This is the id a failed-download generation left behind.
-        out_dir: Directory to write into. Defaults to the configured output dir.
+        out_dir: Directory to write into, inside the configured output dir (the default).
         profile: Restrict the catalog lookup to one profile. Omit to search all —
             an id present under several profiles is reported as an error naming them.
 
@@ -1635,10 +1673,14 @@ async def gflow_download_media(
         ``project_id`` and ``profile``.
     """
     log.info("mcp.tool.download_media", media_id=media_id, profile=profile)
+    try:
+        safe_out_dir = _confine_to_output_dir(out_dir) if out_dir else None
+    except ValueError as exc:
+        return _bad_param("Invalid out_dir", str(exc))
     result = await download_media(
         media_id=media_id,
         profile=profile,
-        out_dir=Path(out_dir) if out_dir else None,
+        out_dir=safe_out_dir,
     )
     return {
         "status": "ok",
@@ -1658,7 +1700,8 @@ async def gflow_download_media(
         "media_id is the UUID of the image to upscale. "
         "scale is '2k' or '4k' (4k requires Ultra subscription; Pro/Plus accounts support 2k). "
         "project is optional (resolved from the local catalog when omitted). "
-        "out_dir is the output directory (defaults to configured images directory). "
+        "out_dir is the output directory (defaults to configured images directory; "
+        "must resolve inside the configured output directory). "
         "profile selects the auth profile (defaults to the active profile). "
         "Spends no credits: image upscale is free."
     ),
@@ -1716,7 +1759,8 @@ async def gflow_upscale_image(
         "media_id is the UUID of the video to upscale. "
         "scale is '1080p' (Full HD), '720p' (original), or '270p' (animated GIF). "
         "project is optional (resolved from the local catalog when omitted). "
-        "out_dir is the output directory (defaults to configured videos directory). "
+        "out_dir is the output directory (defaults to configured videos directory; "
+        "must resolve inside the configured output directory). "
         "profile selects the auth profile (defaults to the active profile). "
         "flow.google.com only (GFLOW_CLI_FLOW_HOST=labs.google refuses it). "
         "Measured free (1 observation, 2026-10-07): the 1080p export spent no credits."
@@ -1801,7 +1845,12 @@ async def _run_upscale_tool(
 
     settings = get_settings()
     profile_dir = settings.profile_subdir(profile)
-    output_root = Path(out_dir) if out_dir is not None else settings.output_dir
+    try:
+        output_root = (
+            _confine_to_output_dir(out_dir) if out_dir is not None else settings.output_dir
+        )
+    except ValueError as exc:
+        return _bad_param("Invalid out_dir", str(exc))
     from datetime import date
 
     out_path = (

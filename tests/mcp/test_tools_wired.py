@@ -117,6 +117,7 @@ class TestGenerateImageWired:
                     resolved_db_path=lambda: temp_db.path,
                     profile_subdir=lambda _: tmp_path / "profile_default",
                     timeout_seconds=30,
+                    output_dir=tmp_path / "out",
                 ),
             ),
             patch(
@@ -159,6 +160,7 @@ class TestGenerateImageWired:
                     resolved_db_path=lambda: temp_db.path,
                     profile_subdir=lambda _: tmp_path / "profile_default",
                     timeout_seconds=30,
+                    output_dir=tmp_path / "out",
                 ),
             ),
             patch(
@@ -199,6 +201,7 @@ class TestGenerateImageWired:
                     resolved_db_path=lambda: temp_db.path,
                     profile_subdir=lambda _: tmp_path / "profile_default",
                     timeout_seconds=30,
+                    output_dir=tmp_path / "out",
                 ),
             ),
             patch(
@@ -227,7 +230,7 @@ class TestGenerateImageWired:
         """When output is specified, the generated asset lands at the custom path."""
         from gflow_cli.mcp.tools import _TokenBucket, gflow_generate_image
 
-        custom_output = tmp_path / "custom_sub" / "hero.png"
+        custom_output = tmp_path / "out" / "custom_sub" / "hero.png"
         with (
             patch(
                 "gflow_cli.mcp.tools._rate_limiter",
@@ -247,6 +250,7 @@ class TestGenerateImageWired:
                     resolved_db_path=lambda: temp_db.path,
                     profile_subdir=lambda _: tmp_path / "profile_default",
                     timeout_seconds=30,
+                    output_dir=tmp_path / "out",
                 ),
             ),
             patch(
@@ -315,6 +319,7 @@ class TestGenerateVideoWired:
                     resolved_db_path=lambda: temp_db.path,
                     profile_subdir=lambda _: tmp_path / "profile_default",
                     timeout_seconds=30,
+                    output_dir=tmp_path / "out",
                 ),
             ),
             patch(
@@ -340,7 +345,7 @@ class TestGenerateVideoWired:
 
         src_mp4 = tmp_path / "generated.mp4"
         src_mp4.write_bytes(b"MP4_FAKE")
-        custom_output = tmp_path / "video_sub" / "clip.mp4"
+        custom_output = tmp_path / "out" / "video_sub" / "clip.mp4"
 
         fake_client = _FakeFlowApiClient()
         fake_client.generate_video = AsyncMock(
@@ -374,6 +379,7 @@ class TestGenerateVideoWired:
                     resolved_db_path=lambda: temp_db.path,
                     profile_subdir=lambda _: tmp_path / "profile_default",
                     timeout_seconds=30,
+                    output_dir=tmp_path / "out",
                     storage_uri=None,  # local storage: -o is allowed (#1008)
                 ),
             ),
@@ -495,6 +501,7 @@ class TestGenerateVideoWired:
                     resolved_db_path=lambda: temp_db.path,
                     profile_subdir=lambda _: tmp_path / "profile_default",
                     timeout_seconds=30,
+                    output_dir=tmp_path / "out",
                 ),
             ),
             patch(

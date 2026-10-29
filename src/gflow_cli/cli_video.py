@@ -239,7 +239,10 @@ def _relocate_single_video(item: Any, target: Path) -> Any:
     if local_p is None or not local_p.exists():
         return item
     if local_p != target:
-        local_p.replace(target)
+        import shutil
+
+        # shutil.move, not Path.replace: a rename across mounts raises EXDEV (#1114).
+        shutil.move(local_p, target)
         return replace(item, local_path=target)
     return item
 

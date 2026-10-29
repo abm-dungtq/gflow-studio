@@ -855,3 +855,17 @@ class TestProjectParam:
         result = await tools_mod.gflow_generate_video(prompt="a dog", project="bad/id")
         assert result["status"] == "error"
         assert result["error"]["title"] == "Invalid Project Id"
+
+    @pytest.mark.asyncio
+    async def test_video_output_naming_a_directory_rejected_before_worker(
+        self, tmp_path: Path
+    ) -> None:
+        # #1114 spike arm E: shutil.move drops the clip INSIDE a directory and the row
+        # records the directory as the clip; the CLI refuses it via dir_okay=False.
+        from gflow_cli.mcp import tools as tools_mod
+
+        with patch.object(tools_mod, "_run_generation_task") as run:
+            result = await tools_mod.gflow_generate_video(prompt="a dog", output=str(tmp_path))
+        assert result["status"] == "error"
+        assert result["error"]["title"] == "Invalid Output"
+        run.assert_not_called()

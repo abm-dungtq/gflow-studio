@@ -22,8 +22,8 @@ Linux, two mounts (the reporter's shape):
     docker run --rm --tmpfs /mnt/a -v <repo>:/src:ro python:3.12-slim sh -c \
       "cp -r /src /work && pip install -q /work && \
        python /work/scripts/dev/spike_1114_cross_device_relocate.py --a /mnt/a --b /work/out"
-Windows, one volume (arms D and E only):
-    uv run python scripts/dev/spike_1114_cross_device_relocate.py --a tmp/a --b tmp/b
+Windows, two volumes (any mapped drive, e.g. an SMB share; delete the folder after):
+    uv run python scripts/dev/spike_1114_cross_device_relocate.py --a tmp/a --b Y:/gflow-spike-1114
 """
 
 from __future__ import annotations

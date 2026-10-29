@@ -16,19 +16,20 @@ happens when an MCP `output` names a directory?
 - **Linux, two mounts** (the reporter's shape): `python:3.12-slim` in Docker, the source on a
   `--tmpfs /mnt/a`, the target on the container's overlay root (`/work/out`). The script
   checks `st_dev` and prints `distinct: true`.
-- **Windows 11, one volume**: this host has only `C:`, so the cross-device arms could not
-  run there. The overwrite and directory arms ran.
+- **Windows 11, two volumes**: the source under the repo on `C:`, the target in a scratch
+  folder on `Y:`, a mapped network share (SMB). `distinct: true`. The folder was deleted after
+  the run. (A first run on `C:` alone measured only the overwrite and directory arms.)
 
 Readings were written in the script's docstring before the run.
 
 ## What was observed
 
-| Arm | What ran | Linux (2 mounts) | Windows (1 volume) |
+| Arm | What ran | Linux (tmpfs → disk) | Windows (`C:` → SMB `Y:`) |
 |---|---|---|---|
-| A control | `Path.replace`, the pre-fix line, tmpfs → disk | `OSError` errno **18** (EXDEV) | not measured |
-| B CLI | `_relocate_video_output`, tmpfs → disk | bytes landed, source removed | not measured |
-| C MCP worker | `FlowWorker.process_task` (t2v, `output_file`) | task `completed`, bytes landed, source removed | not measured |
-| D overwrite | relocation onto an existing target | target replaced (`NEW`), same mount and cross mount | target replaced, same mount |
+| A control | `Path.replace`, the pre-fix line | `OSError` errno **18** (EXDEV) | `OSError` errno **18** |
+| B CLI | `_relocate_video_output` | bytes landed, source removed | bytes landed, source removed |
+| C MCP worker | `FlowWorker.process_task` (t2v, `output_file`) | task `completed`, bytes landed, source removed | same |
+| D overwrite | relocation onto an existing target | target replaced (`NEW`), same mount and cross mount | target replaced, same volume and cross volume |
 | E directory | worker with `output_file` = an existing directory | task `completed`; clip moved **inside** the directory | same |
 
 Control for arm E on `develop` (Windows): `Path.replace` onto a directory raised
@@ -37,8 +38,8 @@ directory.
 
 ## Reading
 
-- **A + B + C:** the root cause is real on a real kernel, and the fix holds on both
-  surfaces. This is the reporter's exact failure, now measured rather than simulated.
+- **A + B + C:** the root cause is real on both operating systems (Python maps Windows'
+  `ERROR_NOT_SAME_DEVICE` to errno 18 too), and the fix holds on both surfaces. This is the reporter's exact failure, now measured rather than simulated.
 - **D:** `shutil.move` keeps the overwrite behaviour of `Path.replace`. On Windows it gets
   there by a copy, because `os.rename` refuses an existing target and `shutil.move` falls
   back to `copy2` + `unlink`.
@@ -51,8 +52,6 @@ directory.
 
 ## Not measured
 
-- **A cross-volume move on Windows** (e.g. `C:` → `D:`). This host has one volume. CPython's
-  `shutil.move` falls back to a copy on any `OSError` from `os.rename`, which covers Windows'
-  `ERROR_NOT_SAME_DEVICE`. That is read from the stdlib, not run. A second drive, or a
-  mounted VHD, would settle it by running the script with `--a` and `--b` on different
-  volumes.
+Nothing the fix depends on. Other targets of the same kind remain unrun (a second local disk,
+a USB volume, a Linux NFS mount); each is another rename across devices, which the arms above
+already cover on both operating systems.

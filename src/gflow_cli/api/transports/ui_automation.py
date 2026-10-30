@@ -367,6 +367,10 @@ _BODY_SLOT_MOUNT_POLL_MS = 250
 # refuses without a `project_id`, `ensure_editor` navigates straight to the project URL, and
 # `character create` requires `--project`. Those guards are what a future port relaxes — so
 # `_enter_editor` now names the host rather than blaming this cascade when it is reached.
+# Per-selector visibility wait in the "+ New project" sweep. A full miss costs
+# len(NEW_PROJECT_SELECTORS) x this; a module constant so the hermetic e2e can shorten it.
+_NEW_PROJECT_PROBE_TIMEOUT_MS = 5000
+
 NEW_PROJECT_SELECTORS = (
     # Tier 1 — structural / icon: locale-invariant.
     # The migrated `flow.google.com` gallery renders the CTA with the ligature **`add`**,
@@ -1632,7 +1636,7 @@ class UiAutomationTransport(VideoGenerationMixin):
         for selector in NEW_PROJECT_SELECTORS:
             try:
                 loc = page.locator(selector).first
-                await loc.wait_for(state="visible", timeout=5000)
+                await loc.wait_for(state="visible", timeout=_NEW_PROJECT_PROBE_TIMEOUT_MS)
                 log.info("ui_automation.clicking_new_project", selector=selector)
                 # Explicit timeout: a covered-but-visible CTA passes the wait above and
                 # then blocks on the default 30 s, inside `except: continue`. The

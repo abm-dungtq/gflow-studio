@@ -317,8 +317,13 @@ async def test_generate_images_401_then_refresh_succeeds_returns_images() -> Non
 # ---------------------------------------------------------------------------
 
 
-async def test_generate_images_30s_timeout_raises_transport_timeout() -> None:
+async def test_generate_images_30s_timeout_raises_transport_timeout(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     import asyncio
+
+    # Shortened from the production 30 s (pinned in test_common.py) so the test does not sit it out.
+    monkeypatch.setattr("gflow_cli.api.transports.experimental.bearer.PER_CALL_TIMEOUT_S", 0.2)
 
     transport = BearerTransport()
     transport._cached = MagicMock(
@@ -338,7 +343,7 @@ async def test_generate_images_30s_timeout_raises_transport_timeout() -> None:
     with pytest.raises(TransportTimeoutError):
         await transport.generate_images(project_id="p", request=_req())
     elapsed = time.perf_counter() - started
-    assert elapsed < 35, f"timeout enforcement too slow: {elapsed:.1f}s"
+    assert 0.2 <= elapsed < 5, f"expected the 0.2 s budget to fire; took {elapsed:.2f}s"
 
 
 # ---------------------------------------------------------------------------

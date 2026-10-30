@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.92.1] — 2026-10-30
+
 ### Fixed
 
 - **MCP agents now see how to pass `tools` and character ids.** The generate tools'
@@ -15,10 +17,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   position in `reference_entity_names` (and, for video, `mode: r2v`). The `tools` shape and
   the video rules sat only in docstrings the MCP client never shows; the image pairing
   rule sat in the long tool description, where agents missed it. The schema now also says that
-  `gflow_character_list` exits 7 there (#875) and to ask the user for the name. In a
+  `gflow_character_list` fails there with a `wire-format` error (the CLI's exit 7, #875)
+  and to ask the user for the name. In a
   tool-selection eval with Claude Code as the host, a character given by id was sent
   without its name in 4 of 5 runs, which fails before submit. With the rule in the
   schema, that dropped to 0 of 5.
+- **The flow.google.com remediation hint no longer says video takes no character.** Since
+  v0.91.0 (#723) reference-to-video attaches a character by name there; the hint on the
+  `flow-host-migrated` refusal still said "video none", which an agent reads as a reason
+  not to try.
 
 ### Added
 
@@ -6780,7 +6787,8 @@ shell-script template that branches on these codes.
 
 First skeleton. Not functional end-to-end yet.
 
-[Unreleased]: https://github.com/ffroliva/gflow-cli/compare/v0.92.0...HEAD
+[Unreleased]: https://github.com/ffroliva/gflow-cli/compare/v0.92.1...HEAD
+[0.92.1]: https://github.com/ffroliva/gflow-cli/compare/v0.92.0...v0.92.1
 [0.92.0]: https://github.com/ffroliva/gflow-cli/compare/v0.91.0...v0.92.0
 [0.91.0]: https://github.com/ffroliva/gflow-cli/compare/v0.90.0...v0.91.0
 [0.90.0]: https://github.com/ffroliva/gflow-cli/compare/v0.89.1...v0.90.0

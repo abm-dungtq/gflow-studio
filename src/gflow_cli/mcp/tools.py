@@ -99,8 +99,8 @@ _ToolsParam = Annotated[
 _ENTITIES_DESCRIPTION = (
     "Saved character entity ids to attach. On flow.google.com each id needs its display "
     "name at the same position in reference_entity_names, or the call fails before "
-    "submit; gflow_character_list returns both (if it exits 7, #875, ask the user or "
-    "read the name in Flow's UI)."
+    "submit; gflow_character_list returns both (if it fails with a wire-format error, "
+    "#875, ask the user or read the name in Flow's UI)."
 )
 _ImageEntitiesParam = Annotated[list[str] | None, Field(description=_ENTITIES_DESCRIPTION)]
 _VideoEntitiesParam = Annotated[
@@ -1235,7 +1235,7 @@ async def gflow_generate_video(  # NOSONAR
             ``@Name`` mention (``referenceEntities``) and dedupes against it;
             use ids when a display name would be ambiguous, since names are
             not unique. Satisfies r2v's reference requirement on its own.
-        reference_entity_names: Optional display names paired positionally with
+        reference_entity_names: Display names paired positionally with
             ``reference_entities`` (mirrors ``--reference-entity-name``); required
             for each id on flow.google.com, where the picker attaches by name.
         model: Optional Veo model — 'veo_lite', 'veo_fast', 'veo_quality',

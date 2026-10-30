@@ -4,6 +4,21 @@
 
 ## Current release
 
+**v0.92.1 — alpha.** A patch for MCP agents: the generate tools' schema now says how to
+pass prompt tools and saved characters.
+
+**For agents (#1121).** `gflow_generate_image` and `gflow_generate_video` describe the `tools`
+item shape (`{"name": <slug>, "options": {...}}`), and that on flow.google.com each
+`reference_entities` id needs its display name at the same position in
+`reference_entity_names` (and, for video, `mode: r2v`). The rule had lived only in
+docstrings an MCP client never shows; in a tool-selection eval a character given by id was
+sent without its name in 4 of 5 runs, and in 0 of 5 once the schema said so. The
+`flow-host-migrated` remediation hint no longer says video takes no character.
+
+Full ledger: [LIVE_VERIFICATION_v0.92.1](LIVE_VERIFICATION_v0.92.1.md).
+
+<details><summary>v0.92.0 — MCP output confined to the output dir, cross-filesystem -o</summary>
+
 **v0.92.0 — alpha.** A security release: MCP tool arguments can no longer direct a write
 outside the configured output directory, and a video saved with `-o` onto another filesystem no
 longer fails after it is billed.
@@ -20,6 +35,8 @@ absolute path outside the output dir. The CLI is unchanged. Reported by Filip Ku
 `EXDEV` after the credits are spent.
 
 Full ledger: [LIVE_VERIFICATION_v0.92.0](LIVE_VERIFICATION_v0.92.0.md).
+
+</details>
 
 <details><summary>v0.91.0 — MCP background runs, SEP-2663 tasks, r2v with a character</summary>
 
@@ -704,6 +721,7 @@ migrated accounts (#795), and the agent-only composer driver (#799, #824 open).
 | Milestone | Status |
 |---|---|
 | MCP `output` / `out_dir` confined to the output dir, `profile` a plain name (GHSA-hqfj-4jww-76f2); cross-filesystem `-o` (#1114) | ✅ done (v0.92.0) |
+| MCP generate-tool schema states the `tools` item shape and the id + name pairing for saved characters (#1121) | ✅ done (v0.92.1) |
 | MCP `wait=false` runs (#1097); `tasks/get` and `tasks/cancel` follow SEP-2663 (#1102); agent-only credit confirmation read before approval (#988); r2v with a character on flow.google.com (#723); a lost video submit reply followed to its clip (#1112) | ✅ done (v0.91.0) |
 | `gflow run --resume` (#934); a local `--ref` uploaded once per project (#772); unwritable output, corrupt cookie store and signed-URL errors classified (#1091, #796, #941) | ✅ done (v0.90.0) |
 | Lost image replies recovered from the grid, upscale after generating, hidden picker refused (#1075, #1067, #788) | ✅ done (v0.89.1) |

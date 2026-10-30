@@ -7,7 +7,11 @@ job still exits 0. This gate parses the junit XML pytest wrote and requires a
 minimum number of EXECUTED tests (collected minus skipped).
 
 Usage:
-    python scripts/ci/check_test_count.py <junit-xml> <min-executed>
+    python scripts/ci/check_test_count.py <junit-xml>... <min-executed>
+
+Several reports are summed against one floor: ci.yml shards the 3.13 suite, and
+the floor covers the whole suite, not each shard. A named report that is missing
+fails the gate rather than quietly dropping out of the sum.
 
 Floors are deliberately well below the real counts so routine test deletions
 never trip them — they exist to catch collapse, not drift.
@@ -17,17 +21,21 @@ from __future__ import annotations
 
 import sys
 import xml.etree.ElementTree as ET
+from pathlib import Path
 
 
 def main() -> int:
-    if len(sys.argv) != 3 or not sys.argv[2].isdigit():
-        print("usage: check_test_count.py <junit-xml> <min-executed>")
+    if len(sys.argv) < 3 or not sys.argv[-1].isdigit():
+        print("usage: check_test_count.py <junit-xml>... <min-executed>")
         return 2
-    report_path, floor = sys.argv[1], int(sys.argv[2])
-    root = ET.parse(report_path).getroot()
+    reports, floor = [Path(p) for p in sys.argv[1:-1]], int(sys.argv[-1])
+    missing = [str(p) for p in reports if not p.is_file()]
+    if missing:
+        print(f"FAIL: missing junit report(s): {', '.join(missing)} (a shard that ran nothing)")
+        return 1
     # iter() is self-inclusive, so this handles both a <testsuites> wrapper and
     # a bare <testsuite> root with one expression.
-    suites = list(root.iter("testsuite"))
+    suites = [s for p in reports for s in ET.parse(p).getroot().iter("testsuite")]
     collected = sum(int(suite.get("tests", "0")) for suite in suites)
     skipped = sum(int(suite.get("skipped", "0")) for suite in suites)
     errors = sum(int(suite.get("errors", "0")) for suite in suites)

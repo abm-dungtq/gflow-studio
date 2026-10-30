@@ -220,7 +220,10 @@ jobs:
         # intentionally relies on that default smoke set.
         # -n auto: pytest-xdist, one worker per runner vCPU (~2x on the full suite;
         # 198 s vs ~390 s measured locally at -n 8).
-        run: uv run python -m pytest -q -n auto --junitxml=pytest-report.xml
+        # --dist worksteal: the default `load` hands each worker a fixed chunk up
+        # front, and test_agent_only_composer_driver.py's 85 contiguous tests all
+        # landed on one worker (338 s there, ~20 s on the other three, measured).
+        run: uv run python -m pytest -q -n auto --dist worksteal --junitxml=pytest-report.xml
 
       - name: Test-count guard (a green build that ran nothing is not green)
         # Floor well below the real count (~2900): catches collection collapse
@@ -283,7 +286,7 @@ jobs:
         if: matrix.shard != 'e2e'
         env:
           GFLOW_TEST_SHARD: ${{ matrix.shard }}
-        run: uv run python -m pytest -q -n auto --cov=gflow_cli --cov-report= --junitxml=pytest-report.xml
+        run: uv run python -m pytest -q -n auto --dist worksteal --cov=gflow_cli --cov-report= --junitxml=pytest-report.xml
 
       # Five files under tests/e2e/ are hermetic: every Flow origin is served by
       # `page.route(...).fulfill(...)`, so they need no account, no profile, no

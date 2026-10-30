@@ -77,6 +77,7 @@ from gflow_cli.api.video import (
     VideoStarted,
     VideoStatus,
 )
+from gflow_cli.browser_manager import bring_to_front_keep_hidden
 from gflow_cli.errors import (
     CONTENT_SAFETY_REASONS,
     ConfigurationError,
@@ -969,7 +970,7 @@ async def _ensure_tab_visible(page: Page) -> None:
     except Exception:  # noqa: BLE001 - fall back to fronting when state is unreadable
         state = None
     if state != "visible":
-        await page.bring_to_front()
+        await bring_to_front_keep_hidden(page)
         log.debug("migrated.tab_refronted", visibility_state=state)
 
 

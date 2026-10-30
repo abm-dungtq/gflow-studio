@@ -56,6 +56,7 @@ _find_chrome_binary() -> str
 
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 import plistlib
@@ -63,10 +64,10 @@ import shutil
 import subprocess
 import sys
 import time
-from collections.abc import Generator
+from collections.abc import Awaitable, Callable, Generator
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any, cast
 
 import structlog
 
@@ -75,6 +76,9 @@ from gflow_cli.errors import (
     ProfileEngineDowngradeError,
     ProfileLockedError,
 )
+
+if TYPE_CHECKING:
+    from playwright.async_api import BrowserContext, Page
 
 if sys.platform != "win32":
     import fcntl
@@ -402,6 +406,98 @@ def window_mode_args(window_mode: str, position: str) -> list[str]:
             return window_position_args(position)
         return [*window_position_args(position), *ANTI_THROTTLING_ARGS]
     return window_position_args(position)
+
+
+def hides_generation_window(window_mode: str, *, headless: bool) -> bool:
+    """True when the headed generation window should be minimized after launch."""
+    return not headless and str(window_mode).lower() != "normal"
+
+
+_CORNER_BOUNDS: dict[str, int] = {"left": -30000, "top": 30000}
+
+
+async def _window_state(page: Page, *, minimize: bool = False, restore: bool = False) -> str:
+    cdp = await page.context.new_cdp_session(page)
+    send = cast("Callable[..., Awaitable[dict[str, Any]]]", cdp.send)  # pyright: ignore[reportUnknownMemberType]
+    try:
+        window = await send("Browser.getWindowForTarget")
+        state = str(window["bounds"]["windowState"])
+        if minimize and state == "normal":
+            # Chrome clamps this to a ~40 px corner of the outermost display, which
+            # is all that shows if a new tab restores the window before it is
+            # minimized again (measured 2026-10-30, macOS).
+            await send(
+                "Browser.setWindowBounds",
+                {"windowId": window["windowId"], "bounds": _CORNER_BOUNDS},
+            )
+        if minimize or restore:
+            await send(
+                "Browser.setWindowBounds",
+                {
+                    "windowId": window["windowId"],
+                    "bounds": {"windowState": "minimized" if minimize else "normal"},
+                },
+            )
+        return state
+    finally:
+        await cdp.detach()
+
+
+async def minimize_window(page: Page) -> bool:
+    """Minimize ``page``'s window; restore it and return False if that hides the tab.
+
+    ``--window-position`` alone does not hide the window: Chrome pulls an
+    off-display position back onto the nearest display, so with a second monitor
+    to the left the window lands fully on it (measured 2026-10-30, macOS: asked
+    -30000,-30000, got -2560,103). Minimized, the tab still reports
+    ``visibilityState == "visible"`` because Playwright launches Chrome with
+    ``--disable-backgrounding-occluded-windows``. A platform where it goes
+    ``hidden`` would stall Flow, so that case puts the window back. Never raises.
+    """
+    try:
+        await _window_state(page, minimize=True)
+        if await page.evaluate("document.visibilityState") == "visible":
+            return True
+        await _window_state(page, restore=True)
+        log.warning("browser_manager.minimized_window_hides_page", fallback="offscreen")
+    except Exception as exc:  # noqa: BLE001 - hiding is best effort, never fatal
+        log.debug("browser_manager.minimize_window_failed", error=str(exc))
+    return False
+
+
+async def keep_window_hidden(context: BrowserContext) -> None:
+    """Minimize the generation window now and again whenever a tab opens.
+
+    Opening a tab restores a minimized window (measured), so each new page
+    re-minimizes it. Gives up, leaving the off-screen placement, if minimizing
+    would hide the page.
+    """
+    pages = list(context.pages)
+    if pages and not await minimize_window(pages[0]):
+        return
+    tasks: set[asyncio.Task[bool]] = set()
+
+    def _on_page(page: Page) -> None:
+        task = asyncio.ensure_future(minimize_window(page))
+        tasks.add(task)
+        task.add_done_callback(tasks.discard)
+
+    context.on("page", _on_page)
+
+
+async def bring_to_front_keep_hidden(page: Page) -> None:
+    """``page.bring_to_front()`` that leaves a minimized window minimized.
+
+    Fronting a tab restores its minimized window (measured), which would put the
+    generation browser back on screen mid-run.
+    """
+    try:
+        was_minimized = await _window_state(page) == "minimized"
+    except Exception:  # noqa: BLE001 - unreadable state: front it as before
+        was_minimized = False
+    await page.bring_to_front()
+    if was_minimized:
+        await minimize_window(page)
 
 
 def generation_window_config(

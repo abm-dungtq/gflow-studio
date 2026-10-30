@@ -58,6 +58,7 @@ from gflow_cli.api.video import (
     parse_video_status,
     workflow_id_from_generate_response,
 )
+from gflow_cli.browser_manager import bring_to_front_keep_hidden
 from gflow_cli.errors import (
     AuthExpiredError,
     ConfigurationError,
@@ -1190,7 +1191,7 @@ class VideoGenerationMixin:
                 visibility = None
             if visibility != "visible":
                 try:
-                    await page.bring_to_front()
+                    await bring_to_front_keep_hidden(page)
                 except Exception as e:
                     log.debug("ui_automation_video.bring_to_front_failed", error=str(e))
             nudged = True

@@ -89,6 +89,8 @@ from gflow_cli.browser_manager import (
     browser_proxy_kwargs,
     channel_for_profile,
     generation_window_config,
+    hides_generation_window,
+    keep_window_hidden,
     profile_in_use_error,
 )
 from gflow_cli.config import BrowserEngine, Settings
@@ -792,6 +794,8 @@ class FlowApiClient:
         # created before #472 (marker-gated stat afterwards; no-op off Windows).
         ensure_profile_hardened(self.profile_dir)
         self._context = await self._launch_persistent_context(kwargs)
+        if hides_generation_window(self.settings.window_mode, headless=self.headless):
+            await keep_window_hidden(self._context)
         # Attach journal listeners BEFORE any navigation/submission that can
         # produce relevant traffic (design §6.2 step 2, S30).
         self._attach_recorder_context(self._context)

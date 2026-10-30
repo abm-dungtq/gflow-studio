@@ -1090,6 +1090,8 @@ class UiAutomationTransport(VideoGenerationMixin):
                 channel_for_profile,
                 ensure_profile_engine_compatible,
                 generation_window_config,
+                hides_generation_window,
+                keep_window_hidden,
             )
             from gflow_cli.config import get_settings
 
@@ -1131,6 +1133,8 @@ class UiAutomationTransport(VideoGenerationMixin):
                 str(profile_dir),
                 **launch_kwargs,
             )
+            if hides_generation_window(settings.window_mode, headless=False):
+                await keep_window_hidden(ctx)
             # Hide the automation flag so reCAPTCHA Enterprise doesn't score
             # the session as a bot — navigator.webdriver=true causes low-score
             # tokens and HTTP 403 on batchGenerateImages.

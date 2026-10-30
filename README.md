@@ -197,7 +197,7 @@ Google chỉ phục vụ Flow cho trình duyệt thật, nên gflow phải đi�
 | Hệ điều hành | Thiết lập | Kết quả |
 |---|---|---|
 | macOS | `GFLOW_CLI_WINDOW_MODE=background` | Ẩn hoàn toàn, không có biểu tượng trên Dock, không bao giờ giành bàn phím. Nên dùng. |
-| macOS, Windows, Linux | `offscreen` (mặc định) | Cửa sổ mở ở ngoài màn hình, nhưng Chrome giành bàn phím lúc khởi động. |
+| macOS, Windows, Linux | `offscreen` (mặc định) | Cửa sổ được thu nhỏ ngay sau khi mở, kể cả khi máy có nhiều màn hình, nhưng Chrome giành bàn phím lúc khởi động. |
 | mọi hệ | `GFLOW_CLI_HEADLESS=true` | Không có cửa sổ nào. Đang thử nghiệm, xem bên dưới. |
 | mọi hệ | `normal` | Cửa sổ hiện bình thường, tiện khi muốn xem gflow làm gì. |
 

@@ -193,7 +193,7 @@ Google only serves Flow to a real browser, so gflow drives a real Chrome window.
 | Platform | Setting | Result |
 |---|---|---|
 | macOS | `GFLOW_CLI_WINDOW_MODE=background` | Hidden, no Dock icon, never takes focus. Recommended. |
-| macOS, Windows, Linux | `offscreen` (default) | The window opens off-screen, but Chrome takes keyboard focus when it starts. |
+| macOS, Windows, Linux | `offscreen` (default) | The window is minimized right after launch, even with several monitors, but Chrome takes keyboard focus when it starts. |
 | any | `GFLOW_CLI_HEADLESS=true` | No window at all. Experimental, see below. |
 | any | `normal` | A visible window, useful for watching a run. |
 

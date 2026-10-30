@@ -574,7 +574,9 @@ class Settings(BaseSettings):
         default=WindowMode.OFFSCREEN,
         description=(
             "Window mode for the headed generation browser: 'offscreen' (default, "
-            "places the window at GFLOW_CLI_BROWSER_WINDOW_POSITION), 'background' "
+            "places the window at GFLOW_CLI_BROWSER_WINDOW_POSITION and minimizes it, "
+            "since Chrome pulls an off-display position onto the nearest monitor), "
+            "'background' "
             "(macOS: launches a background-only Chrome app clone with no Dock icon "
             "and no focus steal; falls back to 'offscreen' on other platforms), or "
             "'normal' (Chrome's default on-screen window placement). Login always "

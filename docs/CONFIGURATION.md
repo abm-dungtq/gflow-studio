@@ -436,6 +436,15 @@ Measurement script: `scripts/dev/spike_offscreen_window.py`.
 | `background` | On macOS (`darwin`), launches a local `LSBackgroundOnly` clone of Google Chrome (`<GFLOW_CLI_HOME>/macos-bg/Google Chrome.app`, refreshed automatically when Chrome updates) with background-throttling disabled so no Dock icon appears and keyboard focus is never stolen. On other platforms, logs a warning and falls back to `offscreen`. |
 | `normal` | Omits `--window-position` so Chrome opens visibly at its default on-screen position. |
 
+In `offscreen` and `background` modes gflow also **minimizes** the window right after launch,
+and again whenever a new tab or `bring_to_front` restores it. `--window-position` alone is not
+enough: Chrome pulls an off-display position back onto the nearest display, so with a second
+monitor to the left of the main one the window landed fully on that monitor (measured
+2026-10-30, macOS: asked `-30000,-30000`, got `-2560,103`). Before minimizing, gflow parks the
+window in a corner, so a brief restore shows at most a ~40 px corner. A minimized tab still
+reports `visibilityState == "visible"`; on a platform where it would not, gflow restores the
+window and keeps the off-screen placement. Headless runs have no window and skip this.
+
 `gflow auth login` is unaffected and always opens a visible window.
 
 ### `GFLOW_CLI_BROWSER_PROXY`

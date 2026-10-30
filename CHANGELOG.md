@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **The generation browser no longer shows up on a second monitor.** Chrome pulls a window
+  placed at `-30000,-30000` back onto the nearest display, so with a monitor to the left of the
+  main one the "off-screen" window landed fully on it. In `offscreen` and `background` modes
+  gflow now parks the window in a corner and minimizes it right after launch, and again
+  whenever a new tab or `bring_to_front` restores it. The tab still counts as visible, so Flow
+  keeps running. If minimizing would hide the tab on some platform, gflow puts the window back
+  and keeps the old off-screen placement. Measured on macOS with two displays: two images
+  generated with the window minimized for the whole run. Windows is not measured yet.
+
 ### Added
 
 - **gflow-studio: its own project, with a bilingual README.** gflow-studio lives at

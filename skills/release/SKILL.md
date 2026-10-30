@@ -398,5 +398,5 @@ Upon completing a Release:
 ## See also
 
 - [RELEASE.md](../../RELEASE.md) — full release protocol, prerelease policy, and checklist
-- [README § Releases](../../README.md#releases) — release policy and cadence
+- [README § Releases](../../README.en.md) — release policy and cadence
 - [PLAN § Phase 5](../../PLAN.md#phase-5--public-alpha-release-on-pypi) — first-release exit criteria

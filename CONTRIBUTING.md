@@ -321,7 +321,7 @@ tokens, cookies, signed URLs, or other secrets.
 
 ## Releasing (maintainer only)
 
-See the [Releases section in README](README.md#releases).
+See the [Releases section in README](README.en.md).
 
 ## Code of conduct
 

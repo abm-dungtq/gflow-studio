@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **gflow-studio: its own project, with a bilingual README.** gflow-studio lives at
   `abm-dungtq/gflow-studio` and is developed there; the command is still `gflow`. `README.md`
-  (English) and the new `README.vi.md` (Vietnamese) open with a banner and describe what the
+  (Vietnamese, shown by default) and `README.en.md` (English) open with a banner and describe what the
   tool does, setup on macOS / Windows / Linux from the repository's git URL, usage and batch
   examples, hiding the browser, a real `gflow run` transcript, and the exit codes to act on.
   Links, error hints, the MCP registry name (`io.github.abm-dungtq/gflow-studio`), plugin

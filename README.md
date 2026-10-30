@@ -2,65 +2,67 @@
 
 # gflow-studio
 
-<p align="center"><img src="docs/assets/gflow-studio-banner.svg" alt="gflow-studio: Google Flow images and videos from your terminal" width="100%"></p>
+<p align="center"><img src="docs/assets/gflow-studio-banner.svg" alt="gflow-studio: tạo ảnh và video Google Flow từ terminal" width="100%"></p>
 
-**English** · [Tiếng Việt](README.vi.md)
+**Tiếng Việt** · [English](README.en.md)
 
-Generate images and videos with [Google Flow](https://labs.google/fx/tools/flow) from your terminal. gflow-studio drives Imagen and Nano Banana (images) and Veo / Omni Flash (videos) through your own Flow account, so a whole storyboard can run as one batch command instead of an afternoon of clicking.
+Tạo ảnh và video bằng [Google Flow](https://labs.google/fx/tools/flow) ngay trong terminal. gflow-studio điều khiển Imagen, Nano Banana (ảnh) và Veo, Omni Flash (video) qua chính tài khoản Flow của bạn. Cả một storyboard chạy bằng một lệnh, thay cho một buổi chiều ngồi bấm chuột.
 
-**gflow-studio** is built and maintained by **ABM.DũngTQ** for an animation pipeline: 1080p downloads, a hidden browser on macOS, batches that stop when Google pushes back, and a video batch runner. The command is `gflow`. Highlights are under [Highlights](#highlights).
+**gflow-studio** do **ABM.DũngTQ** xây dựng và phát triển cho dây chuyền làm phim hoạt hình: tải video 1080p, chạy Chrome ẩn trên macOS, lô ảnh tự dừng khi Google chặn, và lệnh chạy lô video. Lệnh là `gflow`. Danh sách đầy đủ ở mục [Điểm nổi bật](#điểm-nổi-bật).
 
 [![Release](https://img.shields.io/github/v/release/abm-dungtq/gflow-studio?include_prereleases&label=release)](https://github.com/abm-dungtq/gflow-studio/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 ![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)
 ![Platforms](https://img.shields.io/badge/platforms-macOS%20%C2%B7%20Windows%20%C2%B7%20Linux-lightgrey.svg)
 
-[What it does](#what-it-does) · [Highlights](#highlights) · [Setup](#setup) · [Usage](#usage) · [Batches](#batches) · [Hiding the browser](#hiding-the-browser) · [Demo](#demo) · [When something fails](#when-something-fails) · [Documentation](#documentation) · [Author](#author)
+[Công dụng](#công-dụng) · [Điểm nổi bật](#điểm-nổi-bật) · [Cài đặt](#cài-đặt) · [Cách dùng](#cách-dùng) · [Chạy lô](#chạy-lô) · [Ẩn trình duyệt](#ẩn-trình-duyệt) · [Demo](#demo) · [Khi có lỗi](#khi-có-lỗi) · [Tài liệu](#tài-liệu) · [Tác giả](#tác-giả)
 
-> ⚠️ **Read this before you install.** gflow-studio is not affiliated with Google. It reverse-engineers Flow and drives a real Chrome window signed in to *your* Google account, so automation happens on your account and under Google's terms. Flow can change its pages at any time. Images are free; Veo video generation spends your Flow credits. Read the [DISCLAIMER](DISCLAIMER.md) and [docs/ACCOUNT_SAFETY.md](docs/ACCOUNT_SAFETY.md).
+> ⚠️ **Đọc trước khi cài.** gflow-studio không liên quan đến Google. Công cụ này dò ngược cách Flow hoạt động và điều khiển một cửa sổ Chrome thật đã đăng nhập tài khoản Google *của bạn*, nên mọi thao tác tự động diễn ra trên tài khoản đó và chịu điều khoản của Google. Flow có thể đổi giao diện bất cứ lúc nào. Tạo ảnh không tốn credit; tạo video Veo trừ credit Flow của bạn. Hãy đọc [DISCLAIMER](DISCLAIMER.md) và [docs/ACCOUNT_SAFETY.md](docs/ACCOUNT_SAFETY.md).
 
-## What it does
+## Công dụng
 
-| You want to… | Command |
+| Bạn muốn… | Lệnh |
 |---|---|
-| Generate an image from text | `gflow image t2i "a red paper lantern on a wooden table"` |
-| Edit or combine images | `gflow image i2i "same cat, now wearing a scarf" --ref cat.png` |
-| Make a video from text | `gflow video t2v "slow push-in on a forest clearing" --aspect 16:9` |
-| Animate a still image | `gflow video i2v "the lantern sways" --initial-frame lantern.jpg` |
-| Make a video from reference images | `gflow video r2v "..." --ref hero.png --ref room.png` |
-| Get the clip in 1080p | add `--upscale` to `t2v`, `i2v`, `r2v` or `video batch` |
-| Run a whole image storyboard | `gflow run --config storyboard.json` |
-| Run many image-to-video clips in one session | `gflow video batch --config videos.json` |
-| Keep the same character across shots | `gflow character create ...`, then reference it |
-| Extend a clip past 8 seconds | `gflow video extend <media_id> "the camera keeps rising"` |
-| Check your Veo credits | `gflow credits user` |
-| Let an AI agent use Flow | `gflow mcp run` (stdio) or `gflow serve` (HTTP) |
-| Diagnose your setup | `gflow doctor` |
+| Tạo ảnh từ câu mô tả | `gflow image t2i "a red paper lantern on a wooden table"` |
+| Sửa hoặc ghép ảnh | `gflow image i2i "same cat, now wearing a scarf" --ref cat.png` |
+| Tạo video từ câu mô tả | `gflow video t2v "slow push-in on a forest clearing" --aspect 16:9` |
+| Làm ảnh tĩnh chuyển động | `gflow video i2v "the lantern sways" --initial-frame lantern.jpg` |
+| Tạo video từ ảnh tham chiếu | `gflow video r2v "..." --ref hero.png --ref room.png` |
+| Lấy clip 1080p | thêm `--upscale` vào `t2v`, `i2v`, `r2v` hoặc `video batch` |
+| Chạy cả storyboard ảnh | `gflow run --config storyboard.json` |
+| Chạy nhiều clip ảnh-thành-video trong một phiên | `gflow video batch --config videos.json` |
+| Giữ một nhân vật nhất quán qua nhiều cảnh | `gflow character create ...`, rồi tham chiếu nhân vật đó |
+| Nối dài clip quá 8 giây | `gflow video extend <media_id> "the camera keeps rising"` |
+| Xem số credit Veo | `gflow credits user` |
+| Cho AI agent dùng Flow | `gflow mcp run` (stdio) hoặc `gflow serve` (HTTP) |
+| Kiểm tra máy đã cài đúng chưa | `gflow doctor` |
 
-Every command takes `--profile` to pick a Google account and `--project` to work inside an existing Flow project. Most commands take `--json` for scripts. `gflow docs` prints the bundled documentation offline.
+Lệnh nào cũng nhận `--profile` để chọn tài khoản Google và `--project` để làm việc trong một project Flow có sẵn. Phần lớn lệnh có `--json` để dùng trong script. `gflow docs` in tài liệu đi kèm, không cần mạng.
 
-## Highlights
+Prompt nên viết bằng tiếng Anh: các mô hình của Flow hiểu tiếng Anh ổn định nhất.
 
-- **`--upscale`: keep the 1080p clip.** After a video downloads, Flow's 1080p export (no extra credits) replaces the 720p file at the same path. If the export fails, the 720p clip is kept and the command prints a retry command. Works on `video t2v`, `i2v`, `r2v`, `video batch` and the MCP tool `gflow_generate_video(upscale=True)`.
-- **`gflow video batch`.** Runs 1–50 image-to-video rows from a JSON file in one browser session and one Flow project, with `--resume`, `--jitter` and `--json`. A clip that was generated and billed but failed to download is fetched again for free instead of being lost.
-- **A hidden browser on macOS.** `GFLOW_CLI_WINDOW_MODE=background` runs Chrome as a background-only app: no Dock icon, and it does not take keyboard focus while you work.
-- **Batches stop when Google pushes back.** `gflow run`, `image batch` and multi-prompt `image t2i` stop at the first WAF 403, rate limit or expired session, even with `--continue-on-error`, and exit with that error's code. A flagged account no longer receives the rest of the batch.
-- **Named references in `gflow run`.** Give a reference image a name (`{"name": "cuong", "path": "cuong.png"}`) and write `@cuong` in the prompt. A row can take several references (`refs`) and its own `output` path.
-- **Automatic session renewal.** If the Google session expired before anything was submitted, gflow renews it once and retries. It never retries after a generation was sent. Turn it off with `GFLOW_CLI_AUTO_RENEW=false`.
-- **Fixes.** `-o` on another disk no longer fails after generation. Long image batches re-upload a reference that scrolled out of the project. The Chrome tab is brought forward only when it is actually hidden.
+## Điểm nổi bật
 
-[CHANGELOG.md](CHANGELOG.md) § Unreleased has the details. The headless measurements behind the browser work are in [docs/superpowers/spikes/2026-10-28-headless-generation.md](docs/superpowers/spikes/2026-10-28-headless-generation.md).
+- **`--upscale`: giữ bản 1080p.** Tải video xong, gflow lấy bản xuất 1080p của Flow (không tốn thêm credit) và ghi đè lên file 720p ở đúng đường dẫn đó. Nếu xuất 1080p lỗi, file 720p vẫn được giữ và lệnh in ra câu lệnh để thử lại. Có ở `video t2v`, `i2v`, `r2v`, `video batch` và tool MCP `gflow_generate_video(upscale=True)`.
+- **`gflow video batch`.** Chạy 1–50 dòng ảnh-thành-video từ một file JSON trong cùng một phiên trình duyệt và một project Flow, có `--resume`, `--jitter` và `--json`. Clip nào đã tạo xong, đã bị trừ credit nhưng tải về lỗi thì được tải lại miễn phí chứ không mất.
+- **Chrome chạy ẩn trên macOS.** `GFLOW_CLI_WINDOW_MODE=background` chạy Chrome như một ứng dụng nền: không hiện biểu tượng trên Dock, không giành bàn phím khi bạn đang làm việc.
+- **Lô dừng ngay khi Google chặn.** `gflow run`, `image batch` và `image t2i` nhiều prompt sẽ dừng ở lần đầu gặp WAF 403, bị giới hạn tốc độ hoặc phiên đăng nhập hết hạn, kể cả khi có `--continue-on-error`, và thoát với mã lỗi của chính lỗi đó. Tài khoản đã bị để ý sẽ không phải nhận tiếp phần còn lại của lô.
+- **Đặt tên cho ảnh tham chiếu trong `gflow run`.** Khai báo `{"name": "cuong", "path": "cuong.png"}` rồi viết `@cuong` trong prompt. Mỗi dòng nhận được nhiều ảnh tham chiếu (`refs`) và có đường dẫn `output` riêng.
+- **Tự gia hạn phiên đăng nhập.** Nếu phiên Google hết hạn khi chưa gửi gì, gflow gia hạn một lần rồi chạy lại. Đã gửi lệnh tạo rồi thì không bao giờ gửi lại. Tắt bằng `GFLOW_CLI_AUTO_RENEW=false`.
+- **Sửa lỗi.** `-o` trỏ sang ổ đĩa khác không còn lỗi sau khi tạo xong. Lô ảnh dài tự tải lại ảnh tham chiếu đã trôi khỏi project. Tab Chrome chỉ được đưa lên trước khi nó thực sự bị ẩn.
 
-## Setup
+Chi tiết ở [CHANGELOG.md](CHANGELOG.md) mục Unreleased. Số đo về chế độ không cửa sổ (headless) nằm ở [docs/superpowers/spikes/2026-10-28-headless-generation.md](docs/superpowers/spikes/2026-10-28-headless-generation.md).
 
-### Requirements
+## Cài đặt
 
-- A Google account with access to Google Flow. Video generation needs Flow credits.
-- [Google Chrome](https://www.google.com/chrome/) installed normally.
-- [uv](https://docs.astral.sh/uv/getting-started/installation/), which installs Python 3.11+ for you.
-- macOS, Windows or Linux with a desktop. Chrome must be able to open a window for the one-time sign-in.
+### Cần có
 
-### 1. Install
+- Một tài khoản Google dùng được Google Flow. Muốn tạo video thì tài khoản cần có credit Flow.
+- [Google Chrome](https://www.google.com/chrome/) cài theo cách thông thường.
+- [uv](https://docs.astral.sh/uv/getting-started/installation/); uv tự cài Python 3.11 trở lên.
+- macOS, Windows hoặc Linux có giao diện đồ hoạ. Lần đăng nhập đầu tiên cần Chrome mở được cửa sổ.
+
+### 1. Cài
 
 ```bash
 uv tool install "git+https://github.com/abm-dungtq/gflow-studio.git@main"
@@ -68,17 +70,17 @@ uvx --from "git+https://github.com/abm-dungtq/gflow-studio.git@main" playwright 
 gflow --version
 ```
 
-To upgrade later, run the same `uv tool install` command with `--force`.
+Muốn nâng cấp, chạy lại đúng lệnh `uv tool install` ở trên và thêm `--force`.
 
-### 2. Sign in once
+### 2. Đăng nhập một lần
 
 ```bash
 gflow auth login --browser chrome --profile main
 ```
 
-A Chrome window opens. Sign in to Google and wait until the Flow workspace appears; gflow saves the session in its own profile folder. `--browser chrome` matters: generation later reopens the profile as real Chrome. Repeat with another `--profile` name for each Google account.
+Một cửa sổ Chrome sẽ mở ra. Đăng nhập Google và chờ đến khi thấy màn hình làm việc của Flow; gflow lưu phiên đăng nhập vào thư mục profile riêng của nó. Phải có `--browser chrome`, vì về sau mỗi lần tạo ảnh hay video, gflow mở lại profile này bằng Chrome thật. Mỗi tài khoản Google dùng một tên `--profile` khác nhau.
 
-### 3. Check
+### 3. Kiểm tra
 
 ```bash
 gflow auth status
@@ -86,25 +88,25 @@ gflow credits user --profile main
 gflow doctor
 ```
 
-None of these spend credits. `gflow doctor` exits 33 when it finds something to fix and tells you what.
+Ba lệnh này không tốn credit. `gflow doctor` thoát với mã 33 khi thấy chỗ cần sửa và nói rõ phải sửa gì.
 
-### 4. Optional settings
+### 4. Cấu hình thêm (tuỳ chọn)
 
-Copy [`.env.template`](.env.template) to `.env` in the folder you run gflow from, or to the gflow home folder for a machine-wide setting. Useful ones:
+Chép [`.env.template`](.env.template) thành `.env` trong thư mục bạn chạy gflow, hoặc vào thư mục gốc của gflow để áp dụng cho cả máy. Các thiết lập hay dùng:
 
-| Setting | What it does |
+| Thiết lập | Tác dụng |
 |---|---|
-| `GFLOW_CLI_WINDOW_MODE=background` | macOS: run Chrome hidden, without taking focus |
-| `GFLOW_CLI_OUTPUT_DIR=./out` | Where files go when you do not pass `-o` |
-| `GFLOW_CLI_PROJECT=<id>` | Default Flow project, so runs stop creating new ones |
-| `GFLOW_CLI_JITTER_RANGE=10-30` | Pause between batch submissions; widen it if you see WAF 403s |
-| `GFLOW_CLI_LEASE_WAIT_SECONDS=600` | Wait for a profile another gflow command is using instead of failing |
+| `GFLOW_CLI_WINDOW_MODE=background` | macOS: chạy Chrome ẩn, không giành bàn phím |
+| `GFLOW_CLI_OUTPUT_DIR=./out` | Nơi lưu file khi không truyền `-o` |
+| `GFLOW_CLI_PROJECT=<id>` | Project Flow mặc định, để mỗi lần chạy không sinh project mới |
+| `GFLOW_CLI_JITTER_RANGE=10-30` | Khoảng nghỉ giữa các lần gửi trong lô; nới rộng ra nếu gặp WAF 403 |
+| `GFLOW_CLI_LEASE_WAIT_SECONDS=600` | Chờ khi profile đang bị một lệnh gflow khác dùng, thay vì báo lỗi |
 
-Every setting is documented in [docs/CONFIGURATION.md](docs/CONFIGURATION.md). Only `.env` is read; a `.env.local` file is ignored.
+Mọi thiết lập được giải thích trong [docs/CONFIGURATION.md](docs/CONFIGURATION.md). gflow chỉ đọc file `.env`; file `.env.local` bị bỏ qua.
 
-## Usage
+## Cách dùng
 
-### Images (free)
+### Ảnh (miễn phí)
 
 ```bash
 gflow image t2i "a hot air balloon over Tokyo at sunrise" --aspect 16:9 -o out/balloon.png
@@ -112,39 +114,39 @@ gflow image t2i "a cat mom, flat 2D" --model nano2 -n 4 --out out/cats/
 gflow image i2i "the same cockroach, now sitting on a keyboard" --ref refs/cuong.png -o out/k1.png
 ```
 
-Models: `nano2` (Nano Banana 2.1, default), `nano2-lite`, `nano-pro`, `imagen4`. Aspect ratios: `16:9`, `4:3`, `1:1`, `3:4`, `9:16`. `-n` makes 1–4 variations.
+Mô hình: `nano2` (Nano Banana 2.1, mặc định), `nano2-lite`, `nano-pro`, `imagen4`. Tỉ lệ khung: `16:9`, `4:3`, `1:1`, `3:4`, `9:16`. `-n` tạo 1–4 biến thể.
 
-### Videos (spend credits)
+### Video (tốn credit)
 
 ```bash
 gflow video t2v "slow cinematic push-in on a sunlit forest clearing" --aspect 16:9 -o out/forest.mp4
 gflow video i2v "the paper lantern sways gently, slow push in" \
   --initial-frame out/lantern.jpg --model veo-lite --aspect 16:9 --upscale -o out/lantern.mp4
-gflow video upscale <media_id> --scale 1080p      # 1080p for a clip you already made
+gflow video upscale <media_id> --scale 1080p      # lấy 1080p cho clip đã làm trước đó
 ```
 
-Models: `omni-flash`, `veo-lite`, `veo-fast`, `veo-quality`. `--duration` is 4, 6 or 8 seconds; 10 seconds is Omni Flash only. `--end-frame` sets the last frame for `i2v`.
+Mô hình: `omni-flash`, `veo-lite`, `veo-fast`, `veo-quality`. `--duration` nhận 4, 6 hoặc 8 giây; 10 giây chỉ có ở Omni Flash. `--end-frame` đặt khung hình cuối cho `i2v`. Nếu không truyền `--aspect`, video mặc định là dọc 9:16.
 
-### Projects, characters and catalog
+### Project, nhân vật và kho dữ liệu
 
 ```bash
-gflow project list --profile main          # projects gflow knows about
+gflow project list --profile main          # các project gflow đã ghi lại
 gflow character create --project <id> --name "Aria" --face-prompt "..." --body-prompt "..."
-gflow data --help                          # query everything you generated
+gflow data --help                          # tra cứu mọi thứ bạn đã tạo
 ```
 
-### For AI agents (MCP)
+### Dành cho AI agent (MCP)
 
 ```bash
-gflow mcp setup          # register the stdio server with your agent
-gflow mcp run --no-spend # a server without the generation tools
+gflow mcp setup          # đăng ký server stdio với agent của bạn
+gflow mcp run --no-spend # server không có các tool tạo ảnh, video
 ```
 
-The CLI and the MCP server expose the same features. [docs/MCP.md](docs/MCP.md) lists every tool.
+CLI và server MCP có cùng một bộ tính năng. [docs/MCP.md](docs/MCP.md) liệt kê đủ các tool.
 
-## Batches
+## Chạy lô
 
-### An image storyboard: `gflow run`
+### Storyboard ảnh: `gflow run`
 
 `storyboard.json`:
 
@@ -164,9 +166,9 @@ gflow run --config storyboard.json --profile main --project <id>
 gflow run --config storyboard.json --profile main --project <id> --resume
 ```
 
-Each reference file is uploaded once per run. `--resume` skips rows whose output already exists, so a rerun after a failure only makes what is missing.
+Mỗi file ảnh tham chiếu chỉ tải lên một lần cho cả lượt chạy. `--resume` bỏ qua những dòng đã có file đầu ra, nên chạy lại sau khi lỗi chỉ tạo phần còn thiếu.
 
-### Image-to-video in one session: `gflow video batch`
+### Nhiều clip ảnh-thành-video trong một phiên: `gflow video batch`
 
 `videos.json`:
 
@@ -186,26 +188,26 @@ Each reference file is uploaded once per run. `--resume` skips rows whose output
 gflow video batch --config videos.json --profile main --upscale --json
 ```
 
-A submitted row is never sent twice, because a clip Flow accepted may already be billed. If a row fails, rerun with `--resume`.
+Dòng nào đã gửi thì không bao giờ gửi lại, vì clip Flow đã nhận có thể đã bị trừ credit. Nếu một dòng lỗi, chạy lại với `--resume`.
 
-## Hiding the browser
+## Ẩn trình duyệt
 
-Google only serves Flow to a real browser, so gflow drives a real Chrome window. How much of it you see depends on the platform:
+Google chỉ phục vụ Flow cho trình duyệt thật, nên gflow phải điều khiển một cửa sổ Chrome thật. Bạn nhìn thấy nó nhiều hay ít tuỳ hệ điều hành:
 
-| Platform | Setting | Result |
+| Hệ điều hành | Thiết lập | Kết quả |
 |---|---|---|
-| macOS | `GFLOW_CLI_WINDOW_MODE=background` | Hidden, no Dock icon, never takes focus. Recommended. |
-| macOS, Windows, Linux | `offscreen` (default) | The window opens off-screen, but Chrome takes keyboard focus when it starts. |
-| any | `GFLOW_CLI_HEADLESS=true` | No window at all. Experimental, see below. |
-| any | `normal` | A visible window, useful for watching a run. |
+| macOS | `GFLOW_CLI_WINDOW_MODE=background` | Ẩn hoàn toàn, không có biểu tượng trên Dock, không bao giờ giành bàn phím. Nên dùng. |
+| macOS, Windows, Linux | `offscreen` (mặc định) | Cửa sổ mở ở ngoài màn hình, nhưng Chrome giành bàn phím lúc khởi động. |
+| mọi hệ | `GFLOW_CLI_HEADLESS=true` | Không có cửa sổ nào. Đang thử nghiệm, xem bên dưới. |
+| mọi hệ | `normal` | Cửa sổ hiện bình thường, tiện khi muốn xem gflow làm gì. |
 
-Headless real Chrome generated images 6 out of 6 times on one test account (macOS, 2026-10-28), with no 403 and no reCAPTCHA error. Its user agent says `HeadlessChrome`, and video, Windows and long-term account effects were not measured, so headed Chrome stays the supported default. Try headless on a test account first.
+Trên một tài khoản thử (macOS, 28/10/2026), Chrome thật chạy headless tạo ảnh thành công 6/6 lần, không gặp 403 hay lỗi reCAPTCHA. Tuy vậy user agent của nó ghi rõ `HeadlessChrome`. Ngoài ra chưa ai đo với video, trên Windows hay về lâu dài với tài khoản. Vì thế mặc định vẫn là Chrome có cửa sổ. Muốn dùng headless, hãy thử trên tài khoản phụ trước.
 
 ## Demo
 
-![gflow image t2i runs a single 9:16 prompt, streams log output, and writes a PNG](docs/assets/example-run.gif)
+![gflow image t2i chạy một prompt 9:16, in log và ghi ra một file PNG](docs/assets/example-run.gif)
 
-A real two-row `gflow run` on a test account (2026-10-29, about one minute, no credits):
+Một lượt `gflow run` thật gồm hai dòng, trên tài khoản thử (29/10/2026, khoảng một phút, không tốn credit):
 
 ```text
 $ gflow run --config run.json --profile thu-headless --project <project-id> --output-dir tmp/f7/out
@@ -224,39 +226,41 @@ $ gflow run --config run.json --profile thu-headless --project <project-id> --ou
 2/2 succeeded · 0 failure(s) · 0 skipped
 ```
 
-The first lantern image was then animated with `gflow video i2v --model veo-lite --upscale` on the same account. The result was a 4-second clip at 1920×1080, with `"upscaled": "1080p"` in the JSON output.
+Sau đó ảnh đèn lồng đầu tiên được làm thành video bằng `gflow video i2v --model veo-lite --upscale` trên cùng tài khoản. Kết quả là một clip 4 giây, độ phân giải 1920×1080; kết quả JSON có `"upscaled": "1080p"`.
 
-![Examples: text-to-image, and a before/after frame transform](docs/assets/examples.webp)
+![Ví dụ: tạo ảnh từ chữ và biến đổi khung hình trước/sau](docs/assets/examples.webp)
 
-## When something fails
+## Khi có lỗi
 
-gflow fails loudly with a stable exit code rather than resubmitting, so a broken run does not silently spend credits.
+Khi lỗi, gflow dừng hẳn và trả về một mã thoát cố định chứ không tự gửi lại, để lượt chạy hỏng không âm thầm tiêu credit.
 
-| Exit | Meaning | What to do |
+| Mã thoát | Ý nghĩa | Nên làm gì |
 |---|---|---|
-| 3 / 8 | Session expired or missing | `gflow auth renew`, or `gflow auth login` again |
-| 4 | Rate limited | Wait, then widen `--jitter` |
-| 5 | Refused by content policy | Rephrase that prompt; batches continue past it |
-| 10 | WAF 403: Google blocked the request | Stop and wait. Do not loop retries on this account |
-| 11 | Configuration problem, or the profile is busy | Read the message; it names the field or the lock |
-| 23 | Flow changed its page | `gflow update`, then report it |
-| 37 | Not enough Veo credits | Top up, or use a cheaper model |
+| 3 / 8 | Phiên đăng nhập hết hạn hoặc chưa có | `gflow auth renew`, hoặc chạy lại `gflow auth login` |
+| 4 | Bị giới hạn tốc độ | Chờ một lúc, rồi nới `--jitter` |
+| 5 | Bị chính sách nội dung từ chối | Viết lại prompt đó; lô vẫn chạy tiếp các dòng khác |
+| 10 | WAF 403: Google chặn yêu cầu | Dừng lại và chờ. Đừng chạy lại liên tục trên tài khoản này |
+| 11 | Sai cấu hình, hoặc profile đang bận | Đọc thông báo; nó ghi rõ trường nào sai hoặc ai đang giữ khoá |
+| 23 | Flow đã đổi giao diện | Chạy `gflow update`, rồi báo lỗi |
+| 37 | Không đủ credit Veo | Nạp thêm, hoặc dùng mô hình rẻ hơn |
 
-Every error is printed as RFC 9457 problem details with a remediation hint. [KNOWN_ISSUES.md](KNOWN_ISSUES.md) lists current problems and workarounds.
+Mọi lỗi được in theo chuẩn RFC 9457 (problem details) kèm gợi ý cách xử lý. [KNOWN_ISSUES.md](KNOWN_ISSUES.md) liệt kê các lỗi hiện có và cách né.
 
-## Documentation
+## Tài liệu
 
-| Topic | Read |
+Tài liệu chi tiết hiện chỉ có bằng tiếng Anh.
+
+| Chủ đề | Đọc |
 |---|---|
-| Getting started | [User guide](docs/USER_GUIDE.md) · [Usage, every command](docs/USAGE.md) · [Configuration](docs/CONFIGURATION.md) |
-| Accounts | [Authentication](docs/AUTHENTICATION.md) · [Account safety](docs/ACCOUNT_SAFETY.md) · [Known issues](KNOWN_ISSUES.md) |
-| Production | [Characters](docs/CHARACTER.md) · [Movie manifests](docs/MOVIE.md) · [Prompt tools](docs/TOOLS.md) · [Reference strategies](docs/REFERENCE_STRATEGIES.md) |
-| Agents | [MCP server](docs/MCP.md) · [AGENTS.md](AGENTS.md) · [llms.txt](llms.txt) |
-| Internals | [Architecture](docs/ARCHITECTURE.md) · [Development](docs/DEVELOPMENT.md) · [Changelog](CHANGELOG.md) |
+| Bắt đầu | [Hướng dẫn sử dụng](docs/USER_GUIDE.md) · [Mọi lệnh](docs/USAGE.md) · [Cấu hình](docs/CONFIGURATION.md) |
+| Tài khoản | [Đăng nhập](docs/AUTHENTICATION.md) · [An toàn tài khoản](docs/ACCOUNT_SAFETY.md) · [Lỗi đã biết](KNOWN_ISSUES.md) |
+| Sản xuất | [Nhân vật](docs/CHARACTER.md) · [Kịch bản nhiều cảnh](docs/MOVIE.md) · [Công cụ viết prompt](docs/TOOLS.md) · [Cách tham chiếu ảnh](docs/REFERENCE_STRATEGIES.md) |
+| Agent | [Server MCP](docs/MCP.md) · [AGENTS.md](AGENTS.md) · [llms.txt](llms.txt) |
+| Bên trong | [Kiến trúc](docs/ARCHITECTURE.md) · [Phát triển](docs/DEVELOPMENT.md) · [Changelog](CHANGELOG.md) |
 
-[docs/INDEX.md](docs/INDEX.md) indexes everything.
+[docs/INDEX.md](docs/INDEX.md) là mục lục của toàn bộ tài liệu.
 
-## Author
+## Tác giả
 
 - **gflow-studio:** ABM.DũngTQ · 0976202028 · [github.com/abm-dungtq/gflow-studio](https://github.com/abm-dungtq/gflow-studio)
-- **License:** [MIT](LICENSE). The license covers the code only. Google's own terms govern Flow and everything you generate with it. See the [DISCLAIMER](DISCLAIMER.md).
+- **Giấy phép:** [MIT](LICENSE). Giấy phép chỉ áp dụng cho mã nguồn. Flow và mọi thứ bạn tạo bằng Flow chịu điều khoản của Google. Xem [DISCLAIMER](DISCLAIMER.md).

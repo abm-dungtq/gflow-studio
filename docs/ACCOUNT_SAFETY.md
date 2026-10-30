@@ -30,7 +30,7 @@ evidence of absence, and Google's terms are Google's to enforce.
 The cost model matters too: **credits are only spent on Veo video.** Images and
 composition operations bill against a per-model daily quota rather than credits,
 so most failure modes cost you nothing but time — see the cost note in the
-[README](../README.md#why-gflow-cli).
+[README](../README.md).
 
 ## What gflow-cli does to stay unremarkable
 

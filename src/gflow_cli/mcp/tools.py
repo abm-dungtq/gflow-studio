@@ -84,6 +84,39 @@ _WAIT_DESCRIPTION = (
 )
 _WaitParam = Annotated[bool, Field(description=_WAIT_DESCRIPTION)]
 
+# Same reason as `wait`: a tool-selection eval showed agents guessing both shapes
+# (tests/mcp/test_reference_and_tools_params_documented.py).
+_ToolsParam = Annotated[
+    list[dict[str, Any]] | None,
+    Field(
+        description=(
+            'Prompt tools applied before generation. Each item is {"name": <slug>, '
+            '"options": {...}}, e.g. [{"name": "creative-director"}]. gflow_list_tools '
+            "lists the valid names."
+        )
+    ),
+]
+_ENTITIES_DESCRIPTION = (
+    "Saved character entity ids to attach. On flow.google.com each id needs its display "
+    "name at the same position in reference_entity_names, or the call fails before "
+    "submit; gflow_character_list returns both (if it exits 7, #875, ask the user or "
+    "read the name in Flow's UI)."
+)
+_ImageEntitiesParam = Annotated[list[str] | None, Field(description=_ENTITIES_DESCRIPTION)]
+_VideoEntitiesParam = Annotated[
+    list[str] | None,
+    Field(description=_ENTITIES_DESCRIPTION + " Character references need mode r2v there."),
+]
+_EntityNamesParam = Annotated[
+    list[str] | None,
+    Field(
+        description=(
+            "Display name of each reference_entities id, same order. Required on "
+            "flow.google.com, where an id without its name fails before submit."
+        )
+    ),
+]
+
 # ---------------------------------------------------------------------------
 # Token bucket rate limiter
 # ---------------------------------------------------------------------------
@@ -910,9 +943,9 @@ async def gflow_generate_image(
     aspect: str = "1:1",
     count: int = 1,
     reference_images: list[str] | None = None,
-    reference_entities: list[str] | None = None,
-    reference_entity_names: list[str] | None = None,
-    tools: list[dict[str, Any]] | None = None,
+    reference_entities: _ImageEntitiesParam = None,
+    reference_entity_names: _EntityNamesParam = None,
+    tools: _ToolsParam = None,
     profile: str = _DEFAULT_PROFILE,
     project: str | None = None,
     project_name: str | None = None,
@@ -939,8 +972,9 @@ async def gflow_generate_image(
             (mirrors the CLI ``--reference-entity``). Same wire as an ``@Name``
             mention (``referenceEntities``) and dedupes against it; use ids when
             a display name would be ambiguous, since names are not unique.
-        reference_entity_names: Optional display names paired positionally with
-            ``reference_entities`` (mirrors ``--reference-entity-name``).
+        reference_entity_names: Display names paired positionally with
+            ``reference_entities`` (mirrors ``--reference-entity-name``); required
+            for each id on flow.google.com.
         tools: Optional list of prompt tools to apply before generation.
             Each item is ``{"name": str, "options": dict}``.  Valid names
             include ``"creative-director"`` (which supports an ``options``
@@ -1162,13 +1196,13 @@ async def gflow_generate_video(  # NOSONAR
     initial_frame: str | None = None,
     end_frame: str | None = None,
     reference_images: list[str] | None = None,
-    reference_entities: list[str] | None = None,
-    reference_entity_names: list[str] | None = None,
+    reference_entities: _VideoEntitiesParam = None,
+    reference_entity_names: _EntityNamesParam = None,
     model: str | None = None,
     duration: int | None = None,
     resolution: str | None = None,
     count: int = 1,
-    tools: list[dict[str, Any]] | None = None,
+    tools: _ToolsParam = None,
     profile: str = _DEFAULT_PROFILE,
     project: str | None = None,
     project_name: str | None = None,
@@ -1202,8 +1236,8 @@ async def gflow_generate_video(  # NOSONAR
             use ids when a display name would be ambiguous, since names are
             not unique. Satisfies r2v's reference requirement on its own.
         reference_entity_names: Optional display names paired positionally with
-            ``reference_entities`` (mirrors ``--reference-entity-name``); used
-            only to filter the picker, the ids remain the identity.
+            ``reference_entities`` (mirrors ``--reference-entity-name``); required
+            for each id on flow.google.com, where the picker attaches by name.
         model: Optional Veo model — 'veo_lite', 'veo_fast', 'veo_quality',
             'omni_flash' (aliases accepted, mirrors the CLI ``--model``). When
             omitted, Flow's UI default applies EXCEPT for i2v with frames,

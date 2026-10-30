@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **MCP agents now see how to pass `tools` and character ids.** The generate tools'
+  schema stated neither the `tools` item shape (`{"name": <slug>, "options": {...}}`)
+  nor that, on flow.google.com, each `reference_entities` id needs its name at the same
+  position in `reference_entity_names` (and, for video, `mode: r2v`). The `tools` shape and
+  the video rules sat only in docstrings the MCP client never shows; the image pairing
+  rule sat in the long tool description, where agents missed it. The schema now also says that
+  `gflow_character_list` exits 7 there (#875) and to ask the user for the name. In a
+  tool-selection eval with Claude Code as the host, a character given by id was sent
+  without its name in 4 of 5 runs, which fails before submit. With the rule in the
+  schema, that dropped to 0 of 5.
+
 ## [0.92.0] — 2026-10-29
 
 ### Fixed

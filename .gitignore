@@ -125,3 +125,6 @@ website/site/
 scripts/dev/har-spike/artifacts/
 scripts/dev/har-spike/.agent-browser/
 scripts/dev/har-spike/.npm-cache/
+
+# MCPJam bridge spike (scripts/dev/mcpjam): local npm install, never committed
+scripts/dev/mcpjam/node_modules/

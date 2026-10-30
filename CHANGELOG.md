@@ -20,6 +20,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   without its name in 4 of 5 runs, which fails before submit. With the rule in the
   schema, that dropped to 0 of 5.
 
+### Added
+
+- **`scripts/dev/mcpjam/`: a local tool-selection eval for the MCP server.** It snapshots
+  the real `tools/list` with MCPJam's client, serves it from a stub that records calls
+  without running them ($0, no browser), and drives `claude -p` as the host. Dev-only;
+  not part of CI.
+
 ## [0.92.0] — 2026-10-29
 
 ### Fixed

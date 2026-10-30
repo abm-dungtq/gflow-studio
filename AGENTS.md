@@ -413,6 +413,7 @@ that produced them stays local.
 - **Referencing assets** (`@Name` mention vs `--reference-entity` vs `--ref`) → [docs/REFERENCE_STRATEGIES.md](docs/REFERENCE_STRATEGIES.md)
 - **Full docs index** → [docs/INDEX.md](docs/INDEX.md)
 - **Known issues** (read before touching auth / reCAPTCHA) → [KNOWN_ISSUES.md](KNOWN_ISSUES.md)
+- **Browser shows on screen or steals focus** (macOS / Windows) → [docs/HIDDEN_BROWSER.md](docs/HIDDEN_BROWSER.md)
 - **Current task** → `/gflow:status` · **Create a feature plan** → `/gflow:plan <feature>` · **Full roadmap** → [PLAN.md](PLAN.md)
 - **Release protocol** → [RELEASE.md](RELEASE.md)
 - **Spiking a live Flow surface** (HAR + DOM capture) → [scripts/dev/har-spike/README.md](scripts/dev/har-spike/README.md)

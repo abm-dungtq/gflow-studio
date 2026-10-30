@@ -197,7 +197,7 @@ Google only serves Flow to a real browser, so gflow drives a real Chrome window.
 | any | `GFLOW_CLI_HEADLESS=true` | No window at all. Experimental, see below. |
 | any | `normal` | A visible window, useful for watching a run. |
 
-Headless real Chrome generated images 6 out of 6 times on one test account (macOS, 2026-10-28), with no 403 and no reCAPTCHA error. Headless Chrome puts `HeadlessChrome` in its user agent; gflow now replaces it with the headed Chrome string, and a run on 2026-10-30 generated an image with no window and no focus taken. Video, Windows and long-term account effects were not measured, so headed Chrome stays the supported default. Try headless on a test account first.
+Headless real Chrome generated images 6 out of 6 times on one test account (macOS, 2026-10-28), with no 403 and no reCAPTCHA error. Headless Chrome puts `HeadlessChrome` in its user agent; gflow now replaces it with the headed Chrome string, and a run on 2026-10-30 generated an image with no window and no focus taken. Video, Windows and long-term account effects were not measured, so headed Chrome stays the supported default. Try headless on a test account first. If Chrome still shows or takes focus, on macOS or Windows, [docs/HIDDEN_BROWSER.md](docs/HIDDEN_BROWSER.md) walks through finding the cause and fixing it.
 
 ## Demo
 

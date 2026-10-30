@@ -30,6 +30,7 @@ Welcome to the `gflow-cli` documentation. This index is the routing layer: it te
 | [docs/medium_tutorial.md](medium_tutorial.md) | Long-form tutorial article (Medium draft): Veo + Imagen from the terminal | Writing or updating outreach/tutorial content |
 | [.env.template](../.env.template) | All environment variables with defaults | Setting up a new shell or container |
 | **[docs/AUTHENTICATION.md](AUTHENTICATION.md)** | Full auth flow, session storage, multi-account, refresh | First `gflow auth login`, or auth errors |
+| **[docs/HIDDEN_BROWSER.md](HIDDEN_BROWSER.md)** | Diagnose and fix a generation browser that shows on screen or steals focus, macOS and Windows | A user sees gflow's Chrome or loses keyboard focus |
 | **[docs/CONFIGURATION.md](CONFIGURATION.md)** | All env vars, precedence chain, default paths per OS | Tuning behaviour, picking output paths |
 | **[docs/EXTERNAL_STORAGE.md](EXTERNAL_STORAGE.md)** | S3, MinIO, and Google Cloud Storage output configuration | Sending generated assets to a bucket instead of local disk |
 | **[docs/USER_GUIDE.md](USER_GUIDE.md)** | Task-oriented walkthroughs (first setup, batch video, multi-image, log forensics, recovery, multi-account, migration) | You want to GET SOMETHING DONE — not look up a flag |

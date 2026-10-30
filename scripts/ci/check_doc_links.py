@@ -26,6 +26,7 @@ FILES: tuple[str, ...] = (
     "CONTRIBUTING.md",
     "RELEASE.md",
     "docs/INDEX.md",
+    "docs/HIDDEN_BROWSER.md",
     "docs/AGENT_GUIDE.md",
     "docs/AUTHENTICATION.md",
     "docs/PROJECT_STATUS.md",

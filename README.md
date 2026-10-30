@@ -201,7 +201,7 @@ Google chỉ phục vụ Flow cho trình duyệt thật, nên gflow phải đi�
 | mọi hệ | `GFLOW_CLI_HEADLESS=true` | Không có cửa sổ nào. Đang thử nghiệm, xem bên dưới. |
 | mọi hệ | `normal` | Cửa sổ hiện bình thường, tiện khi muốn xem gflow làm gì. |
 
-Trên một tài khoản thử (macOS, 28/10/2026), Chrome thật chạy headless tạo ảnh thành công 6/6 lần, không gặp 403 hay lỗi reCAPTCHA. Chrome headless vốn tự ghi `HeadlessChrome` trong user agent; gflow giờ thay chuỗi đó bằng user agent của Chrome thường, nên trang Flow không thấy dấu headless nào ở user agent. Lần thử ngày 30/10/2026 tạo ảnh bình thường, không mở cửa sổ và không giành bàn phím. Ngoài ra chưa ai đo với video, trên Windows hay về lâu dài với tài khoản. Vì thế mặc định vẫn là Chrome có cửa sổ. Muốn dùng headless, hãy thử trên tài khoản phụ trước.
+Trên một tài khoản thử (macOS, 28/10/2026), Chrome thật chạy headless tạo ảnh thành công 6/6 lần, không gặp 403 hay lỗi reCAPTCHA. Chrome headless vốn tự ghi `HeadlessChrome` trong user agent; gflow giờ thay chuỗi đó bằng user agent của Chrome thường, nên trang Flow không thấy dấu headless nào ở user agent. Lần thử ngày 30/10/2026 tạo ảnh bình thường, không mở cửa sổ và không giành bàn phím. Ngoài ra chưa ai đo với video, trên Windows hay về lâu dài với tài khoản. Vì thế mặc định vẫn là Chrome có cửa sổ. Muốn dùng headless, hãy thử trên tài khoản phụ trước. Nếu Chrome vẫn hiện hoặc giành bàn phím, kể cả trên Windows, cách tìm nguyên nhân và sửa nằm ở [docs/HIDDEN_BROWSER.md](docs/HIDDEN_BROWSER.md).
 
 ## Demo
 

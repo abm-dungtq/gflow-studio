@@ -1,6 +1,6 @@
 [project]
 name = "gflow-cli"
-version = "0.92.0"
+version = "0.92.1"
 description = "CLI and MCP server for Google Flow — drive Veo text-to-video, image-to-video and Imagen image generation from the terminal."
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -213,6 +213,9 @@ asyncio_mode = "auto"
 # can be CWD on some Windows shells (e.g. msys2 sets TMPDIR=$PWD), leaving
 # stray pytest-of-*/ directories in the repo root.
 addopts = "--basetemp=tmp/pytest -m 'not e2e and not live and not smoke and not containers'"
+# A test past 60 s dumps every thread's stack (it still passes): one driver test once
+# stalled 262 s with every wait bounded at 8 s, and left no trace of where.
+faulthandler_timeout = 60
 markers = [
     "unit: pure logic, no I/O (the default category)",
     "integration: real Provider plumbing with mocked HTTP",

@@ -62,5 +62,27 @@ def test_zero_tests_always_fails(tmp_path: Path) -> None:
     assert _run(tmp_path, xml, 1) == 1
 
 
+def test_several_reports_are_summed_against_one_floor(tmp_path: Path) -> None:
+    """CI shards the suite: the floor covers the SUM, so no single shard need reach it."""
+    reports = []
+    for n, tests in enumerate((12, 9)):
+        report = tmp_path / f"shard{n}.xml"
+        report.write_text(_WRAPPED.format(tests=tests, skipped=1, errors=0), encoding="utf-8")
+        reports.append(str(report))
+    with patch.object(sys, "argv", ["check_test_count.py", *reports, "19"]):
+        assert check_test_count.main() == 0
+    with patch.object(sys, "argv", ["check_test_count.py", *reports, "20"]):
+        assert check_test_count.main() == 1
+
+
+def test_a_missing_shard_report_fails_rather_than_shrinking_the_sum(tmp_path: Path) -> None:
+    """A shard that never wrote its XML must not silently drop out of the count."""
+    report = tmp_path / "shard0.xml"
+    report.write_text(_WRAPPED.format(tests=50, skipped=0, errors=0), encoding="utf-8")
+    missing = tmp_path / "shard1.xml"
+    with patch.object(sys, "argv", ["check_test_count.py", str(report), str(missing), "10"]):
+        assert check_test_count.main() == 1
+
+
 if __name__ == "__main__":
     sys.exit(pytest.main([__file__, "-q"]))

@@ -116,6 +116,10 @@ VIDEO_STATUS_ROUTE = "batchCheckAsyncVideoGenerationStatus"
 # unified generation-settings button — the only button[aria-haspopup='menu']
 # carrying an aspect-ratio crop_* icon; clicking it opens a role='menu' with
 # the Imagem/Vídeo role='tablist' (the tabs are not in the DOM until it opens).
+# Default per-selector wait in `_probe_selector_cascade`, read at call time (not
+# bound as a default argument) so the hermetic e2e can shorten it.
+_PROBE_TIMEOUT_MS = 4000
+
 MODE_SWITCH_TRIGGER_SELECTORS = (
     "button[aria-haspopup='menu']:has(i.google-symbols:text('crop_16_9'))",
     "button[aria-haspopup='menu']:has(i.google-symbols:text('crop_9_16'))",
@@ -1355,7 +1359,7 @@ class VideoGenerationMixin:
         label: str,
         candidates: tuple[str, ...],
         *,
-        timeout_ms: int = 4000,
+        timeout_ms: int | None = None,
         overlay_retry: bool = True,
     ) -> Locator | None:
         """Try each selector in order; return the first visible match or None.
@@ -1375,6 +1379,8 @@ class VideoGenerationMixin:
         Every selector probe routes through here, so one recovery covers all ten call
         sites instead of each caller re-deriving it.
         """
+        if timeout_ms is None:
+            timeout_ms = _PROBE_TIMEOUT_MS
         for selector in candidates:
             try:
                 loc = page.locator(selector).first

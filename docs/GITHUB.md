@@ -97,6 +97,33 @@ This is intentional. Do not switch the normal PR workflow to
 repository privileges and can expose secrets if it checks out or executes
 untrusted PR code.
 
+## CI Test Layout
+
+`ci.yml` runs the offline suite on three Pythons. `develop` requires the checks
+`test (3.11)`, `test (3.12)` and `test (3.13)` (ruleset 25428466), so those
+names must not change.
+
+| Job | What it runs |
+|---|---|
+| `test (3.11)`, `test (3.12)` | Repo gates, lint, types, and the whole offline suite in one job each. |
+| `test 3.13 (1/3)`, `(2/3)`, `(3/3)` | One third of the offline suite each, with coverage and Chromium for the real-DOM tests. `GFLOW_TEST_SHARD=k/N` makes root `conftest.py` keep only shard k's files. Shard 1/3 also runs the repo gates. |
+| `test 3.13 (e2e)` | The hermetic e2e subset (route-intercepted, $0, no profile), floor 10 tests. |
+| `test (3.13)` | The required check. Fails unless every shard succeeded. Sums the shards' JUnit against the 2000-test floor, runs `coverage combine`, and uploads `coverage-xml` for SonarCloud. |
+
+The split is by whole file, balanced on the per-file seconds in
+`tests/test_durations.json`. A file without a record counts as the average, so a
+stale record only unbalances the shards; every file still runs exactly once.
+Refresh the record from CI, not from a local run: Windows inflates some files
+far past their Linux time (`test_cleanup.py` measured 242 s locally against 3 s on
+CI), and a record taken there sent the slow shard 181 s of CI work against 86 s on
+the lightest. Download the three `shard-*` artifacts of a recent `develop` push run
+(kept one day) and pass their reports: `gh run download <run-id> -p 'shard-*' -D tmp/shards`
+then `uv run python scripts/ci/shard_tests.py tmp/shards/shard-*/pytest-report.xml`.
+
+`test (3.13)` runs with `if: always()` and checks the shard result itself.
+GitHub reports a skipped required check as passing, so an aggregate that only
+ran on success would let a failed shard merge green.
+
 ## SonarCloud Quality Gate
 
 The gate is evaluated on **new code** (changed lines vs `main`, per

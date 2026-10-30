@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Headless runs no longer announce `HeadlessChrome`.** With `GFLOW_CLI_HEADLESS=true` gflow
+  sends the user agent headed Chrome sends, built from the installed Chrome's version, in pages,
+  workers and the `User-Agent` header. Measured on macOS: a headless image run generated
+  normally, opened no window and never took keyboard focus. Video and Windows are not measured.
 - **The generation browser no longer shows up on a second monitor.** Chrome pulls a window
   placed at `-30000,-30000` back onto the nearest display, so with a monitor to the left of the
   main one the "off-screen" window landed fully on it. In `offscreen` and `background` modes

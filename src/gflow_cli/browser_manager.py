@@ -60,6 +60,7 @@ import asyncio
 import json
 import os
 import plistlib
+import re
 import shutil
 import subprocess
 import sys
@@ -406,6 +407,45 @@ def window_mode_args(window_mode: str, position: str) -> list[str]:
             return window_position_args(position)
         return [*window_position_args(position), *ANTI_THROTTLING_ARGS]
     return window_position_args(position)
+
+
+_VERSION_DIR = re.compile(r"^\d+\.\d+\.\d+\.\d+$")
+
+_UA_PLATFORM = {
+    "darwin": "Macintosh; Intel Mac OS X 10_15_7",
+    "win32": "Windows NT 10.0; Win64; x64",
+}
+
+
+def chrome_version(binary: str | Path) -> str | None:
+    """The installed Chrome's version, read from its install, or ``None``. Never raises."""
+    path = Path(binary)
+    try:
+        if sys.platform == "darwin":
+            plist = plistlib.loads((path.parents[1] / "Info.plist").read_bytes())
+            return str(plist["CFBundleShortVersionString"])
+        if sys.platform == "win32":
+            found = [d.name for d in path.parent.iterdir() if _VERSION_DIR.match(d.name)]
+            return max(found, key=lambda v: tuple(int(n) for n in v.split("."))) if found else None
+        out = subprocess.run([str(path), "--version"], capture_output=True, text=True, timeout=10)
+        match = re.search(r"\d+\.\d+\.\d+\.\d+", out.stdout)
+        return match.group(0) if match else None
+    except Exception:  # noqa: BLE001 - an unreadable install just keeps Chrome's own UA
+        return None
+
+
+def headed_user_agent(version: str) -> str:
+    """The user agent headed Chrome ``version`` sends (reduced form: minor parts zeroed).
+
+    Headless Chrome sends ``HeadlessChrome/<v>`` instead, while its UA-CH brands already
+    read "Google Chrome" (docs/superpowers/spikes/2026-10-28-headless-generation.md).
+    """
+    platform = _UA_PLATFORM.get(sys.platform, "X11; Linux x86_64")
+    major = version.split(".", 1)[0]
+    return (
+        f"Mozilla/5.0 ({platform}) AppleWebKit/537.36 (KHTML, like Gecko) "
+        f"Chrome/{major}.0.0.0 Safari/537.36"
+    )
 
 
 def hides_generation_window(window_mode: str, *, headless: bool) -> bool:

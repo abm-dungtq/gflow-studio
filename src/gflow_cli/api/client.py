@@ -88,10 +88,13 @@ from gflow_cli.auth.internal_chromium import GOOGLE_REJECTED_BROWSER_ROUTE
 from gflow_cli.browser_manager import (
     browser_proxy_kwargs,
     channel_for_profile,
+    chrome_version,
     generation_window_config,
+    headed_user_agent,
     hides_generation_window,
     keep_window_hidden,
     profile_in_use_error,
+    resolved_chrome_binary,
 )
 from gflow_cli.config import BrowserEngine, Settings
 from gflow_cli.diagnostics import IncidentRecorder, run_retention, validated_incidents_root
@@ -560,6 +563,12 @@ class FlowApiClient:
         }
         if executable_path is not None:
             kwargs["executable_path"] = str(executable_path)
+        if self.headless:
+            # Headless Chrome advertises HeadlessChrome; send the headed string instead.
+            binary = executable_path or resolved_chrome_binary()
+            version = chrome_version(binary) if binary else None
+            if version is not None:
+                kwargs["user_agent"] = headed_user_agent(version)
         if self.settings.har_path is not None:
             self.settings.har_path.parent.mkdir(parents=True, exist_ok=True)
             kwargs["record_har_path"] = str(self.settings.har_path)

@@ -46,6 +46,7 @@ from gflow_cli.image_batch import (
     MIN_PROMPTS,
     BatchOutcome,
     BatchPromptItem,
+    adopt_resumed_images,
     batch_parents,
     image_row_inputs,
     order_batch_rows,
@@ -55,6 +56,7 @@ from gflow_cli.image_batch import (
     run_image_batch,
     target_for_batch_item_image,
 )
+from gflow_cli.lanes import LaneStop, parse_profiles, run_lanes, split_rows
 from gflow_cli.paths import resolve_batch_output_dir
 from gflow_cli.ref_aliases import default_ref_name, replace_ref_aliases
 from gflow_cli.run_ledger import check_redo_names, is_stale, redo_keys
@@ -309,6 +311,24 @@ def _candidate_output_files(item: BatchPromptItem, output_dir: Path, n: int) -> 
     return [p for p in sorted(output_dir.glob(f"{stem}_{n}.*")) if p.is_file()]
 
 
+def _check_lanes(
+    lane_profiles: tuple[str, ...], profile: str | None, prompts: tuple[BatchPromptItem, ...]
+) -> None:
+    """Refuse a ``--profiles`` run that cannot be split into independent lanes (exit 11)."""
+    if not lane_profiles:
+        return
+    if profile:
+        raise ConfigurationError(
+            detail="--profile and --profiles cannot be combined.",
+            remediation_hint="Use --profiles alone; list every lane's profile in it.",
+        )
+    if chained := [item.index for item in prompts if batch_parents(item)]:
+        raise ConfigurationError(
+            detail=f"--profiles cannot split rows that reference batch:N (rows {chained}).",
+            remediation_hint="Run a config with batch:N references on one --profile.",
+        )
+
+
 def _row_output(item: BatchPromptItem, output_dir: Path) -> Path:
     """The path ``--redo`` matches for ``item``: its ``output``, else its file stem."""
     if item.output is not None:
@@ -479,6 +499,7 @@ async def _run_batch(
     recorder: OperationRecorder | None = None,
     project_id: str | None = None,
     resumed: dict[int, BatchOutcome] | None = None,
+    stop: LaneStop | None = None,
 ) -> list[BatchOutcome]:
     """Run ``prompts`` sequentially through ONE FlowApiClient session.
 
@@ -504,10 +525,42 @@ async def _run_batch(
             project_id=project_id,
             resumed=resumed,
             ledger=True,
+            stop=stop,
         ),
         source="run",
     )
     return outcomes
+
+
+async def _run_batch_lanes(
+    *,
+    lanes: list[tuple[str, tuple[BatchPromptItem, ...]]],
+    headless: bool,
+    transport: str | None,
+    output_dir: Path,
+    continue_on_error: bool,
+    recorder: OperationRecorder | None,
+    project_id: str,
+) -> list[BatchOutcome]:
+    """Run each lane's rows on its own profile, side by side, into one shared project."""
+
+    async def run_lane(
+        profile: str, rows: tuple[BatchPromptItem, ...], stop: LaneStop
+    ) -> list[BatchOutcome]:
+        return await _run_batch(
+            profile_dir=_make_provider_dir(profile),
+            headless=headless,
+            transport=transport,
+            prompts=rows,
+            output_dir=output_dir,
+            continue_on_error=continue_on_error,
+            profile_name=profile,
+            recorder=recorder,
+            project_id=project_id,
+            stop=stop,
+        )
+
+    return await run_lanes(lanes, run_lane)
 
 
 # ---------------------------------------------------------------------------
@@ -534,6 +587,18 @@ async def _run_batch(
     "--profile",
     default=None,
     help="Profile name (overrides default and any 'profile' in the config).",
+)
+@click.option(
+    "--profiles",
+    default=None,
+    metavar="A,B",
+    help=(
+        "Deal the rows still to make round-robin across these profiles and run them side "
+        "by side, one browser each, started 25 s apart. The lanes share the project, so "
+        "sign every profile in to the same Google account and pass --project. Rows that "
+        "reference batch:N cannot be split. A lane that hits a session, WAF or quota "
+        "error stops every lane after its current row."
+    ),
 )
 @click.option(
     "--project",
@@ -580,6 +645,7 @@ def run(
     config_path: Path,
     output_dir_override: Path | None,
     profile: str | None,
+    profiles: str | None,
     project_id: str | None,
     continue_on_error: bool,
     resume: bool,
@@ -596,20 +662,30 @@ def run(
             output_root=settings.output_dir,
         )
         redo_names = check_redo_names(redo, (_row_output(i, output_dir) for i in cfg.prompts))
+        lane_profiles = parse_profiles(profiles) if profiles else ()
+        _check_lanes(lane_profiles, profile, cfg.prompts)
     except ConfigurationError as e:
         console.print(f"[red]Config error:[/red] {escape(str(e))}")
         sys.exit(resolve_exit_code(e))
 
-    profile_name = _resolve_profile(profile or cfg.profile)
+    profile_name = lane_profiles[0] if lane_profiles else _resolve_profile(profile or cfg.profile)
     provider_dir = _make_provider_dir(profile_name)
 
+    shown = ",".join(lane_profiles) if lane_profiles else profile_name
     console.print(
-        f"\n[bold]gflow run[/bold] · profile=[bold]{profile_name}[/bold] "
+        f"\n[bold]gflow run[/bold] · profile{'s' if lane_profiles else ''}=[bold]{shown}[/bold] "
         f"· transport=[bold]{cfg.transport or '(default)'}[/bold] "
         f"· {len(cfg.prompts)} prompt(s)",
     )
     console.print(f"  output_dir: [dim]{output_dir}[/dim]")
     project_id = default_project(project_id or cfg.project, None, profile_name)
+    if lane_profiles and not project_id:
+        err = ConfigurationError(
+            detail="--profiles needs an existing project: every lane generates into it.",
+            remediation_hint="Pass --project PROJECT_ID (or set 'project' in the config).",
+        )
+        console.print(f"[red]Config error:[/red] {escape(err.detail)}")
+        sys.exit(resolve_exit_code(err))
     if project_id:
         console.print(f"  project: [dim]{project_id}[/dim] [dim](existing)[/dim]")
     if not continue_on_error:
@@ -626,25 +702,46 @@ def run(
             )
             console.print(f"[red]Config error:[/red] {escape(err.detail)}")
             sys.exit(resolve_exit_code(err))
-        resumed = _resumed_rows(cfg.prompts, output_dir, project_id, profile_name, redo_names)
+        # A row a lane made is recorded in the catalog under that lane's profile.
+        for name in lane_profiles or (profile_name,):
+            resumed |= _resumed_rows(cfg.prompts, output_dir, project_id, name, redo_names)
         console.print(f"  resume: [dim]{len(resumed)} row(s) already made[/dim]")
+    lanes = split_rows(lane_profiles, [i for i in cfg.prompts if i.index not in resumed])
+    lane_of = {item.index: name for name, rows in lanes for item in rows}
+    for name, rows in lanes:
+        console.print(f"  lane {name}: [dim]rows {', '.join(str(i.index) for i in rows)}[/dim]")
 
     recorder = OperationRecorder.open(settings)
     try:
-        outcomes = asyncio.run(
-            _run_batch(
-                profile_dir=provider_dir,
-                headless=settings.headless,
-                transport=cfg.transport,
-                prompts=cfg.prompts,
-                output_dir=output_dir,
-                continue_on_error=continue_on_error,
-                profile_name=profile_name,
-                recorder=recorder,
-                project_id=project_id,
-                resumed=resumed,
-            ),
-        )
+        if lane_profiles and project_id:
+            adopt_resumed_images(resumed.values())
+            made = asyncio.run(
+                _run_batch_lanes(
+                    lanes=lanes,
+                    headless=settings.headless,
+                    transport=cfg.transport,
+                    output_dir=output_dir,
+                    continue_on_error=continue_on_error,
+                    recorder=recorder,
+                    project_id=project_id,
+                ),
+            )
+            outcomes = sorted([*made, *resumed.values()], key=lambda o: o.index)
+        else:
+            outcomes = asyncio.run(
+                _run_batch(
+                    profile_dir=provider_dir,
+                    headless=settings.headless,
+                    transport=cfg.transport,
+                    prompts=cfg.prompts,
+                    output_dir=output_dir,
+                    continue_on_error=continue_on_error,
+                    profile_name=profile_name,
+                    recorder=recorder,
+                    project_id=project_id,
+                    resumed=resumed,
+                ),
+            )
     except GFlowError as exc:
         console.print(f"[red]Error:[/red] {escape(str(exc))}")
         if exc.remediation_hint:
@@ -652,6 +749,6 @@ def run(
         sys.exit(resolve_exit_code(exc))
     finally:
         recorder.close()
-    exit_code = render_image_batch_summary(outcomes, title="gflow run")
+    exit_code = render_image_batch_summary(outcomes, title="gflow run", lane_of=lane_of)
     if exit_code != 0:
         sys.exit(exit_code)

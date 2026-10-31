@@ -186,6 +186,8 @@ gflow video batch --config videos.json --profile main --upscale --json
 
 A submitted row is never sent twice, because a clip Flow accepted may already be billed. If a row fails, rerun with `--resume`. A clip whose prompt or start frame changed is made again; `--redo v3` forces one.
 
+With two profiles signed in to the same Google account, run them side by side: `--profiles main,main-2 --project <id>`. gflow deals the missing rows between them, one browser each, started 25 s apart, and prints which profile runs which row. If one profile hits a WAF or an expired session, the whole batch stops after the row in flight. `gflow run` takes `--profiles` too.
+
 ## Hiding the browser
 
 Google only serves Flow to a real browser, so gflow drives a real Chrome window. How much of it you see depends on the platform:

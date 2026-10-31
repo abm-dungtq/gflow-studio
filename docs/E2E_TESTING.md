@@ -562,6 +562,22 @@ This work is tracked in the project backlog.
 
 ---
 
+## Profile lanes — `tests/e2e/test_run_lanes_e2e.py`
+
+`gflow run --profiles A,B` runs one config on two profiles at once. The test needs two
+profiles signed in to the **same** Google account and a project that account owns, and
+makes two images (0 credits):
+
+```bash
+GFLOW_CLI_E2E_PROFILE=<a> GFLOW_CLI_E2E_PROFILES=<a>,<b> GFLOW_CLI_E2E_PROJECT=<project-uuid> \
+    uv run pytest -m e2e tests/e2e/test_run_lanes_e2e.py -v
+```
+
+It proves each profile's browser made its own row into the shared project, and that the
+printed plan names the lane of each row.
+
+---
+
 ## Migrated host (`flow.google.com`) — `tests/e2e/test_migrated_host_e2e.py`
 
 Google is moving accounts onto `flow.google.com` (#639). Under the default

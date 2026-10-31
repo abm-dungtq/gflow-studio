@@ -58,13 +58,14 @@ from gflow_cli.image_batch import (
     safe_prompt_preview,
     safe_terminal_text,
 )
+from gflow_cli.lanes import LaneStop, run_lanes, split_rows
 from gflow_cli.paths import looks_like_video, move_file
 from gflow_cli.run_ledger import fingerprint, is_stale, record, redo_keys, sidecar_path
 from gflow_cli.services.video_upscale import upscale_downloaded_video
 from gflow_cli.storage import cloud_info_from_path
 
 if TYPE_CHECKING:
-    from collections.abc import Callable
+    from collections.abc import Callable, Sequence
 
 console = Console()
 logger = structlog.get_logger(__name__)
@@ -815,6 +816,7 @@ async def run_video_batch(
     jitter_range: tuple[float, float] | None = None,
     client_factory: Callable[..., Any] | None = None,
     upscale: bool = False,
+    stop: LaneStop | None = None,
 ) -> tuple[list[VideoBatchOutcome], str | None]:
     """Run ``videos`` sequentially in ONE :class:`FlowApiClient` session.
 
@@ -822,19 +824,19 @@ async def run_video_batch(
     - If all rows are already in ``resumed``, returns immediately without opening a browser.
     - Fatal session/lane errors (auth, WAF, selector drift, insufficient credits, etc.)
       stop the batch immediately even under ``continue_on_error=True``.
+    - ``stop`` is shared with sibling lanes (``gflow_cli.lanes``): once any lane stops, this
+      one skips its remaining rows, and a stop here is reported to the others.
     """
     if jitter_range is None:
         jitter_range = resolve_video_batch_jitter_range(None)
     output_dir.mkdir(parents=True, exist_ok=True)
 
     if resumed and current_tracker() is None:
-        # A clip kept from before the ledger existed is adopted with today's inputs, so a
-        # later edit to its row is noticed.
-        for done in resumed.values():
-            if done.saved_path is not None and not sidecar_path(done.saved_path).exists():
-                record([done.saved_path], video_row_inputs(done.item))
+        adopt_resumed_clips(resumed)
     if resumed and all(item.index in resumed for item in videos):
         return [resumed[item.index] for item in videos], project_id
+    if stop is not None and stop.reason is not None:
+        return _skip_rows(videos, resumed, project_id, stop.reason), project_id
 
     if current_tracker() is None:
         return await run_with_auto_renew(
@@ -853,6 +855,7 @@ async def run_video_batch(
                 jitter_range=jitter_range,
                 client_factory=client_factory,
                 upscale=upscale,
+                stop=stop,
             ),
             source="video.batch",
         )
@@ -870,6 +873,9 @@ async def run_video_batch(
             if resumed and (done := resumed.get(item.index)) is not None:
                 outcomes.append(replace(done, project_id=run_project_id))
                 continue
+            if stop is not None and stop.reason is not None:
+                outcomes.extend(_skip_rows(videos[pos:], resumed, run_project_id, stop.reason))
+                break
             if submitted_count > 0 and jitter_range[1] > 0:
                 delay = random.uniform(*jitter_range)  # noqa: S311 - pacing, not crypto
                 logger.info("video_batch.jitter_sleep", seconds=round(delay, 2), index=item.index)
@@ -894,22 +900,100 @@ async def run_video_batch(
                     if fatal_exc is not None
                     else f"stopped after failure on row {item.index} (--fail-fast)"
                 )
-                for remaining in videos[pos + 1 :]:
-                    if resumed and (done := resumed.get(remaining.index)) is not None:
-                        outcomes.append(replace(done, project_id=run_project_id))
-                    else:
-                        outcomes.append(
-                            VideoBatchOutcome(
-                                index=remaining.index,
-                                item=remaining,
-                                status="skipped",
-                                project_id=run_project_id,
-                                error=reason,
-                            )
-                        )
+                if stop is not None:
+                    stop.set(f"lane {profile_name} {reason}")
+                outcomes.extend(_skip_rows(videos[pos + 1 :], resumed, run_project_id, reason))
                 break
 
     return outcomes, run_project_id
+
+
+def adopt_resumed_clips(resumed: dict[int, VideoBatchOutcome]) -> None:
+    """Give a clip kept from before the ledger existed today's inputs, so a later edit to
+    its row is noticed."""
+    for done in resumed.values():
+        if done.saved_path is not None and not sidecar_path(done.saved_path).exists():
+            record([done.saved_path], video_row_inputs(done.item))
+
+
+def _skip_rows(
+    rows: Sequence[VideoBatchItem],
+    resumed: dict[int, VideoBatchOutcome] | None,
+    project_id: str | None,
+    reason: str,
+) -> list[VideoBatchOutcome]:
+    """Outcomes for ``rows`` that will not be submitted: resumed rows stay resumed."""
+    return [
+        replace(done, project_id=project_id)
+        if resumed and (done := resumed.get(row.index)) is not None
+        else VideoBatchOutcome(
+            index=row.index, item=row, status="skipped", project_id=project_id, error=reason
+        )
+        for row in rows
+    ]
+
+
+def video_lanes(
+    profiles: Sequence[str],
+    videos: tuple[VideoBatchItem, ...],
+    resumed: dict[int, VideoBatchOutcome] | None,
+) -> list[tuple[str, tuple[VideoBatchItem, ...]]]:
+    """The rows still to make, dealt to ``profiles``: the plan a lanes run follows."""
+    return split_rows(profiles, [item for item in videos if item.index not in (resumed or {})])
+
+
+async def run_video_batch_lanes(
+    *,
+    profiles: Sequence[str],
+    profile_dirs: dict[str, Path],
+    headless: bool,
+    videos: tuple[VideoBatchItem, ...],
+    output_dir: Path,
+    continue_on_error: bool,
+    project_id: str,
+    recorder: OperationRecorder | None = None,
+    resumed: dict[int, VideoBatchOutcome] | None = None,
+    jitter_range: tuple[float, float] | None = None,
+    client_factory: Callable[..., Any] | None = None,
+    upscale: bool = False,
+    stagger: float | None = None,
+) -> tuple[list[VideoBatchOutcome], dict[int, str]]:
+    """Deal the rows still to make across ``profiles`` and run them side by side.
+
+    Returns every row's outcome in file order and which profile each made row ran on.
+    All lanes generate into ``project_id``, so the profiles must share a Google account.
+    """
+    resumed = resumed or {}
+    output_dir.mkdir(parents=True, exist_ok=True)
+    adopt_resumed_clips(resumed)
+    lanes = video_lanes(profiles, videos, resumed)
+    lane_of = {item.index: profile for profile, rows in lanes for item in rows}
+    for profile, rows in lanes:
+        logger.info("video_batch.lane", profile=profile, rows=[item.index for item in rows])
+
+    async def run_lane(
+        profile: str, rows: tuple[VideoBatchItem, ...], stop: LaneStop
+    ) -> list[VideoBatchOutcome]:
+        outcomes, _ = await run_video_batch(
+            profile_dir=profile_dirs[profile],
+            headless=headless,
+            videos=rows,
+            output_dir=output_dir,
+            continue_on_error=continue_on_error,
+            project_title="gflow-cli video batch",
+            profile_name=profile,
+            recorder=recorder,
+            project_id=project_id,
+            jitter_range=jitter_range,
+            client_factory=client_factory,
+            upscale=upscale,
+            stop=stop,
+        )
+        return outcomes
+
+    made = await run_lanes(lanes, run_lane, stagger=stagger)
+    kept = [replace(done, project_id=project_id) for done in resumed.values()]
+    return sorted([*made, *kept], key=lambda outcome: outcome.index), lane_of
 
 
 def compute_video_batch_exit_code(outcomes: list[VideoBatchOutcome]) -> int:
@@ -924,10 +1008,16 @@ def render_video_batch_summary(
     outcomes: list[VideoBatchOutcome],
     *,
     title: str = "gflow video batch",
+    lane_of: dict[int, str] | None = None,
 ) -> int:
-    """Render a Rich summary table of video batch outcomes and return the exit code."""
+    """Render a Rich summary table of video batch outcomes and return the exit code.
+
+    ``lane_of`` (from :func:`run_video_batch_lanes`) adds the profile each row ran on.
+    """
     table = Table(title=f"{safe_terminal_text(title)} summary", show_lines=False)
     table.add_column("#", justify="right")
+    if lane_of:
+        table.add_column("Lane")
     table.add_column("Status")
     table.add_column("Start Frame")
     table.add_column("Prompt (truncated)")
@@ -952,7 +1042,8 @@ def render_video_batch_summary(
         else:
             badge = "[red]FAIL[/red]"
             detail = safe_terminal_text(o.error or "unknown error")
-        table.add_row(str(o.index), badge, start_name, preview, detail)
+        lane = [safe_terminal_text(lane_of.get(o.index, "—"))] if lane_of else []
+        table.add_row(str(o.index), *lane, badge, start_name, preview, detail)
 
     console.print()
     console.print(table)
@@ -971,8 +1062,13 @@ def build_video_batch_json_payload(
     *,
     profile_name: str,
     project_id: str | None,
+    lane_of: dict[int, str] | None = None,
 ) -> dict[str, Any]:
-    """Build machine-readable JSON payload for ``gflow video batch --json``."""
+    """Build machine-readable JSON payload for ``gflow video batch --json``.
+
+    With ``lane_of`` (a ``--profiles`` run) each made row also names its ``profile`` and
+    ``lanes`` lists every lane's rows.
+    """
     exit_code = compute_video_batch_exit_code(outcomes)
     ok_count = sum(1 for o in outcomes if o.status == "ok")
     resumed_count = sum(1 for o in outcomes if o.status == "resumed")
@@ -990,6 +1086,16 @@ def build_video_batch_json_payload(
         "failed": fail_count,
         "skipped": skip_count,
         "exit_code": exit_code,
+        **(
+            {
+                "lanes": {
+                    name: sorted(i for i, p in lane_of.items() if p == name)
+                    for name in dict.fromkeys(lane_of.values())
+                }
+            }
+            if lane_of
+            else {}
+        ),
         "results": [
             {
                 "index": o.index,
@@ -1006,6 +1112,7 @@ def build_video_batch_json_payload(
                 "project_id": o.project_id,
                 "error": o.error,
                 "exit_code": o.exit_code,
+                **({"profile": lane_of[o.index]} if lane_of and o.index in lane_of else {}),
                 **({"recovered": True} if o.recovered else {}),
                 **({"upscaled": o.upscaled} if o.upscaled else {}),
                 **({"upscale_warning": o.upscale_warning} if o.upscale_warning else {}),

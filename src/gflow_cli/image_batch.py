@@ -45,6 +45,7 @@ from gflow_cli.errors import (
     RpcResponseUnavailableError,
     is_batch_halt_error,
 )
+from gflow_cli.lanes import LaneStop
 from gflow_cli.ref_aliases import (
     default_ref_name,
     parse_config_ref_entry,
@@ -54,7 +55,7 @@ from gflow_cli.run_ledger import fingerprint, record, sidecar_path
 from gflow_cli.storage import cloud_info_from_path
 
 if TYPE_CHECKING:
-    from collections.abc import Callable, Coroutine
+    from collections.abc import Callable, Coroutine, Iterable
 
     from gflow_cli.api.dto import GeneratedImage
     from gflow_cli.tools.invocation import AppliedTool
@@ -879,6 +880,7 @@ async def run_image_batch(
     project_id: str | None = None,
     resumed: dict[int, BatchOutcome] | None = None,
     ledger: bool = False,
+    stop: LaneStop | None = None,
 ) -> list[BatchOutcome]:
     """Run prompts sequentially through one FlowApiClient session.
 
@@ -894,6 +896,9 @@ async def run_image_batch(
 
     ``ledger`` writes what each saved file was made from next to it (``run_ledger``), so a
     later ``--resume`` regenerates only rows whose inputs changed.
+
+    ``stop`` is shared with sibling lanes (``gflow_cli.lanes``), as in
+    :func:`run_sequential_batch`.
     """
     results: dict[int, BatchOutcome] = {}
     # One upload per distinct local file per run (one run, one project).
@@ -913,11 +918,7 @@ async def run_image_batch(
         if resumed and (done := resumed.get(item.index)) is not None:
             results[item.index] = done
             if ledger:
-                # Adopt a file made before the ledger existed, so a later edit is noticed.
-                record(
-                    [p for p in done.saved_paths if not sidecar_path(p).exists()],
-                    image_row_inputs(item),
-                )
+                adopt_resumed_images([done])
             return done
         row_refs: list[ImageRef] = []
         for ref_spec in item.all_refs:
@@ -1020,6 +1021,7 @@ async def run_image_batch(
         output_dir=output_dir,
         jitter_range=jitter_range,
         project_id=project_id,
+        stop=stop,
     )
     return sorted(outcomes, key=lambda outcome: outcome.index)
 
@@ -1037,6 +1039,7 @@ async def run_sequential_batch(
     client_factory: Callable[..., Any] | None = None,
     jitter_range: tuple[float, float] | None = None,
     project_id: str | None = None,
+    stop: LaneStop | None = None,
 ) -> list[BatchOutcome]:
     """Generic sequential orchestrator for Flow API batches.
 
@@ -1046,7 +1049,12 @@ async def run_sequential_batch(
     before every prompt after the first (anti-bot cadence, same contract as the
     manifest batch path). ``None`` (the default) resolves the configured range
     via :func:`resolve_jitter_range`; ``(0, 0)`` disables pacing.
+
+    ``stop`` is shared with sibling lanes (``gflow_cli.lanes``): once any lane has stopped,
+    this one opens no browser or skips its remaining rows, and a halt here stops the others.
     """
+    if stop is not None and stop.reason is not None:
+        return _skipped(items, 0, stop.reason)
     if jitter_range is None:
         jitter_range = resolve_jitter_range(None)
     if output_dir:
@@ -1063,6 +1071,9 @@ async def run_sequential_batch(
         # Rows may be sent from here on: an auth error past this point must not re-run the batch.
         mark_current_submitted()
         for idx, item in enumerate(items):
+            if stop is not None and stop.reason is not None:
+                outcomes.extend(_skipped(items, idx, stop.reason))
+                break
             if idx > 0 and jitter_range and jitter_range[1] > 0:
                 delay = random.uniform(*jitter_range)  # noqa: S311 - pacing, not crypto
                 logger.info("batch_jitter_sleep", seconds=round(delay, 2), index=idx)
@@ -1077,18 +1088,26 @@ async def run_sequential_batch(
                         error_class=(outcome.error or "").partition(":")[0],
                         exit_code=outcome.exit_code,
                     )
-                for skip_idx in range(idx + 1, len(items)):
-                    outcomes.append(
-                        BatchOutcome(
-                            # The row's own index: under dependency order the loop
-                            # position is not the row (#913).
-                            index=getattr(items[skip_idx], "index", skip_idx),
-                            prompt=items[skip_idx],
-                            status="skipped",
-                        ),
-                    )
+                if stop is not None:
+                    stop.set(f"lane stopped after row {outcome.index}: {outcome.error or 'failed'}")
+                outcomes.extend(_skipped(items, idx + 1, None))
                 break
     return outcomes
+
+
+def _skipped(items: tuple[Any, ...], start: int, reason: str | None) -> list[BatchOutcome]:
+    """Skipped outcomes for ``items[start:]``, which will not be submitted."""
+    return [
+        BatchOutcome(
+            # The row's own index: under dependency order the loop position is not the
+            # row (#913).
+            index=getattr(items[pos], "index", pos),
+            prompt=items[pos],
+            status="skipped",
+            error=reason,
+        )
+        for pos in range(start, len(items))
+    ]
 
 
 # ---------------------------------------------------------------------------
@@ -1713,10 +1732,27 @@ async def run_manifest_image_batch(
         return outcomes
 
 
-def render_image_batch_summary(outcomes: list[BatchOutcome], *, title: str) -> int:
-    """Print a Rich table + return the aggregate exit code."""
+def adopt_resumed_images(resumed: Iterable[BatchOutcome]) -> None:
+    """Record today's inputs for a resumed file made before the ledger existed, so a later
+    edit to its row is noticed."""
+    for done in resumed:
+        record(
+            [p for p in done.saved_paths if not sidecar_path(p).exists()],
+            image_row_inputs(done.prompt),
+        )
+
+
+def render_image_batch_summary(
+    outcomes: list[BatchOutcome], *, title: str, lane_of: dict[int, str] | None = None
+) -> int:
+    """Print a Rich table + return the aggregate exit code.
+
+    ``lane_of`` (a ``gflow run --profiles`` run) adds the profile each row ran on.
+    """
     table = Table(title=title)
     table.add_column("#", justify="right")
+    if lane_of:
+        table.add_column("lane")
     table.add_column("prompt", overflow="fold")
     table.add_column("ratio")
     table.add_column("status")
@@ -1736,6 +1772,7 @@ def render_image_batch_summary(outcomes: list[BatchOutcome], *, title: str) -> i
             status_str = "[yellow]SKIPPED[/yellow]"
         table.add_row(
             str(outcome.index),
+            *([safe_terminal_text(lane_of.get(outcome.index, "—"))] if lane_of else []),
             safe_prompt_preview(outcome.prompt.text),
             outcome.prompt.aspect_ratio,
             status_str,

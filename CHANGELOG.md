@@ -24,6 +24,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`--profiles A,B` on `gflow run` and `gflow video batch` runs one config on several
+  profiles side by side.** The rows still to make are dealt round-robin, one browser per
+  profile, started 25 s apart, all into the `--project` (required). The plan and the summary
+  say which profile ran each row (`--json`: `lanes` and a per-row `profile`). A WAF, auth or
+  quota error on one lane stops every lane after its current row. `gflow run` refuses to split
+  rows chained by `batch:N`. This replaces per-project lane scripts. Both commands are still
+  CLI-only.
+
 - **`--resume` on `gflow run` and `gflow video batch` makes edited rows again, and `--redo`
   forces one.** Each saved image or clip gets a hidden `.<name>.gflow.json` sidecar with a
   fingerprint of its inputs (prompt as written, settings, and the bytes of reference images or

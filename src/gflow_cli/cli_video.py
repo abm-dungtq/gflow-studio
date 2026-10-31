@@ -8,7 +8,7 @@ from __future__ import annotations
 import warnings
 from dataclasses import dataclass
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, NoReturn
 
 import click
 import structlog
@@ -2646,6 +2646,7 @@ async def _run_video_upscale(
         "  gflow video batch --config clips.json\n"
         "  gflow video batch --config clips.json --profile my-profile --project PROJ123 --resume\n"
         "  gflow video batch --config clips.json --fail-fast --jitter 3-6 --json\n"
+        "  gflow video batch --config clips.json --profiles a,b --project PROJ123 --resume\n"
     ),
 )
 @click.option(
@@ -2665,6 +2666,17 @@ async def _run_video_upscale(
     help="Override output directory for rows without an explicit 'output' path.",
 )
 @click.option("--profile", default=None, help="Override profile (beats config's 'profile').")
+@click.option(
+    "--profiles",
+    default=None,
+    metavar="A,B",
+    help=(
+        "Deal the rows still to make round-robin across these profiles and run them side "
+        "by side, one browser each, started 25 s apart. The lanes share the project, so "
+        "sign every profile in to the same Google account and pass --project. A lane that "
+        "hits a session, WAF or quota error stops every lane after its current row."
+    ),
+)
 @_project_option
 @_project_name_option
 @click.option(
@@ -2712,6 +2724,7 @@ def batch(
     config_path: Path,
     output_dir_override: Path | None,
     profile: str | None,
+    profiles: str | None,
     project_id: str | None,
     project_name: str | None,
     continue_on_error: bool,
@@ -2729,6 +2742,7 @@ def batch(
 
     from gflow_cli._cli_helpers import safe_path_text
     from gflow_cli.image_batch import resolve_exit_code
+    from gflow_cli.lanes import parse_profiles
     from gflow_cli.paths import resolve_batch_output_dir
     from gflow_cli.run_ledger import check_redo_names
     from gflow_cli.video_batch import (
@@ -2740,8 +2754,23 @@ def batch(
         resolve_video_batch_jitter_range,
         resumed_video_rows,
         run_video_batch,
+        run_video_batch_lanes,
         target_path_for_video_item,
+        video_lanes,
     )
+
+    def _config_error(exc: ConfigurationError) -> NoReturn:
+        if as_json:
+            json_output.emit(
+                {
+                    **exc.to_problem_details(),
+                    "status": "error",
+                    "command": "video batch",
+                }
+            )
+        else:
+            console.print(f"[red]Config error:[/red] {escape(str(exc))}")
+        sys.exit(resolve_exit_code(exc))
 
     try:
         cfg = VideoBatchConfig.from_json_path(config_path)
@@ -2756,23 +2785,26 @@ def batch(
         redo_names = check_redo_names(
             redo, (target_path_for_video_item(item, output_dir) for item in cfg.videos)
         )
-    except ConfigurationError as exc:
-        if as_json:
-            json_output.emit(
-                {
-                    **exc.to_problem_details(),
-                    "status": "error",
-                    "command": "video batch",
-                }
+        lane_profiles = parse_profiles(profiles) if profiles else ()
+        if lane_profiles and profile:
+            raise ConfigurationError(
+                detail="--profile and --profiles cannot be combined.",
+                remediation_hint="Use --profiles alone; list every lane's profile in it.",
             )
-        else:
-            console.print(f"[red]Config error:[/red] {escape(str(exc))}")
-        sys.exit(resolve_exit_code(exc))
+    except ConfigurationError as exc:
+        _config_error(exc)
 
-    profile_name = _resolve_profile(profile or cfg.profile)
+    profile_name = lane_profiles[0] if lane_profiles else _resolve_profile(profile or cfg.profile)
     provider_dir = _make_provider_dir(profile_name)
     resolved_project = default_project(project_id or cfg.project, project_name, profile_name)
     title = slugify_project_name(project_name) if project_name else "gflow-cli video batch"
+    if lane_profiles and resolved_project is None:
+        _config_error(
+            ConfigurationError(
+                detail="--profiles needs an existing project: every lane generates into it.",
+                remediation_hint="Pass --project PROJECT_ID (or set 'project' in the config).",
+            )
+        )
 
     resumed_map: dict[int, VideoBatchOutcome] = {}
     resume = resume or bool(redo_names)
@@ -2780,9 +2812,10 @@ def batch(
         resumed_map = resumed_video_rows(cfg.videos, output_dir, redo_names)
 
     if not as_json:
+        shown = ",".join(lane_profiles) if lane_profiles else profile_name
         console.print(
-            f"\n[bold]gflow video batch[/bold] · profile=[bold]{profile_name}[/bold] "
-            f"· {len(cfg.videos)} video(s)"
+            f"\n[bold]gflow video batch[/bold] · profile{'s' if lane_profiles else ''}="
+            f"[bold]{shown}[/bold] · {len(cfg.videos)} video(s)"
         )
         console.print(f"  output_dir: [dim]{safe_path_text(output_dir)}[/dim]")
         if resolved_project:
@@ -2791,25 +2824,46 @@ def batch(
             console.print("  mode: [yellow]fail-fast[/yellow]")
         if resume:
             console.print(f"  resume: [dim]{len(resumed_map)} row(s) already made[/dim]")
+        for name, rows in video_lanes(lane_profiles, cfg.videos, resumed_map):
+            console.print(f"  lane {name}: [dim]rows {', '.join(str(i.index) for i in rows)}[/dim]")
 
     recorder = OperationRecorder.open(settings)
+    lane_of: dict[int, str] = {}
     try:
-        outcomes, final_project_id = asyncio.run(
-            run_video_batch(
-                profile_dir=provider_dir,
-                headless=settings.headless,
-                videos=cfg.videos,
-                output_dir=output_dir,
-                continue_on_error=continue_on_error,
-                project_title=title,
-                profile_name=profile_name,
-                recorder=recorder,
-                project_id=resolved_project,
-                resumed=resumed_map,
-                jitter_range=jitter_range,
-                upscale=upscale,
+        if lane_profiles and resolved_project is not None:
+            outcomes, lane_of = asyncio.run(
+                run_video_batch_lanes(
+                    profiles=lane_profiles,
+                    profile_dirs={name: _make_provider_dir(name) for name in lane_profiles},
+                    headless=settings.headless,
+                    videos=cfg.videos,
+                    output_dir=output_dir,
+                    continue_on_error=continue_on_error,
+                    project_id=resolved_project,
+                    recorder=recorder,
+                    resumed=resumed_map,
+                    jitter_range=jitter_range,
+                    upscale=upscale,
+                )
             )
-        )
+            final_project_id = resolved_project
+        else:
+            outcomes, final_project_id = asyncio.run(
+                run_video_batch(
+                    profile_dir=provider_dir,
+                    headless=settings.headless,
+                    videos=cfg.videos,
+                    output_dir=output_dir,
+                    continue_on_error=continue_on_error,
+                    project_title=title,
+                    profile_name=profile_name,
+                    recorder=recorder,
+                    project_id=resolved_project,
+                    resumed=resumed_map,
+                    jitter_range=jitter_range,
+                    upscale=upscale,
+                )
+            )
     except GFlowError as exc:
         if as_json:
             json_output.emit(
@@ -2830,10 +2884,11 @@ def batch(
             outcomes,
             profile_name=profile_name,
             project_id=final_project_id,
+            lane_of=lane_of,
         )
         json_output.emit(payload)
         exit_code = compute_video_batch_exit_code(outcomes)
     else:
-        exit_code = render_video_batch_summary(outcomes, title="gflow video batch")
+        exit_code = render_video_batch_summary(outcomes, title="gflow video batch", lane_of=lane_of)
     if exit_code != 0:
         sys.exit(exit_code)

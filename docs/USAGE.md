@@ -974,6 +974,7 @@ gflow video batch --config videos.json --fail-fast --jitter 3.0-6.0 --json
 - **Single browser session:** Chrome opens once for the entire batch and reuses one Flow project across all rows. If `--resume` finds that every row's target `.mp4` already exists and is a valid video container on disk, `gflow video batch` exits `0` immediately without launching a browser.
 - **No automatic retry on submitted video rows:** To avoid double-spending credits or duplicating clips, a submitted video row is never automatically retried. Re-run with `--resume` to skip already-downloaded `.mp4` files and run only the remaining rows.
 - **Edited rows are made again; `--redo` forces one:** each saved clip gets a hidden `.<name>.gflow.json` sidecar with a fingerprint of its prompt, model, duration, aspect, resolution and the bytes of its start and end frames. With `--resume`, a clip whose row changed since it was made (including a re-drawn start frame) is generated again; a clip with no sidecar, made before this existed, is kept and adopted. `--redo NAME` (repeatable; output file name or stem, e.g. `v3.mp4` or `v3`) makes that clip again and implies `--resume` for the other rows; a name no row writes exits 11.
+- **Several profiles side by side (`--profiles A,B`):** the rows still to make are dealt round-robin across the profiles (after `--resume`, only the missing ones), and each profile runs its rows in its own browser, the lanes starting 25 s apart. Every lane generates into the same project, so `--project` (or `project`) is required and the profiles must be signed in to the same Google account. The plan is printed before the run (`lane meo-muop: rows 0, 2`), the summary table gets a lane column, and `--json` adds `lanes` (profile to row indexes) and a `profile` on each made row. When a lane hits a fatal error (below) or a `--fail-fast` failure, every other lane finishes the row it is on and skips the rest with that reason; the exit code is the failing row's. `--profile` and `--profiles` cannot be combined, and a blank or repeated name is refused (exit 11).
 - **Automatic stranded-clip recovery (`WireFormatError` / `MediaDownloadError` with `media_id`):** When a row has already started and billed a `media_id` (`on_started`) but fails during the post-generation signed-URL wait or download (`WireFormatError` exit 7 or `MediaDownloadError` exit 8), `gflow video batch` calls `recover_clip` once on the same browser session to retrieve the finished clip from its per-clip route (`/project/<id>/edit/<media-id>`) at zero credit cost, then navigates back to `/project/<id>` for the next row. A recovered row is saved to its target `output`, recorded in the catalog, and marked `"status": "ok"`, `"exit_code": 0`, `"recovered": true` in `--json` output (normal rows omit `"recovered"`). If recovery fails, the row keeps its original error and exit code and appends a `gflow data download <media_id>` hint.
 - **Optional 1080p post-download export (`--upscale`):** Pass `--upscale` on `video t2v`, `i2v`, `r2v`, or `batch` to replace each downloaded 720p `.mp4` in place with Flow's free 1080p export (via `upsample_video`, then returning the page to `/fx/tools/flow/project/<id>` before the next row). On success, `--json` output includes `"upscaled": "1080p"`; if the 1080p export fails, the already-downloaded 720p file is kept, the row remains `"status": "ok"` (exit `0`, never re-submitted), and `"upscale_warning"` carries a `gflow video upscale <media_id> --scale 1080p --project <id>` retry hint.
 - **Fatal session/lane errors always abort immediately:** Authentication errors (`exit 3`), rate limits (`exit 4`), WAF/reCAPTCHA rejection (`exit 10`), profile/config errors (`exit 11`), closed browser session (`exit 15`), database errors (`exit 16`), UI selector drift (`exit 23`), host migration (`exit 36`), and insufficient credits (`exit 37`) stop the batch immediately even under `--continue-on-error` and exit with that error's code. Per-row generation failures (such as content policy refusal) continue to the next row under `--continue-on-error` (default) or stop under `--fail-fast`.
@@ -1950,7 +1951,7 @@ For MCP over HTTP, see `gflow serve` and [MCP.md](MCP.md).
 Sequential JSON-described batch image generation. New in v0.5.0a1.
 
 ```text
-gflow run --config FILE [--output-dir DIR] [--profile NAME] [--project ID] [--resume] [--redo NAME]... [--continue-on-error|--fail-fast]
+gflow run --config FILE [--output-dir DIR] [--profile NAME | --profiles A,B] [--project ID] [--resume] [--redo NAME]... [--continue-on-error|--fail-fast]
 ```
 
 The config is a JSON file with a top-level `prompts` array; each entry
@@ -2055,6 +2056,13 @@ that row's position in `prompts` (0-based).
   never compared, so cropping or padding a saved image does not trigger a new generation.
   `--redo NAME` (repeatable; the output's file name or stem, e.g. `k3.png` or `k3`) generates
   that row again and implies `--resume` for the rest; a name no row writes is refused (exit 11).
+- **Several profiles side by side (`--profiles A,B`).** As for `gflow video batch`: the rows
+  still to make are dealt round-robin, one browser per profile, 25 s apart, all into the
+  `--project` (required; same Google account). Each lane uploads its own reference images.
+  The plan is printed first and the summary has a lane column. A WAF, auth or quota error, or
+  a `--fail-fast` failure, on one lane stops the others after their current row. Rows that
+  reference `batch:N` cannot be split and are refused (exit 11), as are `--profile` with
+  `--profiles` and a blank or repeated name.
 - **`batch:N` or a local file.** A media id or `reference_entity` in a row is refused
   (exit 11); for those use `gflow image i2i --ref` or `--reference-entity`.
 - **A parent Flow returned without a caption** cannot be found in the composer's `@`

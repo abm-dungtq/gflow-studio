@@ -190,6 +190,8 @@ gflow video batch --config videos.json --profile main --upscale --json
 
 Dòng nào đã gửi thì không bao giờ gửi lại, vì clip Flow đã nhận có thể đã bị trừ credit. Nếu một dòng lỗi, chạy lại với `--resume`. Clip có prompt hay khung đầu đã đổi sẽ được tạo lại; `--redo v3` ép làm lại một clip.
 
+Có hai profile đăng nhập cùng một tài khoản Google thì chạy song song bằng `--profiles meo-muop,meo-muop-2 --project <id>`. gflow chia đều các dòng còn thiếu cho hai profile, mỗi profile một trình duyệt, khởi động cách nhau 25 giây, và in ra dòng nào chạy ở profile nào. Một profile gặp WAF hay hết phiên thì cả lô dừng sau dòng đang làm. `gflow run` cũng nhận `--profiles`.
+
 ## Ẩn trình duyệt
 
 Google chỉ phục vụ Flow cho trình duyệt thật, nên gflow phải điều khiển một cửa sổ Chrome thật. Bạn nhìn thấy nó nhiều hay ít tuỳ hệ điều hành:

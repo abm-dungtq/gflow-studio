@@ -61,7 +61,9 @@ def _run_gflow(args: list[str], env: dict[str, str]) -> subprocess.CompletedProc
         capture_output=True,
         text=True,
         check=False,
-        env={**child_env, "GFLOW_CLI_LOG_FORMAT": "json"},
+        # INFO, not the WARNING default: the host and attach events are info-level, and
+        # a machine without GFLOW_CLI_LOG_LEVEL set would read every run as labs.
+        env={**child_env, "GFLOW_CLI_LOG_FORMAT": "json", "GFLOW_CLI_LOG_LEVEL": "INFO"},
     )
 
 

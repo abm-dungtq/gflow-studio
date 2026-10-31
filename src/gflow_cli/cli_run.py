@@ -36,6 +36,7 @@ from gflow_cli.api.client import FlowApiClient, validate_image_file
 from gflow_cli.api.dto import GeneratedImage
 from gflow_cli.api.transports import EXPERIMENTAL_TRANSPORTS
 from gflow_cli.auth.auto_renew import run_with_auto_renew
+from gflow_cli.cast_file import Cast
 from gflow_cli.config import get_settings
 from gflow_cli.data.recorder import OperationRecorder
 from gflow_cli.data.repository import DataRepository
@@ -178,7 +179,7 @@ class BatchConfig:
     project: str | None = None
 
     @classmethod
-    def from_json_path(cls, path: Path) -> BatchConfig:
+    def from_json_path(cls, path: Path, *, cast_file: Cast | None = None) -> BatchConfig:
         """Parse, validate, and return a BatchConfig.
 
         Raises :class:`ConfigurationError` on any validation failure with a
@@ -204,10 +205,18 @@ class BatchConfig:
             raise ConfigurationError(
                 msg,
             )
-        return cls._from_dict(cast("dict[str, Any]", data), base_dir=path.parent)
+        return cls._from_dict(
+            cast("dict[str, Any]", data), base_dir=path.parent, cast_file=cast_file
+        )
 
     @classmethod
-    def _from_dict(cls, data: dict[str, Any], *, base_dir: Path | None = None) -> BatchConfig:
+    def _from_dict(
+        cls,
+        data: dict[str, Any],
+        *,
+        base_dir: Path | None = None,
+        cast_file: Cast | None = None,
+    ) -> BatchConfig:
         unknown = set(data) - _ALLOWED_TOP_LEVEL_KEYS
         if unknown:
             msg = (
@@ -236,7 +245,10 @@ class BatchConfig:
             if not isinstance(p, dict):
                 msg = f"prompts[{idx}] must be a JSON object."
                 raise ConfigurationError(msg)
-            prompts.append(parse_batch_item_dict(cast("dict[str, Any]", p), idx))
+            row = cast("dict[str, Any]", p)
+            if cast_file is not None:
+                row = cast_file.apply(row, idx)
+            prompts.append(parse_batch_item_dict(row, idx))
         # Local-file refs resolve against the config's folder, so a config is portable,
         # and must be a real image before any browser work (#913).
         prompts = [_resolve_file_ref(p, base_dir or Path.cwd()) for p in prompts]
@@ -632,6 +644,17 @@ async def _run_batch_lanes(
     ),
 )
 @click.option(
+    "--cast",
+    "cast_path",
+    default=None,
+    type=click.Path(exists=True, dir_okay=False, path_type=Path),
+    help=(
+        "A JSON file of character name -> reference image (paths relative to it). A row "
+        "that writes @Name for a listed character gets that image as a named reference, "
+        "as if it were in the row's refs. A mention the cast cannot serve is reported."
+    ),
+)
+@click.option(
     "--redo",
     "redo",
     multiple=True,
@@ -649,12 +672,16 @@ def run(
     project_id: str | None,
     continue_on_error: bool,
     resume: bool,
+    cast_path: Path | None,
     redo: tuple[str, ...],
 ) -> None:
     """Execute a JSON-described batch of image generations sequentially."""
     settings = get_settings()
     try:
-        cfg = BatchConfig.from_json_path(config_path)
+        cast_file = Cast.load(cast_path) if cast_path else None
+        cfg = BatchConfig.from_json_path(config_path, cast_file=cast_file)
+        for warning in cast_file.warnings if cast_file else ():
+            console.print(f"[yellow]Cast:[/yellow] {escape(warning)}")
         _check_transport_gated(cfg.transport)
         output_dir = resolve_batch_output_dir(
             cli_override=output_dir_override,

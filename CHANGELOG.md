@@ -24,6 +24,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`gflow run --cast cast.json` attaches a character's reference image wherever a row writes
+  `@Name`.** The cast maps each name to one approved image (paths relative to the cast file,
+  `null` while none is approved). Only the characters a row mentions are added, after the row's
+  own refs, as named references (`reference image N`), so `--resume` redoes a row when its
+  character's image changes and leaves other rows alone. Names the cast cannot serve are
+  printed once each: listed as `null`, missing from the cast, or written without `@`. A missing
+  image or a row over the model's reference cap is refused (exit 11) before a browser opens.
 - **`--profiles A,B` on `gflow run` and `gflow video batch` runs one config on several
   profiles side by side.** The rows still to make are dealt round-robin, one browser per
   profile, started 25 s apart, all into the `--project` (required). The plan and the summary

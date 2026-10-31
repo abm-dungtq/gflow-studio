@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
 _REF_NAME_RE = re.compile(r"^[\w-]+$")
-_MENTION_TOKEN_RE = re.compile(r"@@|(?<!\w)@([\w-]+)(?![\w-])")
+MENTION_TOKEN_RE = re.compile(r"@@|(?<!\w)@([\w-]+)(?![\w-])")
 
 
 def is_valid_ref_name(name: str) -> bool:
@@ -108,4 +108,4 @@ def replace_ref_aliases(prompt: str, aliases: Sequence[str | None]) -> str:
             raise ConfigurationError(msg)
         return f"reference image {idx}"
 
-    return _MENTION_TOKEN_RE.sub(_sub, prompt)
+    return MENTION_TOKEN_RE.sub(_sub, prompt)

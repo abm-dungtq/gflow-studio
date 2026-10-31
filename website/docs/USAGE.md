@@ -1951,7 +1951,7 @@ For MCP over HTTP, see `gflow serve` and [MCP.md](MCP.md).
 Sequential JSON-described batch image generation. New in v0.5.0a1.
 
 ```text
-gflow run --config FILE [--output-dir DIR] [--profile NAME | --profiles A,B] [--project ID] [--resume] [--redo NAME]... [--continue-on-error|--fail-fast]
+gflow run --config FILE [--output-dir DIR] [--profile NAME | --profiles A,B] [--project ID] [--cast FILE] [--resume] [--redo NAME]... [--continue-on-error|--fail-fast]
 ```
 
 The config is a JSON file with a top-level `prompts` array; each entry
@@ -2102,6 +2102,37 @@ reference cap; `ref` and `refs` cannot both be set on the same row):
   the file goes through the REST upload instead; that path has not been observed live.
   `GFLOW_CLI_FLOW_HOST=labs.google` on a project Flow serves from flow.google.com is
   refused (exit 36), not rerouted.
+
+### Characters from a cast file (`--cast`)
+
+A cast file maps each character to one approved reference image, so a row only has to write
+`@Name` to get that character's image:
+
+```json
+{"Ngan": "characters/ngan/design.png", "TuDuc": "characters/tu-duc/design.png", "Lai": null}
+```
+
+```bash
+gflow run --config scenes.json --cast series/cast.json --project <id> --resume
+```
+
+- **Paths are relative to the cast file.** Every listed image must exist when the run starts,
+  or the run is refused (exit 11) before a browser opens. Write `null` for a character whose
+  image is not approved yet.
+- **Only what a row mentions is added.** For each `@Name` in a row's text that the cast lists,
+  the image is appended to the row's `refs` under that name, so it becomes
+  `reference image N` like any named local reference and is uploaded once per run. A row's own
+  `ref`/`refs` come first and win a shared name. Rows that mention nobody are untouched, so
+  adding a character to the cast does not make `--resume` redo other rows; replacing a
+  character's image does redo the rows that mention it.
+- **Names are one word** (`^[\w-]+$`, letters with diacritics allowed: `Ngân`, `Tu_Duc`),
+  matched case-insensitively after `@`, as for named references.
+- **Reported, never dropped.** The run prints one line per name it could not serve: a
+  character listed as `null`, an `@Name` the cast does not list (left for Flow's own
+  [`@Name` mention](REFERENCE_STRATEGIES.md) lookup), and a listed name written without `@`
+  (matched with its exact capitalization, so `Tâm` is reported and `tâm trạng` is not).
+- **The model's reference cap counts the cast images too.** A row whose own refs plus its cast
+  images exceed the cap is refused (exit 11), saying how many came from the cast.
 
 ### Example
 

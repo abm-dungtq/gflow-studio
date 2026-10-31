@@ -117,6 +117,7 @@ class TestGenerateImageWired:
                     resolved_db_path=lambda: temp_db.path,
                     profile_subdir=lambda _: tmp_path / "profile_default",
                     timeout_seconds=30,
+                    output_dir=tmp_path / "out",
                 ),
             ),
             patch(
@@ -159,6 +160,7 @@ class TestGenerateImageWired:
                     resolved_db_path=lambda: temp_db.path,
                     profile_subdir=lambda _: tmp_path / "profile_default",
                     timeout_seconds=30,
+                    output_dir=tmp_path / "out",
                 ),
             ),
             patch(
@@ -199,6 +201,7 @@ class TestGenerateImageWired:
                     resolved_db_path=lambda: temp_db.path,
                     profile_subdir=lambda _: tmp_path / "profile_default",
                     timeout_seconds=30,
+                    output_dir=tmp_path / "out",
                 ),
             ),
             patch(
@@ -227,7 +230,7 @@ class TestGenerateImageWired:
         """When output is specified, the generated asset lands at the custom path."""
         from gflow_cli.mcp.tools import _TokenBucket, gflow_generate_image
 
-        custom_output = tmp_path / "custom_sub" / "hero.png"
+        custom_output = tmp_path / "out" / "custom_sub" / "hero.png"
         with (
             patch(
                 "gflow_cli.mcp.tools._rate_limiter",
@@ -247,6 +250,7 @@ class TestGenerateImageWired:
                     resolved_db_path=lambda: temp_db.path,
                     profile_subdir=lambda _: tmp_path / "profile_default",
                     timeout_seconds=30,
+                    output_dir=tmp_path / "out",
                 ),
             ),
             patch(
@@ -315,6 +319,7 @@ class TestGenerateVideoWired:
                     resolved_db_path=lambda: temp_db.path,
                     profile_subdir=lambda _: tmp_path / "profile_default",
                     timeout_seconds=30,
+                    output_dir=tmp_path / "out",
                 ),
             ),
             patch(
@@ -340,7 +345,7 @@ class TestGenerateVideoWired:
 
         src_mp4 = tmp_path / "generated.mp4"
         src_mp4.write_bytes(b"MP4_FAKE")
-        custom_output = tmp_path / "video_sub" / "clip.mp4"
+        custom_output = tmp_path / "out" / "video_sub" / "clip.mp4"
 
         fake_client = _FakeFlowApiClient()
         fake_client.generate_video = AsyncMock(
@@ -374,6 +379,7 @@ class TestGenerateVideoWired:
                     resolved_db_path=lambda: temp_db.path,
                     profile_subdir=lambda _: tmp_path / "profile_default",
                     timeout_seconds=30,
+                    output_dir=tmp_path / "out",
                     storage_uri=None,  # local storage: -o is allowed (#1008)
                 ),
             ),
@@ -495,6 +501,7 @@ class TestGenerateVideoWired:
                     resolved_db_path=lambda: temp_db.path,
                     profile_subdir=lambda _: tmp_path / "profile_default",
                     timeout_seconds=30,
+                    output_dir=tmp_path / "out",
                 ),
             ),
             patch(
@@ -855,3 +862,17 @@ class TestProjectParam:
         result = await tools_mod.gflow_generate_video(prompt="a dog", project="bad/id")
         assert result["status"] == "error"
         assert result["error"]["title"] == "Invalid Project Id"
+
+    @pytest.mark.asyncio
+    async def test_video_output_naming_a_directory_rejected_before_worker(
+        self, tmp_path: Path
+    ) -> None:
+        # #1114 spike arm E: shutil.move drops the clip INSIDE a directory and the row
+        # records the directory as the clip; the CLI refuses it via dir_okay=False.
+        from gflow_cli.mcp import tools as tools_mod
+
+        with patch.object(tools_mod, "_run_generation_task") as run:
+            result = await tools_mod.gflow_generate_video(prompt="a dog", output=str(tmp_path))
+        assert result["status"] == "error"
+        assert result["error"]["title"] == "Invalid Output"
+        run.assert_not_called()

@@ -294,6 +294,7 @@ Documented errors agents commonly make — negative examples for the SkillOpt tr
 |---|---|
 | `gflow video generate` or `gflow video create` | `gflow video t2v` (text→video) or `gflow video i2v` (image→video) |
 | `--output DIR` (a directory) as the output location | `-o`/`--output PATH` is an explicit FILE path on `image t2i`/`i2i` and `video t2v`/`i2v` (v0.48.0+, single-prompt only); use `--out DIR` (image) / `--out-dir DIR` (video) for directory output. `r2v`/`chain` have no `-o` |
+| An absolute MCP `output` / `out_dir` outside the output dir, or a path as MCP `profile` | MCP tools write only inside `GFLOW_CLI_OUTPUT_DIR` (v0.92.0+): pass `output` relative to it; anything else returns 400 `Invalid Output` / `Invalid out_dir`. `profile` is a plain name (400 `Invalid Profile`). The CLI `-o` is unchanged |
 | `gflow auth` bare or `gflow login` to sign in | `gflow auth login` — bare `gflow auth` only lists profiles |
 | `gflow auth refresh` (doesn't exist), or `gflow auth login` as the first move on an expired session | `gflow auth renew` renews an expired session headlessly with no sign-in; `gflow auth login` only when renew reports the session could not be renewed (revoked) |
 | `playwright install` or `playwright install --all` | `uvx --from gflow-cli playwright install chromium` (Chromium only, ~150 MB) |

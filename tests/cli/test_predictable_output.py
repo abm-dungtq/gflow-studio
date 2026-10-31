@@ -296,3 +296,39 @@ class TestPredictableOutputFlag:
         assert relocated[1].local_path == tmp_path / "multi_video" / "output_2.mp4"
         assert (tmp_path / "multi_video" / "output_1.mp4").read_bytes() == b"data_1"
         assert (tmp_path / "multi_video" / "output_2.mp4").read_bytes() == b"data_2"
+
+    def test_relocate_video_output_across_filesystems(
+        self, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """#1114: a rename across mounts raises EXDEV; the billed clip must still land."""
+        import errno
+        import os
+
+        from gflow_cli.api.video import VideoResult, VideoStatus
+        from gflow_cli.cli_video import _relocate_video_output
+
+        real_replace = os.replace
+
+        def cross_device(src: object, dst: object, *a: object, **k: object) -> None:
+            # Only the clip crosses a mount; a staging file beside the target does not.
+            if str(src).endswith("media.mp4"):
+                raise OSError(errno.EXDEV, "Invalid cross-device link")
+            real_replace(src, dst)  # type: ignore[arg-type]
+
+        monkeypatch.setattr(os, "rename", cross_device)
+        monkeypatch.setattr(os, "replace", cross_device)
+
+        src = tmp_path / "tmp" / "media.mp4"
+        src.parent.mkdir()
+        src.write_bytes(b"clip")
+        res = VideoResult(
+            status=VideoStatus(media_id="m", status="MEDIA_GENERATION_STATUS_SUCCESSFUL"),
+            local_path=src,
+        )
+        out_file = tmp_path / "other_mount" / "out.mp4"
+
+        relocated = _relocate_video_output(res, out_file)
+
+        assert relocated.local_path == out_file
+        assert out_file.read_bytes() == b"clip"
+        assert not src.exists()

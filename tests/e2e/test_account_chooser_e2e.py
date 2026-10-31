@@ -31,6 +31,7 @@ from pathlib import Path
 import pytest
 from playwright.async_api import Route, async_playwright
 
+from gflow_cli.api import client as client_module
 from gflow_cli.api.client import FlowApiClient
 from gflow_cli.errors import FlowAccountChooserError
 from gflow_cli.profile_store import ACCOUNT_FILE
@@ -114,7 +115,9 @@ async def test_e2e_chooser_autoselect_lands_on_either_cohort(tmp_path: Path, lan
             await browser.close()
 
 
-async def test_e2e_chooser_click_that_never_lands_raises_exit_38(tmp_path: Path) -> None:
+async def test_e2e_chooser_click_that_never_lands_raises_exit_38(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     """A click that does not leave the chooser raises FlowAccountChooserError.
 
     The row's href is a same-page anchor, so the click is real and lands
@@ -124,9 +127,10 @@ async def test_e2e_chooser_click_that_never_lands_raises_exit_38(tmp_path: Path)
     check was inverted, so it fired on success and the real timeout escaped
     uncaught as a generic exit 1, which is the #763 symptom itself.
 
-    Costs the handler's full 30 s wait; that is the price of proving the real
-    timeout rather than a mocked one.
+    The handler's 30 s budget is shortened through the knob it reads: the anchor
+    never navigates, so the timeout is just as real at 1 s, and still not mocked.
     """
+    monkeypatch.setattr(client_module, "_CHOOSER_LANDING_TIMEOUT_MS", 1000)
     profile = tmp_path / "profile_e2e"
     profile.mkdir()
     (profile / ACCOUNT_FILE).write_text(f"{ACCOUNT}\n", encoding="utf-8")

@@ -68,7 +68,7 @@ Which reference methods each path accepts (design spec §2, verified against `cl
 | `image i2i` | `@Name` · `--reference-entity <id>` (+ `--reference-entity-name` on flow.google.com) | `@Name` · `--ref <path-or-uuid>` |
 | `video t2v` | `@Name` · `--reference-entity <id>` | ❌ — media mentions on the video path are Phase 3 |
 | `video i2v` | ❌ — start/end frames replace ingredients | local path or catalog UUID via `IMAGE` / `--initial-frame` · optional `--end-frame` |
-| `video r2v` | `@Name` · `--reference-entity <id>` | `--ref <path>` (local ingredients); `@media` is Phase 3 |
+| `video r2v` | `@Name` · `--reference-entity <id>` (+ `--reference-entity-name` on flow.google.com, where a video `@Name` exits 29) | `--ref <path>` (local ingredients); `@media` is Phase 3 |
 
 Notes:
 - **`--reference-entity` IS available on `t2v` and `r2v`** (both carry `referenceEntities` on the

@@ -3,7 +3,7 @@
   "name": "io.github.abm-dungtq/gflow-studio",
   "title": "gflow-cli",
   "description": "Drive Google Flow from an agent: Veo video and Imagen image generation",
-  "version": "0.91.0",
+  "version": "0.92.1",
   "websiteUrl": "https://github.com/abm-dungtq/gflow-studio#readme",
   "repository": {
     "url": "https://github.com/abm-dungtq/gflow-studio",
@@ -14,7 +14,7 @@
       "registryType": "pypi",
       "registryBaseUrl": "https://pypi.org",
       "identifier": "gflow-cli",
-      "version": "0.91.0",
+      "version": "0.92.1",
       "runtimeHint": "uvx",
       "transport": {
         "type": "stdio"

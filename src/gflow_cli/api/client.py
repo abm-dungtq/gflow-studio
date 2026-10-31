@@ -259,6 +259,10 @@ _FLOW_COOKIE_URL = _LABS_ORIGIN
 _MIGRATION_RECHECK_BUDGET_S = 1.5
 _MIGRATION_RECHECK_POLL_S = 0.25
 
+# How long a clicked account-chooser row has to land on a Flow host before it is
+# reported as exit 38. A module constant so the hermetic e2e can shorten it.
+_CHOOSER_LANDING_TIMEOUT_MS = 30_000
+
 
 def _parse_iso_to_epoch(value: object) -> float:
     """Parse an ISO-8601 timestamp (e.g. ``/auth/session``'s ``expires``) to
@@ -939,7 +943,9 @@ class FlowApiClient:
         # exact-host classifier (a substring test matches any URL merely mentioning the
         # host in a ?continue= param), and it answers for both cohorts.
         try:
-            await page.wait_for_url(lambda u: flow_host_kind(u) is not None, timeout=30_000)
+            await page.wait_for_url(
+                lambda u: flow_host_kind(u) is not None, timeout=_CHOOSER_LANDING_TIMEOUT_MS
+            )
         except PlaywrightTimeoutError as exc:
             # Where the click left us IS the diagnosis, so the detail has to carry it
             # (its sibling raise above interpolates the chooser URL for the same

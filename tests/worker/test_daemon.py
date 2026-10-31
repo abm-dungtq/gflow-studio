@@ -1159,3 +1159,55 @@ async def test_worker_video_default_upscale_false_does_not_call_upsample(
     fake_client.upsample_video.assert_not_awaited()
     updated = repo.get_task("task-upscale-false")
     assert updated is not None and updated.error is None
+
+
+async def test_worker_relocates_output_file_across_filesystems(
+    temp_db: DataStore, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """#1114: the MCP queued path moves the clip to output_file; EXDEV must not fail it."""
+    import errno
+    import os
+
+    real_rename, real_replace = os.rename, os.replace
+
+    def cross_device(real):  # only the clip crosses a mount; the DB keeps its own renames
+        def fake(src, dst, *a, **k):
+            if str(src).endswith(".mp4"):
+                raise OSError(errno.EXDEV, "Invalid cross-device link")
+            return real(src, dst, *a, **k)
+
+        return fake
+
+    monkeypatch.setattr(os, "rename", cross_device(real_rename))
+    monkeypatch.setattr(os, "replace", cross_device(real_replace))
+
+    src = tmp_path / "dl" / "media-x.mp4"
+    src.parent.mkdir()
+    src.write_bytes(b"clip")
+    out_file = tmp_path / "other_mount" / "out.mp4"
+    repo = QueueRepository(temp_db)
+    task = repo.enqueue_task(
+        task_id="task-exdev",
+        profile_name="default",
+        task_type="t2v",
+        payload={"prompt": "p", "aspect": "16:9", "output_file": str(out_file)},
+    )
+    worker = FlowWorker("default", str(temp_db.path))
+    fake_client = FakeFlowApiClient()
+    result = _completed_video_result("media-x")
+    fake_client.generate_video.return_value = VideoResult(
+        status=result.status,
+        local_path=src,
+        project_id=result.project_id,
+        flow_operation_id=result.flow_operation_id,
+    )
+
+    with patch("gflow_cli.worker.daemon.FlowApiClient", return_value=fake_client):
+        await worker.process_task(task)
+
+    updated = repo.get_task("task-exdev")
+    assert updated is not None
+    assert updated.status == "completed", updated.error
+    assert out_file.read_bytes() == b"clip"
+    assert not src.exists()
+    worker.close()

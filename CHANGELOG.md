@@ -122,6 +122,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   of it and each later row failed with `ReferenceNotFoundError`. The row now uploads its
   local files again (the new copy is newest) and is retried once; nothing was submitted
   before the miss, so nothing is sent twice.
+## [0.92.1] — 2026-10-30
+
+### Fixed
+
+- **MCP agents now see how to pass `tools` and character ids.** The generate tools'
+  schema stated neither the `tools` item shape (`{"name": <slug>, "options": {...}}`)
+  nor that, on flow.google.com, each `reference_entities` id needs its name at the same
+  position in `reference_entity_names` (and, for video, `mode: r2v`). The `tools` shape and
+  the video rules sat only in docstrings the MCP client never shows; the image pairing
+  rule sat in the long tool description, where agents missed it. The schema now also says that
+  `gflow_character_list` fails there with a `wire-format` error (the CLI's exit 7, #875)
+  and to ask the user for the name. In a
+  tool-selection eval with Claude Code as the host, a character given by id was sent
+  without its name in 4 of 5 runs, which fails before submit. With the rule in the
+  schema, that dropped to 0 of 5.
+- **The flow.google.com remediation hint no longer says video takes no character.** Since
+  v0.91.0 (#723) reference-to-video attaches a character by name there; the hint on the
+  `flow-host-migrated` refusal still said "video none", which an agent reads as a reason
+  not to try.
+
+### Added
+
+- **`scripts/dev/mcpjam/`: a local tool-selection eval for the MCP server.** It snapshots
+  the real `tools/list` with MCPJam's client, serves it from a stub that records calls
+  without running them ($0, no browser), and drives `claude -p` as the host. Dev-only;
+  not part of CI.
+
+## [0.92.0] — 2026-10-29
+
+### Fixed
+
+- **A video saved with `-o` onto another filesystem no longer fails after it is billed**
+  (#1114). Moving the downloaded clip
+  to `--output` used a rename, which raises `EXDEV` across mounts (a tmpfs `/tmp`, another
+  drive), so the run ended in "Unexpected error" with the clip left in `./tmp/`. The CLI
+  and the MCP queued path now move it with a copy when a rename cannot. The MCP video
+  tool also refuses an `output` that names a directory before anything is billed, as the
+  CLI's `-o` already did ([spike](docs/superpowers/spikes/2026-10-29-cross-device-relocate.md)).
+
+### Security
+
+- **MCP tools can no longer write outside the configured output directory**
+  (GHSA-hqfj-4jww-76f2).
+  `output` on `gflow_generate_image` / `gflow_generate_video` and `out_dir` on
+  `gflow_download_media` / `gflow_upscale_image` / `gflow_upscale_video` accepted any path,
+  so an MCP client, or content steering one, could write or replace files anywhere the
+  server's user can. They are now resolved against `GFLOW_CLI_OUTPUT_DIR` and refused with a
+  400 envelope when they resolve outside it; an `output` that resolves to a directory is
+  refused too. The `profile` argument of every MCP tool that opens a browser profile is likewise refused (400 `Invalid
+  Profile`) unless it is a plain name: a path in it pointed Chrome's user-data-dir, and the
+  files Chrome writes there, at any existing directory. **Breaking for MCP callers** that passed an absolute path outside the output
+  directory: pass a path relative to it, or set `GFLOW_CLI_OUTPUT_DIR`. The CLI is
+  unchanged. Reported by Filip Kulisiewicz; the `profile` path was found while reviewing the fix.
+
 ## [0.91.0] — 2026-10-28
 
 ### Fixed
@@ -6845,7 +6899,9 @@ shell-script template that branches on these codes.
 
 First skeleton. Not functional end-to-end yet.
 
-[Unreleased]: https://github.com/abm-dungtq/gflow-studio/compare/v0.91.0...HEAD
+[Unreleased]: https://github.com/abm-dungtq/gflow-studio/compare/v0.92.1...HEAD
+[0.92.1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.92.0...v0.92.1
+[0.92.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.91.0...v0.92.0
 [0.91.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.90.0...v0.91.0
 [0.90.0]: https://github.com/abm-dungtq/gflow-studio/compare/v0.89.1...v0.90.0
 [0.89.1]: https://github.com/abm-dungtq/gflow-studio/compare/v0.89.0...v0.89.1

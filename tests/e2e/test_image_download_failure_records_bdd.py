@@ -109,6 +109,8 @@ def _mcp(world: dict[str, Any], e2e_profile_dir: Path, monkeypatch: pytest.Monke
     del e2e_profile_dir  # selects the real authenticated gflow home
     for key in ("GFLOW_CLI_DB_PATH", "GFLOW_CLI_OUTPUT_DIR", "GFLOW_CLI_HISTORY_PROMPTS"):
         monkeypatch.setenv(key, world["env"][key])
+    # MCP may only write inside the output dir (GHSA-hqfj-4jww-76f2); widen it to hold the target.
+    monkeypatch.setenv("GFLOW_CLI_OUTPUT_DIR", str(world["dir"].parent))
     reset_settings()
     world["result"] = asyncio.run(
         mcp_tools.gflow_generate_image(

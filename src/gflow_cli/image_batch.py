@@ -50,6 +50,7 @@ from gflow_cli.ref_aliases import (
     parse_config_ref_entry,
     replace_ref_aliases,
 )
+from gflow_cli.run_ledger import fingerprint, record, sidecar_path
 from gflow_cli.storage import cloud_info_from_path
 
 if TYPE_CHECKING:
@@ -171,6 +172,23 @@ class BatchPromptItem:
         if self.ref is not None:
             return (self.ref,)
         return ()
+
+
+def image_row_inputs(item: BatchPromptItem) -> str:
+    """Fingerprint of what ``item``'s images are made from, for ``gflow run --resume``.
+
+    The prompt as written, not ``text``: a ``--tool`` rewrite differs on every run.
+    """
+    fields = {
+        "prompt": item.original_prompt or item.text,
+        "tool": item.tool.name if item.tool else None,
+        "model": item.model,
+        "aspect": item.aspect_ratio,
+        "count": item.count,
+        "reference_entity": item.reference_entity,
+        "ref_aliases": item.ref_aliases,
+    }
+    return fingerprint(fields, item.all_refs)
 
 
 _BATCH_REF = re.compile(r"batch:(0|[1-9][0-9]*)", re.ASCII)
@@ -860,6 +878,7 @@ async def run_image_batch(
     _command: str,
     project_id: str | None = None,
     resumed: dict[int, BatchOutcome] | None = None,
+    ledger: bool = False,
 ) -> list[BatchOutcome]:
     """Run prompts sequentially through one FlowApiClient session.
 
@@ -872,6 +891,9 @@ async def run_image_batch(
 
     ``resumed`` maps a row index to the outcome a previous run already produced in this
     project (#934): that row is not submitted, and a ``batch:N`` child references it.
+
+    ``ledger`` writes what each saved file was made from next to it (``run_ledger``), so a
+    later ``--resume`` regenerates only rows whose inputs changed.
     """
     results: dict[int, BatchOutcome] = {}
     # One upload per distinct local file per run (one run, one project).
@@ -890,6 +912,12 @@ async def run_image_batch(
     ) -> BatchOutcome:
         if resumed and (done := resumed.get(item.index)) is not None:
             results[item.index] = done
+            if ledger:
+                # Adopt a file made before the ledger existed, so a later edit is noticed.
+                record(
+                    [p for p in done.saved_paths if not sidecar_path(p).exists()],
+                    image_row_inputs(item),
+                )
             return done
         row_refs: list[ImageRef] = []
         for ref_spec in item.all_refs:
@@ -976,6 +1004,8 @@ async def run_image_batch(
                 del uploads[spec]
             return await image_worker(client, project_id, _position, item, reuploaded=True)
         results[item.index] = outcome
+        if ledger and outcome.status == "ok":
+            record(outcome.saved_paths, image_row_inputs(item))
         return outcome
 
     outcomes = await run_sequential_batch(

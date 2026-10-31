@@ -59,6 +59,7 @@ from gflow_cli.image_batch import (
     safe_terminal_text,
 )
 from gflow_cli.paths import looks_like_video, move_file
+from gflow_cli.run_ledger import fingerprint, is_stale, record, redo_keys, sidecar_path
 from gflow_cli.services.video_upscale import upscale_downloaded_video
 from gflow_cli.storage import cloud_info_from_path
 
@@ -548,14 +549,33 @@ def is_valid_video_on_disk(path: Path) -> bool:
     return looks_like_video(head)
 
 
+def video_row_inputs(item: VideoBatchItem) -> str:
+    """Fingerprint of what ``item``'s clip is made from: its fields and both frames' bytes."""
+    fields = {
+        "prompt": item.prompt,
+        "model": item.model,
+        "duration": item.duration,
+        "aspect": item.aspect,
+        "resolution": item.resolution,
+    }
+    return fingerprint(fields, [item.start, *([item.end] if item.end else [])])
+
+
 def resumed_video_rows(
     videos: tuple[VideoBatchItem, ...],
     output_dir: Path,
+    redo: set[str] | frozenset[str] = frozenset(),
 ) -> dict[int, VideoBatchOutcome]:
-    """Identify rows whose output ``.mp4`` already exists and is a valid video file."""
+    """Rows whose valid ``.mp4`` is already on disk and still matches the row.
+
+    A clip is made again when its ledger records other inputs (the prompt, a frame or a
+    setting changed) or when ``redo`` names its output.
+    """
     done: dict[int, VideoBatchOutcome] = {}
     for item in videos:
         target = target_path_for_video_item(item, output_dir)
+        if redo_keys(target) & redo or is_stale(target, video_row_inputs(item)):
+            continue
         if is_valid_video_on_disk(target):
             done[item.index] = VideoBatchOutcome(
                 index=item.index,
@@ -807,6 +827,12 @@ async def run_video_batch(
         jitter_range = resolve_video_batch_jitter_range(None)
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    if resumed and current_tracker() is None:
+        # A clip kept from before the ledger existed is adopted with today's inputs, so a
+        # later edit to its row is noticed.
+        for done in resumed.values():
+            if done.saved_path is not None and not sidecar_path(done.saved_path).exists():
+                record([done.saved_path], video_row_inputs(done.item))
     if resumed and all(item.index in resumed for item in videos):
         return [resumed[item.index] for item in videos], project_id
 
@@ -860,6 +886,8 @@ async def run_video_batch(
                 upscale=upscale,
             )
             outcomes.append(outcome)
+            if outcome.status == "ok" and outcome.saved_path is not None:
+                record([outcome.saved_path], video_row_inputs(item))
             if fatal_exc is not None or (outcome.status == "fail" and not continue_on_error):
                 reason = (
                     f"aborted after fatal {type(fatal_exc).__name__} on row {item.index}"

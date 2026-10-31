@@ -162,7 +162,7 @@ gflow run --config storyboard.json --profile main --project <id>
 gflow run --config storyboard.json --profile main --project <id> --resume
 ```
 
-Each reference file is uploaded once per run. `--resume` skips rows whose output already exists, so a rerun after a failure only makes what is missing.
+Each reference file is uploaded once per run. `--resume` skips rows whose output already exists, so a rerun after a failure only makes what is missing. A row whose prompt, settings or reference images changed is made again: gflow records each file's inputs in a hidden `.<name>.gflow.json` next to it. To redo one image, pass `--redo k3` instead of deleting the file.
 
 ### Image-to-video in one session: `gflow video batch`
 
@@ -184,7 +184,7 @@ Each reference file is uploaded once per run. `--resume` skips rows whose output
 gflow video batch --config videos.json --profile main --upscale --json
 ```
 
-A submitted row is never sent twice, because a clip Flow accepted may already be billed. If a row fails, rerun with `--resume`.
+A submitted row is never sent twice, because a clip Flow accepted may already be billed. If a row fails, rerun with `--resume`. A clip whose prompt or start frame changed is made again; `--redo v3` forces one.
 
 ## Hiding the browser
 

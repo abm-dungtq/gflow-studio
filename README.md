@@ -166,7 +166,7 @@ gflow run --config storyboard.json --profile main --project <id>
 gflow run --config storyboard.json --profile main --project <id> --resume
 ```
 
-Mỗi file ảnh tham chiếu chỉ tải lên một lần cho cả lượt chạy. `--resume` bỏ qua những dòng đã có file đầu ra, nên chạy lại sau khi lỗi chỉ tạo phần còn thiếu.
+Mỗi file ảnh tham chiếu chỉ tải lên một lần cho cả lượt chạy. `--resume` bỏ qua những dòng đã có file đầu ra, nên chạy lại sau khi lỗi chỉ tạo phần còn thiếu. Dòng nào đã sửa prompt, thông số hay ảnh tham chiếu thì được tạo lại, vì gflow ghi đầu vào của mỗi file vào một file ẩn `.<tên>.gflow.json` bên cạnh. Muốn làm lại một ảnh thì dùng `--redo k3` thay cho việc tự xoá file.
 
 ### Nhiều clip ảnh-thành-video trong một phiên: `gflow video batch`
 
@@ -188,7 +188,7 @@ Mỗi file ảnh tham chiếu chỉ tải lên một lần cho cả lượt ch�
 gflow video batch --config videos.json --profile main --upscale --json
 ```
 
-Dòng nào đã gửi thì không bao giờ gửi lại, vì clip Flow đã nhận có thể đã bị trừ credit. Nếu một dòng lỗi, chạy lại với `--resume`.
+Dòng nào đã gửi thì không bao giờ gửi lại, vì clip Flow đã nhận có thể đã bị trừ credit. Nếu một dòng lỗi, chạy lại với `--resume`. Clip có prompt hay khung đầu đã đổi sẽ được tạo lại; `--redo v3` ép làm lại một clip.
 
 ## Ẩn trình duyệt
 

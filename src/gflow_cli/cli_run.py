@@ -47,6 +47,7 @@ from gflow_cli.image_batch import (
     BatchOutcome,
     BatchPromptItem,
     batch_parents,
+    image_row_inputs,
     order_batch_rows,
     parse_batch_item_dict,
     render_image_batch_summary,
@@ -56,6 +57,7 @@ from gflow_cli.image_batch import (
 )
 from gflow_cli.paths import resolve_batch_output_dir
 from gflow_cli.ref_aliases import default_ref_name, replace_ref_aliases
+from gflow_cli.run_ledger import check_redo_names, is_stale, redo_keys
 
 console = Console()
 
@@ -307,11 +309,19 @@ def _candidate_output_files(item: BatchPromptItem, output_dir: Path, n: int) -> 
     return [p for p in sorted(output_dir.glob(f"{stem}_{n}.*")) if p.is_file()]
 
 
+def _row_output(item: BatchPromptItem, output_dir: Path) -> Path:
+    """The path ``--redo`` matches for ``item``: its ``output``, else its file stem."""
+    if item.output is not None:
+        return Path(item.output).expanduser()
+    return output_dir / (item.output_filename or f"prompt_{item.index}")
+
+
 def _resumed_rows(
     prompts: tuple[BatchPromptItem, ...],
     output_dir: Path,
     project_id: str | None,
     profile_name: str,
+    redo: set[str] | frozenset[str] = frozenset(),
 ) -> dict[int, BatchOutcome]:
     """Rows a previous run already made (#934), by row index.
 
@@ -321,6 +331,9 @@ def _resumed_rows(
     For rows with an explicit ``output`` file path, an existing valid image file at that path
     (or its magic-byte-corrected sibling extension) also resumes the row when no ``batch:N``
     child requires a catalog display name.
+
+    Either way a file whose ledger records other inputs (``run_ledger``: prompt, settings or
+    a reference image changed) does not count, and neither does a row ``redo`` names.
     """
     parents = {p for item in prompts for p in batch_parents(item)}
     done: dict[int, BatchOutcome] = {}
@@ -328,10 +341,17 @@ def _resumed_rows(
         with DataStore.open(get_settings().resolved_db_path()) as store:
             repo = DataRepository(store)
             for item in prompts:
+                if redo_keys(_row_output(item, output_dir)) & redo:
+                    continue
+                inputs = image_row_inputs(item)
                 paths: list[Path] = []
                 images: list[GeneratedImage] = []
                 for n in range(item.count):
-                    candidates = _candidate_output_files(item, output_dir, n)
+                    candidates = [
+                        p
+                        for p in _candidate_output_files(item, output_dir, n)
+                        if not is_stale(p, inputs)
+                    ]
                     found = [
                         (path, seed)
                         for path in candidates
@@ -483,6 +503,7 @@ async def _run_batch(
             _command="run",
             project_id=project_id,
             resumed=resumed,
+            ledger=True,
         ),
         source="run",
     )
@@ -541,7 +562,18 @@ async def _run_batch(
     help=(
         "Skip rows a previous run already made in this project (their files are in the "
         "output dir and recorded in the local catalog); a batch:N child references them "
-        "in place. Needs --project or a config 'project'."
+        "in place. A row whose prompt, settings or reference images changed since its "
+        "file was made is generated again. Needs --project or a config 'project'."
+    ),
+)
+@click.option(
+    "--redo",
+    "redo",
+    multiple=True,
+    metavar="NAME",
+    help=(
+        "Generate this row again even if its file exists; NAME is its output file name or "
+        "stem (k3.png or k3). Repeatable. Implies --resume for every other row."
     ),
 )
 def run(
@@ -551,23 +583,25 @@ def run(
     project_id: str | None,
     continue_on_error: bool,
     resume: bool,
+    redo: tuple[str, ...],
 ) -> None:
     """Execute a JSON-described batch of image generations sequentially."""
+    settings = get_settings()
     try:
         cfg = BatchConfig.from_json_path(config_path)
         _check_transport_gated(cfg.transport)
+        output_dir = resolve_batch_output_dir(
+            cli_override=output_dir_override,
+            config_value=cfg.output_dir,
+            output_root=settings.output_dir,
+        )
+        redo_names = check_redo_names(redo, (_row_output(i, output_dir) for i in cfg.prompts))
     except ConfigurationError as e:
         console.print(f"[red]Config error:[/red] {escape(str(e))}")
         sys.exit(resolve_exit_code(e))
 
     profile_name = _resolve_profile(profile or cfg.profile)
     provider_dir = _make_provider_dir(profile_name)
-    settings = get_settings()
-    output_dir = resolve_batch_output_dir(
-        cli_override=output_dir_override,
-        config_value=cfg.output_dir,
-        output_root=settings.output_dir,
-    )
 
     console.print(
         f"\n[bold]gflow run[/bold] · profile=[bold]{profile_name}[/bold] "
@@ -581,6 +615,7 @@ def run(
     if not continue_on_error:
         console.print("  mode: [yellow]fail-fast[/yellow]")
     resumed: dict[int, BatchOutcome] = {}
+    resume = resume or bool(redo_names)
     if resume:
         needs_project = any(
             item.output is None or bool(batch_parents(item)) for item in cfg.prompts
@@ -591,7 +626,7 @@ def run(
             )
             console.print(f"[red]Config error:[/red] {escape(err.detail)}")
             sys.exit(resolve_exit_code(err))
-        resumed = _resumed_rows(cfg.prompts, output_dir, project_id, profile_name)
+        resumed = _resumed_rows(cfg.prompts, output_dir, project_id, profile_name, redo_names)
         console.print(f"  resume: [dim]{len(resumed)} row(s) already made[/dim]")
 
     recorder = OperationRecorder.open(settings)

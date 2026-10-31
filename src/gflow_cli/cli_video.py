@@ -2677,7 +2677,20 @@ async def _run_video_upscale(
     "--resume",
     is_flag=True,
     default=False,
-    help="Skip rows whose output .mp4 file already exists and is a valid video file.",
+    help=(
+        "Skip rows whose output .mp4 already exists as a valid video, unless the row's "
+        "prompt, frames or settings changed since that clip was made."
+    ),
+)
+@click.option(
+    "--redo",
+    "redo",
+    multiple=True,
+    metavar="NAME",
+    help=(
+        "Make this row's clip again even if it exists; NAME is its output file name or "
+        "stem (v3.mp4 or v3). Repeatable. Implies --resume for every other row."
+    ),
 )
 @click.option(
     "--jitter",
@@ -2703,6 +2716,7 @@ def batch(
     project_name: str | None,
     continue_on_error: bool,
     resume: bool,
+    redo: tuple[str, ...],
     jitter: str | None,
     upscale: bool,
     as_json: bool,
@@ -2716,6 +2730,7 @@ def batch(
     from gflow_cli._cli_helpers import safe_path_text
     from gflow_cli.image_batch import resolve_exit_code
     from gflow_cli.paths import resolve_batch_output_dir
+    from gflow_cli.run_ledger import check_redo_names
     from gflow_cli.video_batch import (
         VideoBatchConfig,
         VideoBatchOutcome,
@@ -2725,11 +2740,22 @@ def batch(
         resolve_video_batch_jitter_range,
         resumed_video_rows,
         run_video_batch,
+        target_path_for_video_item,
     )
 
     try:
         cfg = VideoBatchConfig.from_json_path(config_path)
         jitter_range = resolve_video_batch_jitter_range(jitter)
+        settings = get_settings()
+        output_dir = resolve_batch_output_dir(
+            cli_override=output_dir_override,
+            config_value=cfg.output_dir,
+            output_root=settings.output_dir,
+            kind="videos",
+        )
+        redo_names = check_redo_names(
+            redo, (target_path_for_video_item(item, output_dir) for item in cfg.videos)
+        )
     except ConfigurationError as exc:
         if as_json:
             json_output.emit(
@@ -2745,19 +2771,13 @@ def batch(
 
     profile_name = _resolve_profile(profile or cfg.profile)
     provider_dir = _make_provider_dir(profile_name)
-    settings = get_settings()
-    output_dir = resolve_batch_output_dir(
-        cli_override=output_dir_override,
-        config_value=cfg.output_dir,
-        output_root=settings.output_dir,
-        kind="videos",
-    )
     resolved_project = default_project(project_id or cfg.project, project_name, profile_name)
     title = slugify_project_name(project_name) if project_name else "gflow-cli video batch"
 
     resumed_map: dict[int, VideoBatchOutcome] = {}
+    resume = resume or bool(redo_names)
     if resume:
-        resumed_map = resumed_video_rows(cfg.videos, output_dir)
+        resumed_map = resumed_video_rows(cfg.videos, output_dir, redo_names)
 
     if not as_json:
         console.print(

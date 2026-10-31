@@ -24,6 +24,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`--resume` on `gflow run` and `gflow video batch` makes edited rows again, and `--redo`
+  forces one.** Each saved image or clip gets a hidden `.<name>.gflow.json` sidecar with a
+  fingerprint of its inputs (prompt as written, settings, and the bytes of reference images or
+  start/end frames). A resumed run regenerates only rows whose fingerprint changed, so a
+  re-drawn start frame also remakes its clip. Files made before this keep the old rule and are
+  adopted. `--redo NAME` (output file name or stem, repeatable) regenerates that row and
+  implies `--resume`; an unknown name exits 11. Both commands are still CLI-only.
+
 - **gflow-studio: its own project, with a bilingual README.** gflow-studio lives at
   `abm-dungtq/gflow-studio` and is developed there; the command is still `gflow`. `README.md`
   (Vietnamese, shown by default) and `README.en.md` (English) open with a banner and describe what the

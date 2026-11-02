@@ -1348,8 +1348,7 @@ class MigratedComposer:
         needed on either kind of account), wait for the settings trigger, and report
         which composer is there: ``"classic"``, or #799's ``"agent_only"``."""
         target = MIGRATED_PROJECT_URL.format(project_id=project_id)
-        current = str(getattr(page, "url", "") or "")
-        if not current.startswith(target):
+        if not _on_project_page(page, target):
             log.info("migrated.navigate", url=target)
             await page.goto(target, wait_until="domcontentloaded", timeout=45_000)
         await self._dismiss_dialog(page)
@@ -4178,6 +4177,21 @@ async def create_project(
     return ProjectInfo(project_id=project_id, title=str(created or ""))
 
 
+def _on_project_page(page: Page, target: str) -> bool:
+    """Whether ``page`` shows the project editor at ``target`` itself.
+
+    A prefix test is not enough: an image's detail view, ``<target>/edit/<media>``, which an
+    upscale leaves open, starts with the same URL but has no settings pane.
+    """
+    current = urlsplit(str(getattr(page, "url", "") or ""))
+    wanted = urlsplit(target)
+    return (current.scheme, current.hostname, current.path.rstrip("/")) == (
+        wanted.scheme,
+        wanted.hostname,
+        wanted.path.rstrip("/"),
+    )
+
+
 async def rename_project(
     page: Page, project_id: str, title: str, *, timeout_s: float = PAGE_RPC_TIMEOUT_S
 ) -> None:
@@ -4186,7 +4200,7 @@ async def rename_project(
     ``timeout_s`` bounds the rename reply; the selector wait stays at ``ANCHOR_TIMEOUT_S``.
     A lost or late reply is settled by reading the saved title back (#992, #1037)."""
     target = MIGRATED_PROJECT_URL.format(project_id=project_id)
-    if not str(getattr(page, "url", "") or "").startswith(target):
+    if not _on_project_page(page, target):
         await page.goto(target, wait_until="domcontentloaded", timeout=45_000)
     await MigratedComposer._dismiss_dialog(page)  # noqa: SLF001  # pyright: ignore[reportPrivateUsage]
     field = await _wait_anchor(

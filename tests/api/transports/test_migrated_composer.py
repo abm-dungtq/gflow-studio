@@ -2137,6 +2137,24 @@ async def test_ensure_editor_skips_navigation_when_already_there() -> None:
     assert page.gotos == []
 
 
+async def test_ensure_editor_leaves_an_image_detail_view_of_the_same_project() -> None:
+    """An image upscale opens ``/project/<id>/edit/<media>``; its URL starts with the
+    project's, but it has no settings pane, so the next row must navigate back."""
+    from gflow_cli.api.transports.migrated_composer import MigratedComposer
+
+    page = FakePage(url="https://flow.google.com/project/p1/edit/m1")
+    await MigratedComposer().ensure_editor(page, "p1", timeout_s=1.0)
+    assert page.gotos == ["https://flow.google.com/project/p1"]
+
+
+async def test_ensure_editor_keeps_the_project_page_when_only_the_query_differs() -> None:
+    from gflow_cli.api.transports.migrated_composer import MigratedComposer
+
+    page = FakePage(url="https://flow.google.com/project/p1?hl=vi")
+    await MigratedComposer().ensure_editor(page, "p1", timeout_s=1.0)
+    assert page.gotos == []
+
+
 async def test_ensure_editor_exits_persisted_agent_mode_before_waiting_for_settings() -> None:
     from gflow_cli.api.transports.migrated_composer import MigratedComposer
 

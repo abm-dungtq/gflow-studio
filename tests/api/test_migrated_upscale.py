@@ -116,8 +116,21 @@ async def test_migrated_upscale_menu_never_opens_raises_drift() -> None:
         await _run(page)
 
 
+async def test_migrated_upscale_opens_an_image_the_grid_does_not_list() -> None:
+    """The grid lists only its first load; an image made days earlier in a project of a
+    few hundred is never on it. Its detail view opens it by id."""
+    item, holder = _replying_item("2K", _make_sprcad_body(_PNG_B64))
+    page = fake_page([item], tile=False)
+    holder.append(page)
+
+    assert await _run(page) == _PNG_BYTES
+    first_url = page.goto.await_args_list[0].args[0]
+    assert first_url.endswith(f"/project/{_PROJECT_ID}/edit/{_MEDIA_ID}")
+    page.reload.assert_not_awaited()
+
+
 async def test_migrated_upscale_missing_tile_raises_drift() -> None:
-    page = fake_page([FakeItem("2K")], tile=False)
+    page = fake_page([FakeItem("2K")], tile=False, download=False)
 
     with pytest.raises(UiSelectorDriftError, match="image tile for media_id") as exc_info:
         await _run(page)

@@ -302,6 +302,45 @@ def settle_exception(future: asyncio.Future[Any], exc: BaseException) -> None:
         future.set_exception(exc)
 
 
+async def open_download_menu(
+    page: Page,
+    *,
+    project_id: str,
+    media_id: str,
+    tile_selector: str,
+    tile_timeout_ms: int,
+    kind: str,
+    prefix: str,
+    route: str,
+) -> None:
+    """Open ``media_id``'s download menu: its detail view first, the project grid second.
+
+    The grid lists only its first load, so an item made days earlier in a large project is
+    never on it; the detail view (``/project/<id>/edit/<media>``, where a tile click lands)
+    opens any item by id. A ``--project`` Flow will not open does not redirect the detail
+    view (measured), so the grid is where that landing shows.
+    """
+    await page.goto(
+        f"{MIGRATED_PROJECT_URL.format(project_id=project_id)}/edit/{media_id}",
+        wait_until="domcontentloaded",
+    )
+    download_btn = await wait_for_or_none(page, DOWNLOAD_BUTTON_SELECTOR, 15_000)
+    if download_btn:
+        await download_btn.click()
+        await page.wait_for_timeout(500)
+        return
+    await open_tile_download_menu(
+        page,
+        project_id=project_id,
+        media_id=media_id,
+        tile_selector=tile_selector,
+        tile_timeout_ms=tile_timeout_ms,
+        kind=kind,
+        prefix=prefix,
+        route=route,
+    )
+
+
 async def upscale_image_migrated(
     page: Page,
     *,
@@ -312,8 +351,8 @@ async def upscale_image_migrated(
 ) -> bytes:
     """Upscale an image on the migrated ``flow.google.com`` frontend.
 
-    Navigates to the project, selects the image tile by ``data-media-id``, opens
-    the download menu, checks whether the requested scale is available on the
+    Opens the image's detail view (the project grid when that fails), opens the
+    download menu, checks whether the requested scale is available on the
     current account tier, triggers the upscale, and decodes the resulting
     ``SPrCad`` payload into raw image bytes.
 
@@ -321,7 +360,7 @@ async def upscale_image_migrated(
         Raw decoded JPEG/PNG bytes.
     """
     log.info("migrated_upscale.navigate", project_id=project_id, media_id=media_id)
-    await open_tile_download_menu(
+    await open_download_menu(
         page,
         project_id=project_id,
         media_id=media_id,

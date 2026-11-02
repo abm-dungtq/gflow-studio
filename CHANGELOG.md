@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **`gflow image upscale` reaches an image the project grid does not list.** The grid loads only
+  its first rows, so an image made days earlier in a large project was "not found" (exit 23)
+  however long the upscale waited. The upscale now opens the image's detail view by id, as video
+  upscale already did, and falls back to the grid only when that view does not open. Measured on
+  a project of a few hundred images: the grid listed 8 tiles, and a frame from five days earlier
+  upscaled to 2048x2048 in 31 s.
 - **A row after an image upscale no longer fails with selector drift (exit 23).** An upscale
   leaves the page on the image's detail view, `/project/<id>/edit/<media>`. That URL starts with
   the project's own, so the next row took the page for the editor and found no settings pane.

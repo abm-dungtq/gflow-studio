@@ -14,16 +14,13 @@ from typing import TYPE_CHECKING
 import structlog
 
 from gflow_cli.api.transports.batchexecute import rpc_errors
-from gflow_cli.api.transports.migrated_recover import MIGRATED_CLIP_URL
 from gflow_cli.api.transports.migrated_upscale import (
-    DOWNLOAD_BUTTON_SELECTOR,
     find_download_menu_item,
     install_capture_hooks,
     is_menu_item_disabled,
-    open_tile_download_menu,
+    open_download_menu,
     restore_capture_hooks,
     settle_exception,
-    wait_for_or_none,
 )
 from gflow_cli.errors import (
     TransportTimeoutError,
@@ -127,16 +124,7 @@ def _check_mp4_resolution(video_bytes: bytes, scale: str) -> None:
 
 async def _open_download_menu(page: Page, *, project_id: str, media_id: str) -> None:
     """Open the clip's download menu: the clip editor first, the project grid second."""
-    await page.goto(
-        MIGRATED_CLIP_URL.format(project_id=project_id, media_id=media_id),
-        wait_until="domcontentloaded",
-    )
-    download_btn = await wait_for_or_none(page, DOWNLOAD_BUTTON_SELECTOR, 15_000)
-    if download_btn:
-        await download_btn.click()
-        await page.wait_for_timeout(500)
-        return
-    await open_tile_download_menu(
+    await open_download_menu(
         page,
         project_id=project_id,
         media_id=media_id,

@@ -71,11 +71,30 @@ async def test_video_upscale_reaches_the_landing_through_the_grid_fallback(
 ) -> None:
     """The clip-editor URL does not redirect (measured), so the project grid fallback
     is where the landing shows; it must not report drift there."""
-    monkeypatch.setattr(mvu, "wait_for_or_none", _nothing)
     monkeypatch.setattr(mu, "wait_for_or_none", _nothing)
     page = _LandedPage()
     with pytest.raises(ConfigurationError, match="reason=project"):
         await mvu._open_download_menu(page, project_id="p", media_id=_MEDIA)  # type: ignore[arg-type]
+    assert "/edit/" in page.visited[0] and "/edit/" not in page.visited[-1]
+
+
+@pytest.mark.asyncio
+async def test_image_upscale_reaches_the_landing_through_the_grid_fallback(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(mu, "wait_for_or_none", _nothing)
+    page = _LandedPage()
+    with pytest.raises(ConfigurationError, match="reason=project"):
+        await mu.open_download_menu(
+            page,  # type: ignore[arg-type]
+            project_id="p",
+            media_id=_MEDIA,
+            tile_selector="img",
+            tile_timeout_ms=1,
+            kind="image",
+            prefix="migrated upscale",
+            route="upsampleImage",
+        )
     assert "/edit/" in page.visited[0] and "/edit/" not in page.visited[-1]
 
 

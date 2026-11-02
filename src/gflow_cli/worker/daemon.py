@@ -170,6 +170,7 @@ class FlowWorker:
 
         try:
             if task.task_type in ("t2i", "i2i"):
+                image_upscale_meta: dict[str, Any] | None = None
                 req = (
                     cast("GenerateImageRequest", task.decoded.request)
                     if task.decoded is not None
@@ -329,6 +330,24 @@ class FlowWorker:
                                     exc, images=images, saved_paths=saved_paths
                                 )
                             raise
+
+                        # Same carrier as the video path's 1080p export: the queue has no
+                        # result column, so the outcome rides in a completed task's error_json.
+                        if scale := task.payload.get("upscale"):
+                            from gflow_cli.services.image_upscale import upscale_saved_images
+
+                            made, warnings = await upscale_saved_images(
+                                client,
+                                [
+                                    (img.media_name, path)
+                                    for img, path in zip(images, saved_paths, strict=True)
+                                ],
+                                project_id=project_flow_id,
+                                scale=scale,
+                            )
+                            image_upscale_meta = {"upscaled": [str(p) for p in made]}
+                            if warnings:
+                                image_upscale_meta["upscale_warning"] = " ".join(warnings)
                 except Exception as exc:
                     logger.warning("Failed during image generation or recording", exc_info=exc)
                     raise
@@ -337,6 +356,7 @@ class FlowWorker:
                     task.task_id,
                     status="completed",
                     flow_media_id=flow_media_id,
+                    error=image_upscale_meta,
                 )
                 logger.info(
                     "Task completed successfully", task_id=task.task_id, flow_media_id=flow_media_id

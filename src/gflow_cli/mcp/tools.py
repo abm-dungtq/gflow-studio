@@ -59,6 +59,7 @@ from gflow_cli.profile_store import (
 )
 from gflow_cli.services.credits import inspect_all_profiles as inspect_all_credit_profiles
 from gflow_cli.services.credits import inspect_profile as inspect_credit_profile
+from gflow_cli.services.image_upscale import UPSCALE_SCALES
 from gflow_cli.services.media_recovery import download_media
 from gflow_cli.storage import refuse_cloud_storage_for_local_file
 from gflow_cli.worker import codec
@@ -954,6 +955,7 @@ async def gflow_generate_image(
     instructions: list[str] | None = None,
     ui_mode: str | None = None,
     output: str | None = None,
+    upscale: str | None = None,
     wait: _WaitParam = True,
 ) -> dict[str, Any]:
     """Generate an image via Google Flow's Imagen.
@@ -1004,6 +1006,11 @@ async def gflow_generate_image(
             Overrides GFLOW_CLI_UI_MODE.
         output: Optional file to write, inside the configured output dir: a relative path
             is taken relative to it; an escape or a directory is refused (400 Invalid Output).
+        upscale: '2k' or '4k' (Ultra only): after each image is saved, also save Flow's
+            upscale beside it as ``<name>.2k.<ext>`` (mirrors the CLI ``--upscale``). Free.
+            The image itself is kept, since the upscale re-draws small details. The copies
+            are returned as 'upscaled'; a failed one keeps the image and adds
+            'upscale_warning' with the retry command.
         wait: Block until the generation finishes (default) or run it in the background;
             agents read it from the tool schema (#481).
 
@@ -1023,6 +1030,13 @@ async def gflow_generate_image(
         if isinstance(confined, dict):
             return confined
         output = confined
+
+    if upscale is not None:
+        upscale = upscale.lower()
+        if upscale not in UPSCALE_SCALES:
+            return _bad_param(
+                "Invalid upscale", f"Expected one of {list(UPSCALE_SCALES)}, got {upscale!r}."
+            )
 
     if ui_mode is not None:
         # Normalize case to mirror the CLI's click.Choice(case_sensitive=False)
@@ -1083,6 +1097,8 @@ async def gflow_generate_image(
         payload["project_name"] = project_name
     if output is not None:
         payload["output_file"] = output
+    if upscale is not None:
+        payload["upscale"] = upscale
     # Omitted rather than written empty when unused: `codec.build_image_request`
     # already reads both keys, so an empty list is a real (and wrong) instruction.
     if reference_entities:

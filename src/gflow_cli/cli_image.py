@@ -122,6 +122,7 @@ from gflow_cli.ref_aliases import (
     split_cli_ref,
 )
 from gflow_cli.services import catalog_sync
+from gflow_cli.services.image_upscale import UPSCALE_SCALES, upscale_saved_images
 from gflow_cli.services.reference_uploads import generate_reusing_uploads
 from gflow_cli.storage import cloud_info_from_path
 
@@ -823,6 +824,18 @@ _jitter_option = click.option(
     ),
 )
 
+_upscale_option = click.option(
+    "--upscale",
+    "upscale",
+    type=click.Choice(UPSCALE_SCALES, case_sensitive=False),
+    default=None,
+    help=(
+        "After each image is saved, also save Flow's 2K (or 4K, Ultra only) upscale beside "
+        "it as <name>.2k.<ext>. Free; the image itself is kept, since the upscale re-draws "
+        "small details. A failed upscale keeps the image and prints the retry command."
+    ),
+)
+
 _ui_mode_option = click.option(
     "--ui-mode",
     "ui_mode",
@@ -952,6 +965,7 @@ _ui_mode_option = click.option(
     help="Custom agent instruction to add or enable (only in agentic mode).",
 )
 @_ui_mode_option
+@_upscale_option
 def t2i(  # NOSONAR
     prompts: tuple[str, ...],
     prompts_file: Path | None,
@@ -973,8 +987,10 @@ def t2i(  # NOSONAR
     reference_entity_names: tuple[str, ...],
     as_json: bool,
     instructions: tuple[str, ...],
+    upscale: str | None,
 ) -> None:
     """Generate image(s) from one or more text prompts."""
+    upscale = upscale.lower() if upscale else None
     is_multi_prompt = len(prompts) > 1 or prompts_file is not None or read_stdin
     _validate_t2i_input(prompts, prompts_file, read_stdin)
 
@@ -1052,6 +1068,7 @@ def t2i(  # NOSONAR
                 project_name=project_name,
                 as_json=as_json,
                 tool_specs=tool_specs,
+                upscale=upscale,
             ),
             cli_command="image t2i",
             as_json=as_json,
@@ -1082,6 +1099,7 @@ def t2i(  # NOSONAR
         jitter_spec,
         project_id,
         project_name,
+        upscale,
     )
 
 
@@ -1157,6 +1175,7 @@ def _execute_t2i_batch(
     jitter_spec: str | None = None,
     project_id: str | None = None,
     project_name: str | None = None,
+    upscale: str | None = None,
 ) -> None:
     """Run a multi-prompt t2i batch and print the summary table.
 
@@ -1198,6 +1217,7 @@ def _execute_t2i_batch(
                     _recorder=recorder,
                     _command="image t2i",
                     project_id=project_id,
+                    upscale=upscale,
                 ),
                 source="image.t2i",
             ),
@@ -1339,6 +1359,36 @@ async def _generate_verify_download(
     return images, saved_paths
 
 
+async def _upscale_after_download(
+    client: FlowApiClient,
+    images: list[GeneratedImage],
+    saved_paths: list[Path],
+    *,
+    project_id: str,
+    scale: str | None,
+) -> list[Path] | None:
+    """Save Flow's ``scale`` upscale beside each image; ``None`` when none was asked for.
+
+    A failed upscale is a warning on stderr, never a failed command: the image is saved.
+    """
+    if scale is None:
+        return None
+    made, warnings = await upscale_saved_images(
+        client,
+        [(img.media_name, path) for img, path in zip(images, saved_paths, strict=True)],
+        project_id=project_id,
+        scale=scale,
+    )
+    for warning in warnings:
+        click.echo(f"Warning: {warning}", err=True)
+    return made
+
+
+def _print_upscaled(upscaled: list[Path] | None) -> None:
+    for path in upscaled or ():
+        console.print(f"[bold green]Saved upscale:[/bold green] {safe_path_text(path)}")
+
+
 def _print_undownloaded_hint(
     client: FlowApiClient, profile_name: str, project_id: str, media_ids: list[str]
 ) -> None:
@@ -1433,6 +1483,7 @@ async def _run_t2i(
     project_name: str | None = None,
     as_json: bool = False,
     tool_specs: tuple[str, ...] = (),
+    upscale: str | None = None,
 ) -> None:
     settings = get_settings()
     recorder = OperationRecorder.open(settings)
@@ -1485,20 +1536,6 @@ async def _run_t2i(
                 operation_kind="t2i",
                 undownloaded=undownloaded,
             )
-
-            if as_json:
-                json_output.emit(
-                    json_output.image_result(
-                        command="image t2i",
-                        project_id=project.project_id,
-                        model=req.model.value,
-                        images=images,
-                        saved_paths=saved_paths,
-                    ),
-                )
-            else:
-                _print_t2i_summary(images, saved_paths)
-
             _record_generated_images_safe(
                 recorder,
                 profile_name=profile_name,
@@ -1511,6 +1548,25 @@ async def _run_t2i(
                 input_media_ids=[],
                 operation_kind="t2i",
             )
+
+            upscaled = await _upscale_after_download(
+                client, images, saved_paths, project_id=project.project_id, scale=upscale
+            )
+
+            if as_json:
+                json_output.emit(
+                    json_output.image_result(
+                        command="image t2i",
+                        project_id=project.project_id,
+                        model=req.model.value,
+                        images=images,
+                        saved_paths=saved_paths,
+                        upscaled=upscaled,
+                    ),
+                )
+            else:
+                _print_t2i_summary(images, saved_paths)
+                _print_upscaled(upscaled)
     except Exception as exc:
         if await try_auto_renew(profile_dir, exc, tracker, source="image.t2i"):
             return await run_retry(
@@ -1528,6 +1584,7 @@ async def _run_t2i(
                     project_name=project_name,
                     as_json=as_json,
                     tool_specs=tool_specs,
+                    upscale=upscale,
                 )
             )
         # #341: persist the failure before re-raising. A failed download already
@@ -1855,6 +1912,7 @@ class _I2IParams:
     help="Custom agent instruction to add or enable (only in agentic mode).",
 )
 @_ui_mode_option
+@_upscale_option
 def i2i(  # NOSONAR
     prompt: str,
     refs: tuple[str, ...],
@@ -1873,8 +1931,10 @@ def i2i(  # NOSONAR
     as_json: bool,
     instructions: tuple[str, ...],
     ui_mode: str | None,
+    upscale: str | None,
 ) -> None:
     """Generate image(s) from PROMPT + reference image(s) (image-to-image)."""
+    upscale = upscale.lower() if upscale else None
     if ui_mode == UiMode.CLASSIC.value and instructions:
         msg = "--ui-mode classic is incompatible with -i (instructions need the agentic UI)."
         raise click.UsageError(msg)
@@ -1945,6 +2005,7 @@ def i2i(  # NOSONAR
             project_name=project_name,
             as_json=as_json,
             tool_specs=tool_specs,
+            upscale=upscale,
         ),
         cli_command="image i2i",
         as_json=as_json,
@@ -1966,6 +2027,7 @@ async def _run_i2i(
     project_name: str | None = None,
     as_json: bool = False,
     tool_specs: tuple[str, ...] = (),
+    upscale: str | None = None,
 ) -> None:
     settings = get_settings()
     recorder = OperationRecorder.open(settings)
@@ -2074,21 +2136,6 @@ async def _run_i2i(
                 project=project,
                 generate=_generate,
             )
-
-            if as_json:
-                json_output.emit(
-                    json_output.image_result(
-                        command="image i2i",
-                        project_id=project.project_id,
-                        model=req.model.value,
-                        images=images,
-                        saved_paths=saved_paths,
-                        ref_count=n_refs,
-                    ),
-                )
-            else:
-                _print_i2i_summary(images, saved_paths)
-
             _record_generated_images_safe(
                 recorder,
                 profile_name=profile_name,
@@ -2106,6 +2153,26 @@ async def _run_i2i(
                 input_media_ids=[ref.name for ref in req.refs],
                 operation_kind="i2i",
             )
+
+            upscaled = await _upscale_after_download(
+                client, images, saved_paths, project_id=project.project_id, scale=upscale
+            )
+
+            if as_json:
+                json_output.emit(
+                    json_output.image_result(
+                        command="image i2i",
+                        project_id=project.project_id,
+                        model=req.model.value,
+                        images=images,
+                        saved_paths=saved_paths,
+                        ref_count=n_refs,
+                        upscaled=upscaled,
+                    ),
+                )
+            else:
+                _print_i2i_summary(images, saved_paths)
+                _print_upscaled(upscaled)
     except Exception as exc:
         if await try_auto_renew(profile_dir, exc, tracker, source="image.i2i"):
             return await run_retry(
@@ -2123,6 +2190,7 @@ async def _run_i2i(
                     project_name=project_name,
                     as_json=as_json,
                     tool_specs=tool_specs,
+                    upscale=upscale,
                 )
             )
         # #341: persist the failure before re-raising. ``req`` is None when the

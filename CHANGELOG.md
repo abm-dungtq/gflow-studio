@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **A row after an image upscale no longer fails with selector drift (exit 23).** An upscale
+  leaves the page on the image's detail view, `/project/<id>/edit/<media>`. That URL starts with
+  the project's own, so the next row took the page for the editor and found no settings pane.
+  The editor check now compares the path itself. Measured with `gflow run --upscale 2k`: two
+  rows ran green, where before the second row failed every time.
 - **Headless runs no longer announce `HeadlessChrome`.** With `GFLOW_CLI_HEADLESS=true` gflow
   sends the user agent headed Chrome sends, built from the installed Chrome's version, in pages,
   workers and the `User-Agent` header. Measured on macOS: a headless image run generated
@@ -24,6 +29,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **`--upscale 2k` saves Flow's 2K beside each image as you generate.** On `gflow image t2i`,
+  `gflow image i2i`, `gflow run`, and `gflow_generate_image(upscale="2k")` over MCP. In the same
+  browser session, gflow writes Flow's upscale next to the image as `<name>.2k.<ext>`:
+  1536x2752 where the 9:16 1K is 768x1376. It is free and needs no second command. The 1K is
+  kept because Flow's upscale re-draws small details. `--resume` fetches only a missing 2K and
+  never regenerates the row for it. When `gflow run` regenerates a row, it deletes the old
+  picture's upscale. A failed upscale keeps the image and prints the retry command.
 - **`gflow run --cast cast.json` attaches a character's reference image wherever a row writes
   `@Name`.** The cast maps each name to one approved image (paths relative to the cast file,
   `null` while none is approved). Only the characters a row mentions are added, after the row's

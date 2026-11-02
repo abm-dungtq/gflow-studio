@@ -35,6 +35,7 @@ from gflow_cli._cli_helpers import (
 from gflow_cli.api.client import FlowApiClient, validate_image_file
 from gflow_cli.api.dto import GeneratedImage
 from gflow_cli.api.transports import EXPERIMENTAL_TRANSPORTS
+from gflow_cli.api.video import is_media_uuid
 from gflow_cli.auth.auto_renew import run_with_auto_renew
 from gflow_cli.cast_file import Cast
 from gflow_cli.config import get_settings
@@ -61,6 +62,7 @@ from gflow_cli.lanes import LaneStop, parse_profiles, run_lanes, split_rows
 from gflow_cli.paths import resolve_batch_output_dir
 from gflow_cli.ref_aliases import default_ref_name, replace_ref_aliases
 from gflow_cli.run_ledger import check_redo_names, is_stale, redo_keys
+from gflow_cli.services.image_upscale import UPSCALE_SCALES, upscaled_copy
 
 console = Console()
 
@@ -320,7 +322,12 @@ def _candidate_output_files(item: BatchPromptItem, output_dir: Path, n: int) -> 
         ]
         return [p for p in candidates if p.is_file()]
     stem = glob.escape(item.output_filename or f"prompt_{item.index}")
-    return [p for p in sorted(output_dir.glob(f"{stem}_{n}.*")) if p.is_file()]
+    # `<stem>_<n>.2k.jpg` is that image's upscale, never the image itself.
+    return [
+        p
+        for p in sorted(output_dir.glob(f"{stem}_{n}.*"))
+        if p.is_file() and Path(p.stem).suffix.lstrip(".") not in UPSCALE_SCALES
+    ]
 
 
 def _check_lanes(
@@ -473,6 +480,18 @@ def _resumed_rows(
     return done
 
 
+def _missing_upscale(done: BatchOutcome, scale: str) -> bool:
+    """Whether a resumed row has a saved image Flow can still upscale but whose copy is missing.
+
+    A row resumed from its file alone has no Flow media id, so it cannot be upscaled and is
+    not dealt to a lane for it.
+    """
+    return any(
+        upscaled_copy(path, scale) is None and is_media_uuid(image.media_name)
+        for image, path in zip(done.images, done.saved_paths, strict=False)
+    )
+
+
 def _check_transport_gated(transport: str | None) -> None:
     """Per spec D.1 rule 5: experimental transports require env var.
 
@@ -512,6 +531,7 @@ async def _run_batch(
     project_id: str | None = None,
     resumed: dict[int, BatchOutcome] | None = None,
     stop: LaneStop | None = None,
+    upscale: str | None = None,
 ) -> list[BatchOutcome]:
     """Run ``prompts`` sequentially through ONE FlowApiClient session.
 
@@ -538,6 +558,7 @@ async def _run_batch(
             resumed=resumed,
             ledger=True,
             stop=stop,
+            upscale=upscale,
         ),
         source="run",
     )
@@ -553,8 +574,13 @@ async def _run_batch_lanes(
     continue_on_error: bool,
     recorder: OperationRecorder | None,
     project_id: str,
+    resumed: dict[int, BatchOutcome],
+    upscale: str | None,
 ) -> list[BatchOutcome]:
-    """Run each lane's rows on its own profile, side by side, into one shared project."""
+    """Run each lane's rows on its own profile, side by side, into one shared project.
+
+    A resumed row is dealt to a lane only to add its missing upscale.
+    """
 
     async def run_lane(
         profile: str, rows: tuple[BatchPromptItem, ...], stop: LaneStop
@@ -569,7 +595,9 @@ async def _run_batch_lanes(
             profile_name=profile,
             recorder=recorder,
             project_id=project_id,
+            resumed=resumed,
             stop=stop,
+            upscale=upscale,
         )
 
     return await run_lanes(lanes, run_lane)
@@ -655,6 +683,18 @@ async def _run_batch_lanes(
     ),
 )
 @click.option(
+    "--upscale",
+    "upscale",
+    type=click.Choice(UPSCALE_SCALES, case_sensitive=False),
+    default=None,
+    help=(
+        "After each image is saved, also save Flow's 2K (or 4K, Ultra only) upscale beside "
+        "it as <name>.2k.<ext>. Free; the image itself is kept, since the upscale re-draws "
+        "small details. With --resume, a row already made gets only its missing upscale. "
+        "A failed upscale keeps the image and prints the retry command."
+    ),
+)
+@click.option(
     "--redo",
     "redo",
     multiple=True,
@@ -673,6 +713,7 @@ def run(
     continue_on_error: bool,
     resume: bool,
     cast_path: Path | None,
+    upscale: str | None,
     redo: tuple[str, ...],
 ) -> None:
     """Execute a JSON-described batch of image generations sequentially."""
@@ -733,7 +774,15 @@ def run(
         for name in lane_profiles or (profile_name,):
             resumed |= _resumed_rows(cfg.prompts, output_dir, project_id, name, redo_names)
         console.print(f"  resume: [dim]{len(resumed)} row(s) already made[/dim]")
-    lanes = split_rows(lane_profiles, [i for i in cfg.prompts if i.index not in resumed])
+    upscale = upscale.lower() if upscale else None
+    lanes = split_rows(
+        lane_profiles,
+        [
+            i
+            for i in cfg.prompts
+            if i.index not in resumed or (upscale and _missing_upscale(resumed[i.index], upscale))
+        ],
+    )
     lane_of = {item.index: name for name, rows in lanes for item in rows}
     for name, rows in lanes:
         console.print(f"  lane {name}: [dim]rows {', '.join(str(i.index) for i in rows)}[/dim]")
@@ -751,9 +800,15 @@ def run(
                     continue_on_error=continue_on_error,
                     recorder=recorder,
                     project_id=project_id,
+                    resumed=resumed,
+                    upscale=upscale,
                 ),
             )
-            outcomes = sorted([*made, *resumed.values()], key=lambda o: o.index)
+            # A resumed row dealt only for its upscale keeps its outcome if its lane stopped.
+            by_index = {o.index: o for o in resumed.values()} | {
+                o.index: o for o in made if o.status != "skipped" or o.index not in resumed
+            }
+            outcomes = sorted(by_index.values(), key=lambda o: o.index)
         else:
             outcomes = asyncio.run(
                 _run_batch(
@@ -767,6 +822,7 @@ def run(
                     recorder=recorder,
                     project_id=project_id,
                     resumed=resumed,
+                    upscale=upscale,
                 ),
             )
     except GFlowError as exc:

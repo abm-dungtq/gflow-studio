@@ -52,6 +52,7 @@ from gflow_cli.ref_aliases import (
     replace_ref_aliases,
 )
 from gflow_cli.run_ledger import fingerprint, record, sidecar_path
+from gflow_cli.services.image_upscale import drop_stale_upscales, upscale_saved_images
 from gflow_cli.storage import cloud_info_from_path
 
 if TYPE_CHECKING:
@@ -304,6 +305,9 @@ class BatchOutcome:
     # (#913, SCENARIO #35).
     images: list[GeneratedImage] = field(default_factory=lambda: [])
     halt: bool = False
+    # What the row's files could not get afterwards (an upscale that failed), shown under
+    # the summary; the row itself still succeeded.
+    notes: list[str] = field(default_factory=lambda: [])
 
 
 def resolve_exit_code(exc: GFlowError) -> int:
@@ -881,6 +885,7 @@ async def run_image_batch(
     resumed: dict[int, BatchOutcome] | None = None,
     ledger: bool = False,
     stop: LaneStop | None = None,
+    upscale: str | None = None,
 ) -> list[BatchOutcome]:
     """Run prompts sequentially through one FlowApiClient session.
 
@@ -899,8 +904,26 @@ async def run_image_batch(
 
     ``stop`` is shared with sibling lanes (``gflow_cli.lanes``), as in
     :func:`run_sequential_batch`.
+
+    ``upscale`` (``"2k"``/``"4k"``) writes Flow's upscale beside each saved image
+    (``services.image_upscale``); a resumed row gets one only where it is missing.
     """
     results: dict[int, BatchOutcome] = {}
+
+    async def add_upscales(
+        client: Any, project_id: str, outcome: BatchOutcome, *, only_missing: bool
+    ) -> None:
+        if upscale is None:
+            return
+        pairs = [
+            (img.media_name, path)
+            for img, path in zip(outcome.images, outcome.saved_paths, strict=False)
+        ]
+        _, warnings = await upscale_saved_images(
+            client, pairs, project_id=project_id, scale=upscale, only_missing=only_missing
+        )
+        outcome.notes.extend(warnings)
+
     # One upload per distinct local file per run (one run, one project).
     uploads: dict[str, ImageRef] = {}
     # Uploads whose outcome is unknown (#1009): they may have saved, so never re-upload.
@@ -919,6 +942,7 @@ async def run_image_batch(
             results[item.index] = done
             if ledger:
                 adopt_resumed_images([done])
+            await add_upscales(client, project_id, done, only_missing=True)
             return done
         row_refs: list[ImageRef] = []
         for ref_spec in item.all_refs:
@@ -1007,6 +1031,10 @@ async def run_image_batch(
         results[item.index] = outcome
         if ledger and outcome.status == "ok":
             record(outcome.saved_paths, image_row_inputs(item))
+            for path in outcome.saved_paths:
+                drop_stale_upscales(path)
+        if outcome.status == "ok":
+            await add_upscales(client, project_id, outcome, only_missing=False)
         return outcome
 
     outcomes = await run_sequential_batch(
@@ -1779,6 +1807,9 @@ def render_image_batch_summary(
             safe_terminal_text(detail),
         )
     console.print(table)
+    for outcome in outcomes:
+        for note in outcome.notes:
+            console.print(f"[yellow]Row {outcome.index}:[/yellow] {escape(note)}")
     succeeded = sum(1 for outcome in outcomes if outcome.status == "ok")
     failed = sum(1 for outcome in outcomes if outcome.status == "fail")
     skipped = sum(1 for outcome in outcomes if outcome.status == "skipped")

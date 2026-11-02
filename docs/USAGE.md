@@ -250,6 +250,39 @@ Notes:
   (`UpscaleUnavailableError`, detected from the disabled UI state or 403) and a hint to use `--scale 2k` or upgrade.
 - The result is saved as `<output_dir>/images/<YYYY-MM-DD>/<mediaId>_<scale>.<ext>`
   (extension matches the returned format — usually `.jpg`).
+- **To upscale as you generate**, pass `--upscale 2k` to `gflow image t2i`, `gflow image i2i`
+  or `gflow run` instead (see [Upscale as you generate](#upscale-as-you-generate---upscale)).
+
+### Upscale as you generate (`--upscale`)
+
+`gflow image t2i`, `gflow image i2i` and `gflow run` take `--upscale 2k` (or `4k`, Ultra
+only); the MCP twin is `gflow_generate_image(upscale="2k")`. After each image is saved, gflow
+fetches Flow's upscale in the same browser session and writes it **beside** the image as
+`<name>.2k.<ext>`:
+
+```bash
+gflow run --config frames.json --project <id> --resume --upscale 2k
+# gen/k1.png      Flow's 1K (768x1376 for 9:16)
+# gen/k1.2k.jpg   Flow's 2K (1536x2752), the one to start a video from
+```
+
+- **The 1K stays.** Flow's upscale re-draws the picture rather than resizing it: on a test
+  image the 2K had about four times the edge detail of the 1K resized, but a few small digits on
+  a dial came out different. The 1K is the row's output that `--resume` and the ledger follow;
+  the 2K is the copy to hand on (a video's start frame, a still).
+- **Free, about 30–45 s per image** inside a run (measured 48 s for a lone
+  `gflow image upscale`, browser launch included). It is one extra Flow request per image.
+- **`--resume` adds only what is missing.** A row already made is not generated again; if its
+  `<name>.2k.*` is missing, only the upscale is fetched. With `--profiles`, such rows are dealt
+  to the lanes like any other. Delete a 2K file to fetch it again.
+- **A regenerated row drops its old upscale.** When `gflow run` makes a row again (an edited
+  prompt or reference, `--redo`), the `<name>.2k.*`/`<name>.4k.*` beside it belonged to the old
+  picture and is deleted; with `--upscale` the new one replaces it.
+- **A failed upscale never fails the row.** The image is kept and the run prints the
+  `gflow image upscale <mediaId> --scale 2k --project <id>` that retries it (`gflow run`:
+  under the summary; `t2i`/`i2i`: on stderr). `--json` lists the copies made under `upscaled`.
+- An image whose Flow media id the local catalog does not know (a file copied in by hand)
+  cannot be upscaled; it is reported, not sent.
 
 ## `gflow video upscale`
 
@@ -354,6 +387,9 @@ Options:
                             arm that can satisfy an image request (#595).
                             Aborts exit 28 if unreachable.
                             Single-prompt only; batch uses GFLOW_CLI_UI_MODE.
+  --upscale [2k|4k]         Also save Flow's upscale beside each image as
+                            <name>.2k.<ext>; the image itself is kept. See
+                            "Upscale as you generate".
   --profile NAME            Profile name (overrides default).
 ```
 
@@ -476,6 +512,7 @@ Options:
   --reference-entity ID     Flow CHARACTER entity id to reference (repeatable;
                             must live in --project). Counts toward the ref cap.
   --reference-entity-name N Display name paired with --reference-entity.
+  --upscale [2k|4k]         Also save Flow's upscale beside each image (same as t2i).
   --profile NAME            Profile name (overrides default).
 ```
 
@@ -1951,7 +1988,7 @@ For MCP over HTTP, see `gflow serve` and [MCP.md](MCP.md).
 Sequential JSON-described batch image generation. New in v0.5.0a1.
 
 ```text
-gflow run --config FILE [--output-dir DIR] [--profile NAME | --profiles A,B] [--project ID] [--cast FILE] [--resume] [--redo NAME]... [--continue-on-error|--fail-fast]
+gflow run --config FILE [--output-dir DIR] [--profile NAME | --profiles A,B] [--project ID] [--cast FILE] [--resume] [--redo NAME]... [--upscale 2k|4k] [--continue-on-error|--fail-fast]
 ```
 
 The config is a JSON file with a top-level `prompts` array; each entry

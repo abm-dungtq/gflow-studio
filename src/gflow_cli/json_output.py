@@ -147,6 +147,7 @@ def image_result(
     images: list[GeneratedImage],
     saved_paths: list[Path],
     ref_count: int | None = None,
+    upscaled: list[Path] | None = None,
 ) -> dict[str, Any]:
     """Complete result for a single-prompt ``image t2i`` / ``image i2i`` run.
 
@@ -181,6 +182,8 @@ def image_result(
     }
     if ref_count is not None:
         payload["ref_count"] = ref_count
+    if upscaled is not None:  # --upscale: the copies written beside ``local_path``
+        payload["upscaled"] = [str(path) for path in upscaled]
     return payload
 
 

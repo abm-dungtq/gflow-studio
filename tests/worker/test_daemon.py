@@ -1211,3 +1211,52 @@ async def test_worker_relocates_output_file_across_filesystems(
     assert out_file.read_bytes() == b"clip"
     assert not src.exists()
     worker.close()
+
+
+@pytest.mark.asyncio
+async def test_worker_image_upscale_saves_the_2k_beside_and_surfaces_it(
+    temp_db: DataStore, tmp_path: Path
+) -> None:
+    from gflow_cli.mcp.tools import task_payload
+
+    media = "11111111-2222-3333-4444-555555555555"
+    out = tmp_path / "k1.png"
+    repo = QueueRepository(temp_db)
+    task = repo.enqueue_task(
+        task_id="task-image-upscale",
+        profile_name="default",
+        task_type="t2i",
+        payload={
+            "prompt": "a cat",
+            "aspect": "9:16",
+            "count": 1,
+            "project_id": "proj-up",
+            "output_file": str(out),
+            "upscale": "2k",
+        },
+    )
+    worker = FlowWorker("default", str(temp_db.path))
+    fake_client = FakeFlowApiClient()
+    fake_client.generate_image.return_value = FakeGeneratedImage(media_name=media)
+
+    async def _download(_img: object, target: Path) -> Path:
+        target.write_bytes(b"\x89PNG 1k")
+        return target
+
+    async def _upsample(*, out_path: Path, **_kw: object) -> Path:
+        out_path.write_bytes(b"\xff\xd8\xff 2k")
+        return out_path
+
+    fake_client.download_image = AsyncMock(side_effect=_download)
+    fake_client.upsample_image = AsyncMock(side_effect=_upsample)
+
+    with patch("gflow_cli.worker.daemon.FlowApiClient", return_value=fake_client):
+        await worker.process_task(task)
+    worker.close()
+
+    assert fake_client.upsample_image.await_args.kwargs["project_id"] == "proj-up"
+    assert out.read_bytes() == b"\x89PNG 1k"
+    assert temp_db.path is not None
+    reply = task_payload("default", "task-image-upscale", temp_db.path)
+    assert reply["status"] == "completed"
+    assert reply["upscaled"] == [str(tmp_path / "k1.2k.png")]
